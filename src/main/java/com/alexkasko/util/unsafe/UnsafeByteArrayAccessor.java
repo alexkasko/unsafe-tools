@@ -1,32 +1,13 @@
 package com.alexkasko.util.unsafe;
 
-import sun.misc.Unsafe;
-
-import java.lang.reflect.Field;
-
 /**
  * User: alexkasko
  * Date: 12/11/12
  */
-class UnsafeByteArrayAccessor implements ByteArrayAccessor {
+class UnsafeByteArrayAccessor extends ByteArrayAccessor {
 
-    private static final Unsafe UNSAFE;
-
-    // borrowed from
-    // https://github.com/dain/snappy/blob/602f4d7d71237f6a599389575edf5367da6cea37/src/main/java/org/iq80/snappy/UnsafeMemory.java#L28
-    static {
-        try {
-            Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
-            theUnsafe.setAccessible(true);
-            UNSAFE = (Unsafe) theUnsafe.get(null);
-            // It seems not all Unsafe implementations implement the following method.
-            new UnsafeByteArrayAccessor().copy(new byte[1], 0, new byte[1], 0, 1);
-        } catch(Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static final long BYTE_ARRAY_OFFSET = UNSAFE.arrayBaseOffset(byte[].class);
+    private static final TheUnsafeAccessor UNSAFE = TheUnsafeAccessor.get();
+    private static final int BYTE_ARRAY_OFFSET = UNSAFE.arrayBaseOffset(byte[].class);
 
     @Override
     public boolean isUnsafe() {
@@ -132,12 +113,18 @@ class UnsafeByteArrayAccessor implements ByteArrayAccessor {
         UNSAFE.putLong(data, BYTE_ARRAY_OFFSET + offset, value);
     }
 
+    // input: not null
+    // inputIndex: bounded
+    // output: not null
+    // inputIndex: bounded
+    // length: not over threshold, may be negative
     @Override
     public void copy(byte[] input, int inputIndex, byte[] output, int outputIndex, int length) {
-        assert inputIndex >= 0;
-        assert inputIndex + length <= input.length;
-        assert outputIndex >= 0;
-        assert outputIndex + length <= output.length;
+//        assert inputIndex >= 0;
+//        assert inputIndex + length <= input.length;
+//        assert outputIndex >= 0;
+//        assert outputIndex + length <= output.length;
         UNSAFE.copyMemory(input, BYTE_ARRAY_OFFSET + inputIndex, output, BYTE_ARRAY_OFFSET + outputIndex, length);
+//        UNSAFE.copyMemory(input, BYTE_ARRAY_OFFSET + inputIndex, output, BYTE_ARRAY_OFFSET + outputIndex, Integer.MAX_VALUE);
     }
 }

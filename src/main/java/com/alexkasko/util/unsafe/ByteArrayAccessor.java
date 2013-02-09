@@ -4,36 +4,61 @@ package com.alexkasko.util.unsafe;
  * User: alexkasko
  * Date: 12/11/12
  */
-public interface ByteArrayAccessor {
-    boolean isUnsafe();
+public abstract class ByteArrayAccessor {
 
-    byte readByte(byte[] data, int offset);
+    public static ByteArrayAccessor get() {
+        try {
+            return unsafe();
+        } catch (Exception e) {
+            return bitshift();
+        }
+    }
 
-    void writeByte(byte[] data, int offset, byte value);
+    public static ByteArrayAccessor unsafe() throws Exception {
+        try {
+            Class<? extends ByteArrayAccessor> unsafeBaaClass = ByteArrayAccessor.class
+                    .getClassLoader()
+                    .loadClass(ByteArrayAccessor.class.getPackage().getName() + ".UnsafeByteArrayAccessor")
+                    .asSubclass(ByteArrayAccessor.class);
+            return unsafeBaaClass.newInstance();
+        } catch (Throwable t) {
+            throw t instanceof RuntimeException ? (RuntimeException) t : new RuntimeException(t);
+        }
+    }
 
-    short readUnsignedByte(byte[] data, int offset);
+    public static ByteArrayAccessor bitshift() {
+        return new BitShiftLittleEndianByteArrayAccessor();
+    }
 
-    void writeUnsignedByte(byte[] data, int offset, short value);
+    public abstract boolean isUnsafe();
 
-    short readShort(byte[] data, int offset);
+    public abstract byte readByte(byte[] data, int offset);
 
-    void writeShort(byte[] data, int offset, short value);
+    public abstract void writeByte(byte[] data, int offset, byte value);
 
-    int readUnsignedShort(byte[] data, int offset);
+    public abstract short readUnsignedByte(byte[] data, int offset);
 
-    void writeUnsignedShort(byte[] data, int offset, int value);
+    public abstract void writeUnsignedByte(byte[] data, int offset, short value);
 
-    int readInt(byte[] data, int offset);
+    public abstract short readShort(byte[] data, int offset);
 
-    void writeInt(byte[] data, int offset, int value);
+    public abstract void writeShort(byte[] data, int offset, short value);
 
-    long readUnsignedInt(byte[] data, int offset);
+    public abstract int readUnsignedShort(byte[] data, int offset);
 
-    void writeUnsignedInt(byte[] data, int offset, long value);
+    public abstract void writeUnsignedShort(byte[] data, int offset, int value);
 
-    long readLong(byte[] data, int offset);
+    public abstract int readInt(byte[] data, int offset);
 
-    void writeLong(byte[] data, int offset, long value);
+    public abstract void writeInt(byte[] data, int offset, int value);
 
-    void copy(byte[] input, int inputIndex, byte[] output, int outputIndex, int length);
+    public abstract long readUnsignedInt(byte[] data, int offset);
+
+    public abstract void writeUnsignedInt(byte[] data, int offset, long value);
+
+    public abstract long readLong(byte[] data, int offset);
+
+    public abstract void writeLong(byte[] data, int offset, long value);
+
+    public abstract void copy(byte[] input, int inputIndex, byte[] output, int outputIndex, int length);
 }

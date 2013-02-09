@@ -7,8 +7,7 @@ import static java.lang.System.arraycopy;
  * Date: 12/11/12
  */
 
-// todo add checks
-class SlowByteArrayAccessor implements ByteArrayAccessor {
+class BitShiftLittleEndianByteArrayAccessor extends ByteArrayAccessor {
     @Override
     public boolean isUnsafe() {
         return false;
@@ -42,8 +41,8 @@ class SlowByteArrayAccessor implements ByteArrayAccessor {
 
     @Override
     public void writeShort(byte[] data, int offset, short value) {
-        data[offset + 0] = (byte) (value >> 0);
-        data[offset + 1] = (byte) (value >> 8);
+        data[offset + 0] = (byte) (value >>> 0);
+        data[offset + 1] = (byte) (value >>> 8);
     }
 
     @Override
@@ -54,8 +53,8 @@ class SlowByteArrayAccessor implements ByteArrayAccessor {
 
     @Override
     public void writeUnsignedShort(byte[] data, int offset, int value) {
-        data[offset + 0] = (byte) (value >> 0);
-        data[offset + 1] = (byte) (value >> 8);
+        data[offset + 0] = (byte) (value >>> 0);
+        data[offset + 1] = (byte) (value >>> 8);
     }
 
     @Override
@@ -68,10 +67,10 @@ class SlowByteArrayAccessor implements ByteArrayAccessor {
 
     @Override
     public void writeInt(byte[] data, int offset, int value) {
-        data[offset + 0] = (byte) (value >> 0);
-        data[offset + 1] = (byte) (value >> 8);
-        data[offset + 2] = (byte) (value >> 16);
-        data[offset + 3] = (byte) (value >> 24);
+        data[offset + 0] = (byte) (value >>> 0);
+        data[offset + 1] = (byte) (value >>> 8);
+        data[offset + 2] = (byte) (value >>> 16);
+        data[offset + 3] = (byte) (value >>> 24);
     }
 
     @Override
@@ -84,10 +83,10 @@ class SlowByteArrayAccessor implements ByteArrayAccessor {
 
     @Override
     public void writeUnsignedInt(byte[] data, int offset, long value) {
-        data[offset + 0] = (byte) (value >> 0);
-        data[offset + 1] = (byte) (value >> 8);
-        data[offset + 2] = (byte) (value >> 16);
-        data[offset + 3] = (byte) (value >> 24);
+        data[offset + 0] = (byte) (value >>> 0);
+        data[offset + 1] = (byte) (value >>> 8);
+        data[offset + 2] = (byte) (value >>> 16);
+        data[offset + 3] = (byte) (value >>> 24);
     }
 
     @Override
@@ -104,14 +103,14 @@ class SlowByteArrayAccessor implements ByteArrayAccessor {
 
     @Override
     public void writeLong(byte[] data, int offset, long value) {
-        data[offset + 0] = (byte) (value >> 0);
-        data[offset + 1] = (byte) (value >> 8);
-        data[offset + 2] = (byte) (value >> 16);
-        data[offset + 3] = (byte) (value >> 24);
-        data[offset + 4] = (byte) (value >> 32);
-        data[offset + 5] = (byte) (value >> 40);
-        data[offset + 6] = (byte) (value >> 48);
-        data[offset + 7] = (byte) (value >> 56);
+        data[offset + 0] = (byte) (value >>> 0);
+        data[offset + 1] = (byte) (value >>> 8);
+        data[offset + 2] = (byte) (value >>> 16);
+        data[offset + 3] = (byte) (value >>> 24);
+        data[offset + 4] = (byte) (value >>> 32);
+        data[offset + 5] = (byte) (value >>> 40);
+        data[offset + 6] = (byte) (value >>> 48);
+        data[offset + 7] = (byte) (value >>> 56);
     }
 
     @Override
