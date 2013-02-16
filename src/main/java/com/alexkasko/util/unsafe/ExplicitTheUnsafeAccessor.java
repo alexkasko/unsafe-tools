@@ -173,6 +173,22 @@ class ExplicitTheUnsafeAccessor extends TheUnsafeAccessor {
      * {@inheritDoc}
      */
     @Override
+    short getShort(long address) {
+        return UNSAFE.getShort(address);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void putShort(long address, short x) {
+        UNSAFE.putShort(address, x);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     int getInt(long address) {
         return UNSAFE.getInt(address);
     }

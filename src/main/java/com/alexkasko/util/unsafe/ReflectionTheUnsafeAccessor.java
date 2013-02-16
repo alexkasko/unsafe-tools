@@ -29,6 +29,8 @@ class ReflectionTheUnsafeAccessor extends TheUnsafeAccessor {
     private static final Method putLong2;
     private static final Method getByte;
     private static final Method putByte;
+    private static final Method getShort;
+    private static final Method putShort;
     private static final Method getInt;
     private static final Method putInt;
     private static final Method getLong;
@@ -68,6 +70,8 @@ class ReflectionTheUnsafeAccessor extends TheUnsafeAccessor {
             putLong2 = uc.getMethod("putLong", Object.class, long.class, long.class);
             getByte = uc.getMethod("getByte", long.class);
             putByte = uc.getMethod("putByte", long.class, byte.class);
+            getShort = uc.getMethod("getShort", long.class);
+            putShort = uc.getMethod("putShort", long.class, short.class);
             getInt = uc.getMethod("getInt", long.class);
             putInt = uc.getMethod("putInt", long.class, int.class);
             getLong = uc.getMethod("getLong", long.class);
@@ -337,6 +341,34 @@ class ReflectionTheUnsafeAccessor extends TheUnsafeAccessor {
     void putByte(long address, byte x) {
         try {
             putByte.invoke(UNSAFE, address, x);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    short getShort(long address) {
+        try {
+            return (Short) getShort.invoke(UNSAFE, address);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void putShort(long address, short x) {
+        try {
+            putShort.invoke(UNSAFE, address, x);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {

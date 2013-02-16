@@ -267,6 +267,16 @@ abstract class TheUnsafeAccessor {
     abstract void putByte(long address, byte x);
 
     /**
+     * @see #getInt(long)
+     */
+    abstract short getShort(long address);
+
+    /**
+     * @see #putInt(long, int)
+     */
+    abstract void putShort(long address, short x);
+
+    /**
      * @see #getByte(long)
      */
     abstract int getInt(long address);

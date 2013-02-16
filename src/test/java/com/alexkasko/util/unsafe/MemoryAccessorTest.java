@@ -2,76 +2,47 @@ package com.alexkasko.util.unsafe;
 
 import org.junit.Test;
 
-import java.util.Random;
-
 import static junit.framework.Assert.assertEquals;
 
 /**
  * User: alexkasko
- * Date: 12/11/12
+ * Date: 2/16/13
  */
-public class ByteArrayAccessorTest {
+// todo: complete me
+public class MemoryAccessorTest {
 
     @Test
     public void test() throws Exception {
-        // standard
-        ByteArrayAccessor standard = ByteArrayAccessor.bitshift();
-        testReadByte(standard);
-        testWriteByte(standard);
-        testReadUnsignedByte(standard);
-        testWriteUnsignedByte(standard);
-        testReadShort(standard);
-        testWriteShort(standard);
-        testReadUnsignedShort(standard);
-        testWriteUnsignedShort(standard);
-        testReadInt(standard);
-        testWriteInt(standard);
-        testReadUnsignedInt(standard);
-        testWriteUnsignedInt(standard);
-        testReadLong(standard);
-        testWriteLong(standard);
-        testCopy(standard);
-        // unsafe
-        ByteArrayAccessor unsafe = ByteArrayAccessor.unsafe();
+        MemoryAccessor unsafe = MemoryAccessor.unsafe(1024);
         testReadByte(unsafe);
         testWriteByte(unsafe);
-        testReadUnsignedByte(unsafe);
-        testWriteUnsignedByte(unsafe);
-        testReadShort(unsafe);
-        testWriteShort(unsafe);
-        testReadUnsignedShort(unsafe);
-        testWriteUnsignedShort(unsafe);
-        testReadInt(unsafe);
-        testWriteInt(unsafe);
-        testReadUnsignedInt(unsafe);
-        testWriteUnsignedInt(unsafe);
-        testReadLong(unsafe);
-        testWriteLong(unsafe);
-        testCopy(unsafe);
+
+        MemoryAccessor direct = MemoryAccessor.direct(1024);
+        testReadByte(direct);
+        testWriteByte(direct);
     }
 
-    @Test(expected = AssertionError.class)
-    public void testBreak() throws Exception {
-        ByteArrayAccessor unsafe = ByteArrayAccessor.unsafe();
-        byte[] buf = new byte[4];
-        unsafe.readLong(buf, Integer.MAX_VALUE);
+    private static void testReadByte(MemoryAccessor ma) {
+        int id = ma.alloc(128);
+        byte[] b = new byte[2];
+        b[0] = (byte) 0x2a;
+        ma.write(id, 43, b, 0, 1);
+        assertEquals((byte) 0x2a, ma.readByte(id,43));
+        b[1] = (byte) 0xd6;
+        ma.write(id, 44, b, 1, 1);
+        assertEquals((byte) 0xd6, ma.readByte(id, 44));
+        ma.free(id);
     }
 
-    private static void testReadByte(ByteArrayAccessor baa) {
-        byte[] b = new byte[128];
-        b[43] = (byte) 0x2a;
-        assertEquals((byte) 0x2a, baa.readByte(b, 43));
-        b[44] = (byte) 0xd6;
-        assertEquals((byte) 0xd6, baa.readByte(b, 44));
-    }
-
-
-    private static void testWriteByte(ByteArrayAccessor baa) {
-        byte[] b = new byte[128];
-        baa.writeByte(b, 43, (byte) 0x2a);
-        assertEquals((byte) 0x2a, b[43]);
-        baa.writeByte(b, 44, (byte) 0xd6);
-        assertEquals((byte) 0xd6, b[44]);
+    private static void testWriteByte(MemoryAccessor ma) {
+        int id = ma.alloc(128);
+        byte[] b = new byte[2];
+        ma.writeByte(id, 43, (byte) 0x2a);
+        ma.read(id, 43, b, 0, 1);
+        assertEquals((byte) 0x2a, b[0]);
+        ma.writeByte(id, 44, (byte) 0xd6);
+        ma.read(id, 44, b, 1, 1);
+        assertEquals((byte) 0xd6, b[1]);
     }
 
     private static void testReadUnsignedByte(ByteArrayAccessor baa) {
@@ -228,27 +199,5 @@ public class ByteArrayAccessorTest {
         assertEquals((byte) 0x12, b[56]);
         assertEquals((byte) 0x0f, b[57]);
         assertEquals((byte) 0x80, b[58]);
-    }
-
-    private static void testCopy(ByteArrayAccessor baa) {
-        byte[] from = new byte[128];
-        byte[] to = new byte[128];
-        from[43] = (byte) 0x7f;
-        from[44] = (byte) 0xf0;
-        from[45] = (byte) 0xed;
-        from[46] = (byte) 0x89;
-        from[47] = (byte) 0xa2;
-        from[48] = (byte) 0x0b;
-        from[49] = (byte) 0x36;
-        from[50] = (byte) 0x4d;
-        baa.copy(from, 43, to, 42, 8);
-        assertEquals((byte) 0x7f, to[42]);
-        assertEquals((byte) 0xf0, to[43]);
-        assertEquals((byte) 0xed, to[44]);
-        assertEquals((byte) 0x89, to[45]);
-        assertEquals((byte) 0xa2, to[46]);
-        assertEquals((byte) 0x0b, to[47]);
-        assertEquals((byte) 0x36, to[48]);
-        assertEquals((byte) 0x4d, to[49]);
     }
 }

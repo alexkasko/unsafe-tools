@@ -15,116 +15,110 @@ class UnsafeByteArrayAccessor extends ByteArrayAccessor {
     }
 
     @Override
-    public byte readByte(byte[] data, int offset) {
+    public byte readByte(byte[] data, long offset) {
         assert offset >= 0;
-        assert offset + 1 <= data.length;
+        assert offset <= data.length - 1;
         return UNSAFE.getByte(data, BYTE_ARRAY_OFFSET + offset);
     }
 
     @Override
-    public void writeByte(byte[] data, int offset, byte value) {
+    public void writeByte(byte[] data, long offset, byte value) {
         assert offset >= 0;
-        assert offset + 1 <= data.length;
+        assert offset <= data.length - 1;
         UNSAFE.putByte(data, BYTE_ARRAY_OFFSET + offset, value);
     }
 
     @Override
-    public short readUnsignedByte(byte[] data, int offset) {
+    public short readUnsignedByte(byte[] data, long offset) {
         assert offset >= 0;
-        assert offset + 1 <= data.length;
+        assert offset <= data.length - 1;
         return (short) (UNSAFE.getByte(data, BYTE_ARRAY_OFFSET + offset) & 0xff);
     }
 
     @Override
-    public void writeUnsignedByte(byte[] data, int offset, short value) {
+    public void writeUnsignedByte(byte[] data, long offset, short value) {
         assert offset >= 0;
-        assert offset + 1 <= data.length;
+        assert offset <= data.length - 1;
         UNSAFE.putByte(data, BYTE_ARRAY_OFFSET + offset, (byte) value);
     }
 
     @Override
-    public short readShort(byte[] data, int offset) {
+    public short readShort(byte[] data, long offset) {
         assert offset >= 0;
-        assert offset + 2 <= data.length;
+        assert offset <= data.length - 2;
         return UNSAFE.getShort(data, BYTE_ARRAY_OFFSET + offset);
     }
 
     @Override
-    public void writeShort(byte[] data, int offset, short value) {
+    public void writeShort(byte[] data, long offset, short value) {
         assert offset >= 0;
-        assert offset + 2 <= data.length;
+        assert offset <= data.length - 2;
         UNSAFE.putShort(data, BYTE_ARRAY_OFFSET + offset, value);
     }
 
     @Override
-    public int readUnsignedShort(byte[] data, int offset) {
+    public int readUnsignedShort(byte[] data, long offset) {
         assert offset >= 0;
-        assert offset + 2 <= data.length;
+        assert offset <= data.length - 2;
         return UNSAFE.getShort(data, BYTE_ARRAY_OFFSET + offset) & 0xffff;
 
     }
 
     @Override
-    public void writeUnsignedShort(byte[] data, int offset, int value) {
+    public void writeUnsignedShort(byte[] data, long offset, int value) {
         assert offset >= 0;
-        assert offset + 2 <= data.length;
+        assert offset <= data.length - 2;
         UNSAFE.putShort(data, BYTE_ARRAY_OFFSET + offset, (short) value);
     }
 
     @Override
-    public int readInt(byte[] data, int offset) {
+    public int readInt(byte[] data, long offset) {
         assert offset >= 0;
-        assert offset + 4 <= data.length;
+        assert offset <= data.length - 4;
         return UNSAFE.getInt(data, BYTE_ARRAY_OFFSET + offset);
     }
 
     @Override
-    public void writeInt(byte[] data, int offset, int value) {
+    public void writeInt(byte[] data, long offset, int value) {
         assert offset >= 0;
-        assert offset + 4 <= data.length;
+        assert offset <= data.length - 4;
         UNSAFE.putInt(data, BYTE_ARRAY_OFFSET + offset, value);
     }
 
     @Override
-    public long readUnsignedInt(byte[] data, int offset) {
+    public long readUnsignedInt(byte[] data, long offset) {
         assert offset >= 0;
-        assert offset + 4 <= data.length;
+        assert offset <= data.length - 4;
         return UNSAFE.getInt(data, BYTE_ARRAY_OFFSET + offset) & 0xffffffffL;
     }
 
     @Override
-    public void writeUnsignedInt(byte[] data, int offset, long value) {
+    public void writeUnsignedInt(byte[] data, long offset, long value) {
         assert offset >= 0;
-        assert offset + 4 <= data.length;
+        assert offset <= data.length - 4;
         UNSAFE.putInt(data, BYTE_ARRAY_OFFSET + offset, (int) value);
     }
 
     @Override
-    public long readLong(byte[] data, int offset) {
+    public long readLong(byte[] data, long offset) {
         assert offset >= 0;
-        assert offset + 8 <= data.length;
+        assert offset <= data.length - 8;
         return UNSAFE.getLong(data, BYTE_ARRAY_OFFSET + offset);
     }
 
     @Override
-    public void writeLong(byte[] data, int offset, long value) {
+    public void writeLong(byte[] data, long offset, long value) {
         assert offset >= 0;
-        assert offset + 8 <= data.length;
+        assert offset <= data.length - 8;
         UNSAFE.putLong(data, BYTE_ARRAY_OFFSET + offset, value);
     }
 
-    // input: not null
-    // inputIndex: bounded
-    // output: not null
-    // inputIndex: bounded
-    // length: not over threshold, may be negative
     @Override
     public void copy(byte[] input, int inputIndex, byte[] output, int outputIndex, int length) {
-//        assert inputIndex >= 0;
-//        assert inputIndex + length <= input.length;
-//        assert outputIndex >= 0;
-//        assert outputIndex + length <= output.length;
+        assert inputIndex >= 0;
+        assert inputIndex <= input.length - length;
+        assert outputIndex >= 0;
+        assert outputIndex <= output.length - length;
         UNSAFE.copyMemory(input, BYTE_ARRAY_OFFSET + inputIndex, output, BYTE_ARRAY_OFFSET + outputIndex, length);
-//        UNSAFE.copyMemory(input, BYTE_ARRAY_OFFSET + inputIndex, output, BYTE_ARRAY_OFFSET + outputIndex, Integer.MAX_VALUE);
     }
 }

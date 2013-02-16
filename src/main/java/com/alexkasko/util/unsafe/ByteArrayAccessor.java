@@ -32,33 +32,33 @@ public abstract class ByteArrayAccessor {
 
     public abstract boolean isUnsafe();
 
-    public abstract byte readByte(byte[] data, int offset);
+    public abstract byte readByte(byte[] data, long offset);
 
-    public abstract void writeByte(byte[] data, int offset, byte value);
+    public abstract void writeByte(byte[] data, long offset, byte value);
 
-    public abstract short readUnsignedByte(byte[] data, int offset);
+    public abstract short readUnsignedByte(byte[] data, long offset);
 
-    public abstract void writeUnsignedByte(byte[] data, int offset, short value);
+    public abstract void writeUnsignedByte(byte[] data, long offset, short value);
 
-    public abstract short readShort(byte[] data, int offset);
+    public abstract short readShort(byte[] data, long offset);
 
-    public abstract void writeShort(byte[] data, int offset, short value);
+    public abstract void writeShort(byte[] data, long offset, short value);
 
-    public abstract int readUnsignedShort(byte[] data, int offset);
+    public abstract int readUnsignedShort(byte[] data, long offset);
 
-    public abstract void writeUnsignedShort(byte[] data, int offset, int value);
+    public abstract void writeUnsignedShort(byte[] data, long offset, int value);
 
-    public abstract int readInt(byte[] data, int offset);
+    public abstract int readInt(byte[] data, long offset);
 
-    public abstract void writeInt(byte[] data, int offset, int value);
+    public abstract void writeInt(byte[] data, long offset, int value);
 
-    public abstract long readUnsignedInt(byte[] data, int offset);
+    public abstract long readUnsignedInt(byte[] data, long offset);
 
-    public abstract void writeUnsignedInt(byte[] data, int offset, long value);
+    public abstract void writeUnsignedInt(byte[] data, long offset, long value);
 
-    public abstract long readLong(byte[] data, int offset);
+    public abstract long readLong(byte[] data, long offset);
 
-    public abstract void writeLong(byte[] data, int offset, long value);
+    public abstract void writeLong(byte[] data, long offset, long value);
 
     public abstract void copy(byte[] input, int inputIndex, byte[] output, int outputIndex, int length);
 }

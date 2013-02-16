@@ -38,9 +38,6 @@ public class LongPackUtilsTest {
         long bigLoaded = LongPackUtils.big(pack, 59);
         int littleLoaded = LongPackUtils.little(pack, 59);
         assertEquals("Pack fail", Long.toBinaryString(pack), Long.toBinaryString(res));
-//        System.out.println(Long.toBinaryString(pack));
-//        System.out.println(Long.toBinaryString(big));
-//        System.out.println(Long.toBinaryString(bigLoaded));
         assertEquals("Big load fail", Long.toBinaryString(big), Long.toBinaryString(bigLoaded));
         assertEquals("Little load fail", Integer.toBinaryString(little), Integer.toBinaryString(littleLoaded));
     }
