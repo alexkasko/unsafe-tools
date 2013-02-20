@@ -1,13 +1,31 @@
 package com.alexkasko.util.unsafe;
 
+import sun.misc.Unsafe;
+
+import java.lang.reflect.Field;
+
 /**
  * User: alexkasko
  * Date: 12/11/12
  */
 class UnsafeByteArrayAccessor extends ByteArrayAccessor {
 
-    private static final TheUnsafeAccessor UNSAFE = TheUnsafeAccessor.get();
-    private static final int BYTE_ARRAY_OFFSET = UNSAFE.arrayBaseOffset(byte[].class);
+    private static final Unsafe UNSAFE;
+    private static final int BYTE_ARRAY_OFFSET;
+
+    static {
+        try {
+            Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
+            theUnsafe.setAccessible(true);
+            UNSAFE = (Unsafe) theUnsafe.get(null);
+            int boo = UNSAFE.arrayBaseOffset(byte[].class);
+            // It seems not all Unsafe implementations implement the following method.
+            UNSAFE.copyMemory(new byte[1], boo, new byte[1], boo, 1);
+            BYTE_ARRAY_OFFSET = UNSAFE.arrayBaseOffset(byte[].class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public boolean isUnsafe() {

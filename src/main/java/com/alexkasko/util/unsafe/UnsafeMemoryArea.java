@@ -1,5 +1,8 @@
 package com.alexkasko.util.unsafe;
 
+import sun.misc.Unsafe;
+
+import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -8,8 +11,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 class UnsafeMemoryArea extends MemoryArea {
 
-    private static final TheUnsafeAccessor UNSAFE = TheUnsafeAccessor.get();
-    private static final int BYTE_ARRAY_OFFSET = UNSAFE.arrayBaseOffset(byte[].class);
+    private static final Unsafe UNSAFE;
+    private static final int BYTE_ARRAY_OFFSET;
+
+    static {
+        try {
+            Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
+            theUnsafe.setAccessible(true);
+            UNSAFE = (Unsafe) theUnsafe.get(null);
+            int boo = UNSAFE.arrayBaseOffset(byte[].class);
+            // It seems not all Unsafe implementations implement the following method.
+            UNSAFE.copyMemory(new byte[1], boo, new byte[1], boo, 1);
+            BYTE_ARRAY_OFFSET = UNSAFE.arrayBaseOffset(byte[].class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private final long address;
     private final long length;

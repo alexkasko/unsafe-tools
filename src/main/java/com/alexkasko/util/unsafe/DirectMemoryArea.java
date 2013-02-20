@@ -1,6 +1,5 @@
 package com.alexkasko.util.unsafe;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,27 +14,41 @@ import static java.nio.ByteOrder.LITTLE_ENDIAN;
 class DirectMemoryArea extends MemoryArea {
 
     private final ByteBuffer bb;
-    private final Object cleaner;
-    private final Method clean;
+    private Object cleaner;
+    private Method clean;
     private final AtomicBoolean disposed = new AtomicBoolean(false);
 
+    // todo: android support
     DirectMemoryArea(long bytes) {
         this.bb = ByteBuffer.allocateDirect((int) bytes).order(LITTLE_ENDIAN);
         // http://stackoverflow.com/a/8191493/314015
         try {
-            Method cleanerMethod = bb.getClass().getMethod("cleaner");
-            cleanerMethod.setAccessible(true);
-            this.cleaner = cleanerMethod.invoke(bb);
-            this.clean = cleaner.getClass().getMethod("clean");
-            this.clean.setAccessible(true);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            setupOpenJdkCleaner();
+        } catch (Exception e) {
+            try {
+                setupAndroidCleaner();
+            } catch (Exception e1) {
+                e.printStackTrace();
+                e1.printStackTrace();
+                throw new RuntimeException(e);
+            }
         }
     }
+
+    private void setupOpenJdkCleaner() throws Exception {
+        Method cleanerMethod = bb.getClass().getMethod("cleaner");
+        cleanerMethod.setAccessible(true);
+        this.cleaner = cleanerMethod.invoke(bb);
+        this.clean = cleaner.getClass().getMethod("clean");
+        this.clean.setAccessible(true);
+    }
+
+    private void setupAndroidCleaner() throws Exception {
+        this.clean = bb.getClass().getMethod("free");
+        this.clean.setAccessible(true);
+        this.cleaner = bb;
+    }
+
 
     @Override
     public boolean isUnsafe() {
