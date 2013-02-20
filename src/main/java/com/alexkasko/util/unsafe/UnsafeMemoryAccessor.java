@@ -4,9 +4,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLongArray;
 
 /**
-* User: alexkasko
-* Date: 1/14/13
-*/
+ * User: alexkasko
+ * Date: 1/14/13
+ */
 // todo: get checks
 class UnsafeMemoryAccessor extends MemoryAccessor {
 
@@ -32,13 +32,13 @@ class UnsafeMemoryAccessor extends MemoryAccessor {
 
     @Override
     public int alloc(long bytes) {
-        if(bytes <= 0) throw new IllegalArgumentException("Invalid bytes length provided: [" + bytes + "]");
+        if (bytes <= 0) throw new IllegalArgumentException("Invalid bytes length provided: [" + bytes + "]");
         long po = UNSAFE.allocateMemory(bytes);
         for (int i = 0; i < pointers.length(); i += 2) {
             boolean saved = pointers.compareAndSet(i, 0, po);
             if (saved) {
                 boolean lenSaved = pointers.compareAndSet(i + 1, 0, bytes);
-                if(!lenSaved) throw new IllegalStateException("Pointers list is corrupted on id: [" + i + "]");
+                if (!lenSaved) throw new IllegalStateException("Pointers list is corrupted on id: [" + i + "]");
                 count.incrementAndGet();
                 return i;
             }
@@ -48,15 +48,33 @@ class UnsafeMemoryAccessor extends MemoryAccessor {
 
     @Override
     public void free(int id) {
-        if(0 != (id & 1)) throw new IllegalArgumentException("Invalid odd id: [" + id + "]");
+        if (0 != (id & 1)) throw new IllegalArgumentException("Invalid odd id: [" + id + "]");
+        long len = pointers.getAndSet(id + 1, 0);
+        // was already called
+        if (0 == len) return;
         long po = pointers.get(id);
-        long len = pointers.get(id + 1);
-        if(0 == po || 0 == len) throw new IllegalArgumentException("Pointers list is corrupted on id: [" + id + "]");
+        if (0 == po) throw new IllegalArgumentException("Pointers list is corrupted on id: [" + id + "], " +
+                "address: [" + po + "], length: [" + len + "]");
         UNSAFE.freeMemory(po);
-        // free length first
-        pointers.set(id + 1, 0);
         pointers.set(id, 0);
         count.decrementAndGet();
+    }
+
+    @Override
+    public void freeQuetly(int id) {
+        if (0 == id) return;
+        try {
+            free(id);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        for (int i = 0; i < pointers.length(); i += 2) {
+            freeQuetly(i);
+        }
     }
 
     @Override

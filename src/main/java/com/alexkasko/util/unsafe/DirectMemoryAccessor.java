@@ -3,8 +3,11 @@ package com.alexkasko.util.unsafe;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReferenceArray;
+
+import static java.nio.ByteOrder.LITTLE_ENDIAN;
 
 /**
 * User: alexkasko
@@ -34,6 +37,7 @@ class DirectMemoryAccessor extends MemoryAccessor {
     public int alloc(long bytes) {
         if(bytes <= 0) throw new IllegalArgumentException("Invalid bytes length provided: [" + bytes + "]");
         ByteBuffer bb = ByteBuffer.allocateDirect((int) bytes);
+        bb.order(LITTLE_ENDIAN);
         for (int i = 0; i < buffers.length(); i++) {
             boolean saved = buffers.compareAndSet(i, null, bb);
             if (saved) {
@@ -46,8 +50,9 @@ class DirectMemoryAccessor extends MemoryAccessor {
 
     @Override
     public void free(int id) {
-        ByteBuffer bb = buffers.get(id);
-        if (null == bb) throw new IllegalArgumentException("No buffer found for id: [" + id + "]");
+        ByteBuffer bb = buffers.getAndSet(id, null);
+        // was already called
+        if (null == bb) return;
         if (!bb.isDirect()) throw new IllegalStateException("Stored byte buffer is not direct");
         try { // http://stackoverflow.com/a/8191493/314015
             Method cleanerMethod = bb.getClass().getMethod("cleaner");
@@ -63,8 +68,17 @@ class DirectMemoryAccessor extends MemoryAccessor {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        buffers.set(id, null);
         count.decrementAndGet();
+    }
+
+    @Override
+    public void freeQuetly(int id) {
+        if (0 == id) return;
+        try {
+            free(id);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 
     @Override
@@ -172,7 +186,7 @@ class DirectMemoryAccessor extends MemoryAccessor {
     @Override
     public void writeLong(int id, long offset, long value) {
         ByteBuffer bb = buffers.get(id);
-        bb.putLong((int) offset);
+        bb.putLong((int) offset, value);
     }
 
     private ByteBuffer resolveBuffer(int id, long offset) {

@@ -43,14 +43,7 @@ public abstract class  MemoryAccessor {
 
     public abstract void free(int id);
 
-    public void freeQuetly(int id) {
-        if (0 == id) return;
-        try {
-            free(id);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-    }
+    public abstract void freeQuetly(int id);
 
     public abstract void write(int id, long offset, byte[] buffer, int bufferOffset, int bytes);
 
