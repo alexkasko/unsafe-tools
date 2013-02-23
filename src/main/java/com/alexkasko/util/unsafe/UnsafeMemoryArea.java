@@ -44,6 +44,11 @@ class UnsafeMemoryArea extends MemoryArea {
     }
 
     @Override
+    public long length() {
+        return length;
+    }
+
+    @Override
     public void free() {
         if(!disposed.compareAndSet(false, true)) return;
         UNSAFE.freeMemory(address);

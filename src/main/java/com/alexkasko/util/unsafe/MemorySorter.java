@@ -1,100 +1,310 @@
-//package com.alexkasko.util.unsafe;
-//
-///**
-// * User: alexkasko
-// * Date: 2/20/13
-// */
-//public class MemorySorter {
-//    public static void quicksort(MemoryArea ma, int id, long offBytes, long lenBytes) {
-//        // todo:fixme
-//        long off = offBytes / 8;
-//        long len = lenBytes / 8;
-//        // Choose a partition element, v
-//        long m = off + (len >> 1);       // Small arrays, middle element
-//        if (len > 7) {
-//            long l = off;
-//            long n = off + len - 1;
-//            if (len > 40) {        // Big arrays, pseudomedian of 9
-//                long s = len / 8;
-//                l = med3(ma, id, l, l + s, l + 2 * s);
-//                m = med3(ma, id, m - s, m, m + s);
-//                n = med3(ma, id, n - 2 * s, n - s, n);
-//            }
-//            m = med3(ma, id, l, m, n); // Mid-size, med of 3
-//        }
-//        long v = ma.readLong(id, m*8);
-//
-//        // Establish Invariant: v* (<v)* (>v)* v*
-//        long a = off, b = a, c = off + len - 1, d = c;
-//        while (true) {
-//            while (b <= c && ma.readLong(id, b*8) <= v) {
-//                if (ma.readLong(id, b*8) == v)
-//                    swap(ma, id, a++, b);
-//                b++;
-//            }
-//            while (c >= b && ma.readLong(id, c*8) >= v) {
-//                if (ma.readLong(id, c*8) == v)
-//                    swap(ma, id, c, d--);
-//                c--;
-//            }
-//            if (b > c)
-//                break;
-//            swap(ma, id, b++, c--);
-//        }
-//
-//        // Swap partition elements back to middle
-//        long s, n = off + len;
-//        s = Math.min(a - off, b - a);
-//        vecswap(ma, id, off, b - s, s);
-//        s = Math.min(d - c, n - d - 1);
-//        vecswap(ma, id, b, n - s, s);
-//
-//        // Recursively sort non-partition-elements
-//        if ((s = b - a) > 1) quicksort(ma, id, off, s);
-//        if ((s = d - c) > 1) quicksort(ma, id, n - s, s);
-//    }
-//
-//    /**
-//     * Swaps x[a] with x[b].
-//     */
-//    private static void swap(MemoryArea ma, int id, long a, long b) {
-//        long aval = ma.readLong(id, a*8);
-//        long bval = ma.readLong(id, b*8);
-//        ma.writeLong(id, a*8, bval);
-//        ma.writeLong(id, b*8, aval);
-//    }
-//
-//    /**
-//      * Swaps x[a .. (a+n-1)] with x[b .. (b+n-1)].
-//      */
-//     private static void vecswap(MemoryArea ma, int id, long a, long b, long n) {
-//         for (int i=0; i<n; i++, a++, b++)
-//             swap(ma, id, a, b);
-//     }
-//    /**
-//     * Returns the index of the median of the three indexed longs.
-//     */
-//    private static long med3(MemoryArea ma, int id, long a, long b, long c) {
-//        long aval = ma.readLong(id, a*8);
-//        long bval = ma.readLong(id, b*8);
-//        long cval = ma.readLong(id, c*8);
-//        return (aval < bval ?
-//                (bval < cval ? b : aval < cval ? c : a) :
-//                (bval > cval ? b : aval > cval ? c : a));
-//    }
-//
-//    private static class LongMemoryArray {
-//        private final MemoryArea ma;
-//        private final  int id;
-//        private final long offset;
-//
-//        private LongMemoryArray(MemoryArea ma, int id, long offset) {
-//            this.ma = ma;
-//            this.id = id;
-//            this.offset = offset;
-//        }
-//
-//
-//
-//    }
-//}
+package com.alexkasko.util.unsafe;
+
+/**
+ * alexkasko: borrowed from {@code https://android.googlesource.com/platform/libcore/+/android-4.2.2_r1/luni/src/main/java/java/util/DualPivotQuicksort.java}
+ * and adapted to {@link MemoryLongArray}.
+ *
+ * This class implements the Dual-Pivot Quicksort algorithm by
+ * Vladimir Yaroslavskiy, Jon Bentley, and Joshua Bloch. The algorithm
+ * offers O(n log(n)) performance on many data sets that cause other
+ * quicksorts to degrade to quadratic performance, and is typically
+ * faster than traditional (one-pivot) Quicksort implementations.
+ *
+ * @author Vladimir Yaroslavskiy
+ * @author Jon Bentley
+ * @author Josh Bloch
+ *
+ * @version 2009.11.29 m765.827.12i
+ */
+public class MemorySorter {
+
+    /**
+     * If the length of an array to be sorted is less than this
+     * constant, insertion sort is used in preference to Quicksort.
+     */
+    private static final int INSERTION_SORT_THRESHOLD = 32;
+
+    /**
+     * Sorts the specified memory array into ascending order.
+     *
+     * @param a the memory array to be sorted
+     */
+    public static void sort(MemoryLongArray a) {
+        sort(a, 0, a.length());
+    }
+
+    /**
+     * Sorts the specified range of the memory array into ascending order. The range
+     * to be sorted extends from the index {@code fromIndex}, inclusive, to
+     * the index {@code toIndex}, exclusive. If {@code fromIndex == toIndex},
+     * the range to be sorted is empty (and the call is a no-op).
+     *
+     * @param a the memory array to be sorted
+     * @param fromIndex the index of the first element, inclusive, to be sorted
+     * @param toIndex the index of the last element, exclusive, to be sorted
+     * @throws IllegalArgumentException if {@code fromIndex > toIndex}
+     * @throws ArrayIndexOutOfBoundsException
+     *     if {@code fromIndex < 0} or {@code toIndex > a.length}
+     */
+    public static void sort(MemoryLongArray a, long fromIndex, long toIndex) {
+        if (fromIndex < 0 || toIndex > a.length()) {
+            throw new ArrayIndexOutOfBoundsException("start < 0 || end > len."
+                    + " start=" + fromIndex + ", end=" + toIndex + ", len=" + a.length());
+        }
+        if (fromIndex > toIndex) {
+            throw new IllegalArgumentException("start > end: " + fromIndex + " > " + toIndex);
+        }
+        doSort(a, fromIndex, toIndex - 1);
+    }
+
+    /**
+     * Sorts the specified range of the memory array into ascending order. This
+     * method differs from the public {@code sort} method in that the
+     * {@code right} index is inclusive, and it does no range checking on
+     * {@code left} or {@code right}.
+     *
+     * @param a the array to be sorted
+     * @param left the index of the first element, inclusive, to be sorted
+     * @param right the index of the last element, inclusive, to be sorted
+     */
+    private static void doSort(MemoryLongArray a, long left, long right) {
+        // Use insertion sort on tiny arrays
+        if (right - left + 1 < INSERTION_SORT_THRESHOLD) {
+            for (long i = left + 1; i <= right; i++) {
+                long ai = a.get(i);
+                long j;
+                for (j = i - 1; j >= left && ai < a.get(j); j--) {
+                    a.put(j + 1, a.get(j));
+                }
+                a.put(j + 1, ai);
+            }
+        } else { // Use Dual-Pivot Quicksort on large arrays
+            dualPivotQuicksort(a, left, right);
+        }
+    }
+
+    /**
+     * Sorts the specified range of the memory array into ascending order by the
+     * Dual-Pivot Quicksort algorithm.
+     *
+     * @param a the array to be sorted
+     * @param left the index of the first element, inclusive, to be sorted
+     * @param right the index of the last element, inclusive, to be sorted
+     */
+    private static void dualPivotQuicksort(MemoryLongArray a, long left, long right) {
+        // Compute indices of five evenly spaced elements
+        long sixth = (right - left + 1) / 6;
+        long e1 = left  + sixth;
+        long e5 = right - sixth;
+        long e3 = (left + right) >>> 1; // The midpoint
+        long e4 = e3 + sixth;
+        long e2 = e3 - sixth;
+
+        // Sort these elements using a 5-element sorting network
+        long ae1 = a.get(e1), ae2 = a.get(e2), ae3 = a.get(e3), ae4 = a.get(e4), ae5 = a.get(e5);
+
+        if (ae1 > ae2) { long t = ae1; ae1 = ae2; ae2 = t; }
+        if (ae4 > ae5) { long t = ae4; ae4 = ae5; ae5 = t; }
+        if (ae1 > ae3) { long t = ae1; ae1 = ae3; ae3 = t; }
+        if (ae2 > ae3) { long t = ae2; ae2 = ae3; ae3 = t; }
+        if (ae1 > ae4) { long t = ae1; ae1 = ae4; ae4 = t; }
+        if (ae3 > ae4) { long t = ae3; ae3 = ae4; ae4 = t; }
+        if (ae2 > ae5) { long t = ae2; ae2 = ae5; ae5 = t; }
+        if (ae2 > ae3) { long t = ae2; ae2 = ae3; ae3 = t; }
+        if (ae4 > ae5) { long t = ae4; ae4 = ae5; ae5 = t; }
+
+        a.put(e1, ae1); a.put(e3, ae3); a.put(e5, ae5);
+
+        /*
+         * Use the second and fourth of the five sorted elements as pivots.
+         * These values are inexpensive approximations of the first and
+         * second terciles of the array. Note that pivot1 <= pivot2.
+         *
+         * The pivots are stored in local variables, and the first and
+         * the last of the elements to be sorted are moved to the locations
+         * formerly occupied by the pivots. When partitioning is complete,
+         * the pivots are swapped back into their final positions, and
+         * excluded from subsequent sorting.
+         */
+        long pivot1 = ae2; a.put(e2, a.get(left));
+        long pivot2 = ae4; a.put(e4, a.get(right));
+
+        // Pointers
+        long less  = left  + 1; // The index of first element of center part
+        long great = right - 1; // The index before first element of right part
+
+        boolean pivotsDiffer = (pivot1 != pivot2);
+
+        if (pivotsDiffer) {
+            /*
+             * Partitioning:
+             *
+             *   left part         center part                    right part
+             * +------------------------------------------------------------+
+             * | < pivot1  |  pivot1 <= && <= pivot2  |    ?    |  > pivot2 |
+             * +------------------------------------------------------------+
+             *              ^                          ^       ^
+             *              |                          |       |
+             *             less                        k     great
+             *
+             * Invariants:
+             *
+             *              all in (left, less)   < pivot1
+             *    pivot1 <= all in [less, k)     <= pivot2
+             *              all in (great, right) > pivot2
+             *
+             * Pointer k is the first index of ?-part
+             */
+            outer:
+            for (long k = less; k <= great; k++) {
+                long ak = a.get(k);
+                if (ak < pivot1) { // Move a[k] to left part
+                    if (k != less) {
+                        a.put(k, a.get(less));
+                        a.put(less, ak);
+                    }
+                    less++;
+                } else if (ak > pivot2) { // Move a[k] to right part
+                    while (a.get(great) > pivot2) {
+                        if (great-- == k) {
+                            break outer;
+                        }
+                    }
+                    if (a.get(great) < pivot1) {
+                        a.put(k, a.get(less));
+                        a.put(less++, a.get(great));
+                        a.put(great--, ak);
+                    } else { // pivot1 <= a[great] <= pivot2
+                        a.put(k, a.get(great));
+                        a.put(great--, ak);
+                    }
+                }
+            }
+        } else { // Pivots are equal
+            /*
+             * Partition degenerates to the traditional 3-way,
+             * or "Dutch National Flag", partition:
+             *
+             *   left part   center part            right part
+             * +----------------------------------------------+
+             * |  < pivot  |  == pivot  |    ?    |  > pivot  |
+             * +----------------------------------------------+
+             *              ^            ^       ^
+             *              |            |       |
+             *             less          k     great
+             *
+             * Invariants:
+             *
+             *   all in (left, less)   < pivot
+             *   all in [less, k)     == pivot
+             *   all in (great, right) > pivot
+             *
+             * Pointer k is the first index of ?-part
+             */
+            for (long k = less; k <= great; k++) {
+                long ak = a.get(k);
+                if (ak == pivot1) {
+                    continue;
+                }
+                if (ak < pivot1) { // Move a[k] to left part
+                    if (k != less) {
+                        a.put(k, a.get(less));
+                        a.put(less, ak);
+                    }
+                    less++;
+                } else { // (a[k] > pivot1) -  Move a[k] to right part
+                    /*
+                     * We know that pivot1 == a[e3] == pivot2. Thus, we know
+                     * that great will still be >= k when the following loop
+                     * terminates, even though we don't test for it explicitly.
+                     * In other words, a[e3] acts as a sentinel for great.
+                     */
+                    while (a.get(great) > pivot1) {
+                        great--;
+                    }
+                    if (a.get(great) < pivot1) {
+                        a.put(k, a.get(less));
+                        a.put(less++, a.get(great));
+                        a.put(great--, ak);
+                    } else { // a[great] == pivot1
+                        a.put(k, pivot1);
+                        a.put(great--, ak);
+                    }
+                }
+            }
+        }
+
+        // Swap pivots into their final positions
+        a.put(left, a.get(less - 1)); a.put(less  - 1, pivot1);
+        a.put(right, a.get(great + 1)); a.put(great + 1, pivot2);
+
+        // Sort left and right parts recursively, excluding known pivot values
+        doSort(a, left,   less - 2);
+        doSort(a, great + 2, right);
+
+        /*
+         * If pivot1 == pivot2, all elements from center
+         * part are equal and, therefore, already sorted
+         */
+        if (!pivotsDiffer) {
+            return;
+        }
+
+        /*
+         * If center part is too large (comprises > 2/3 of the array),
+         * swap internal pivot values to ends
+         */
+        if (less < e1 && great > e5) {
+            while (a.get(less) == pivot1) {
+                less++;
+            }
+            while (a.get(great) == pivot2) {
+                great--;
+            }
+
+            /*
+             * Partitioning:
+             *
+             *   left part       center part                   right part
+             * +----------------------------------------------------------+
+             * | == pivot1 |  pivot1 < && < pivot2  |    ?    | == pivot2 |
+             * +----------------------------------------------------------+
+             *              ^                        ^       ^
+             *              |                        |       |
+             *             less                      k     great
+             *
+             * Invariants:
+             *
+             *              all in (*, less)  == pivot1
+             *     pivot1 < all in [less, k)   < pivot2
+             *              all in (great, *) == pivot2
+             *
+             * Pointer k is the first index of ?-part
+             */
+            outer:
+            for (long k = less; k <= great; k++) {
+                long ak = a.get(k);
+                if (ak == pivot2) { // Move a[k] to right part
+                    while (a.get(great) == pivot2) {
+                        if (great-- == k) {
+                            break outer;
+                        }
+                    }
+                    if (a.get(great) == pivot1) {
+                        a.put(k, a.get(less));
+                        a.put(less++, pivot1);
+                    } else { // pivot1 < a[great] < pivot2
+                        a.put(k, a.get(great));
+                    }
+                    a.put(great--, pivot2);
+                } else if (ak == pivot1) { // Move a[k] to left part
+                    a.put(k, a.get(less));
+                    a.put(less++, pivot1);
+                }
+            }
+        }
+
+        // Sort center part recursively, excluding known pivot values
+        doSort(a, less, great);
+    }
+}

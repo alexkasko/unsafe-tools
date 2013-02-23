@@ -14,12 +14,13 @@ import static java.nio.ByteOrder.LITTLE_ENDIAN;
 class DirectMemoryArea extends MemoryArea {
 
     private final ByteBuffer bb;
+    private final long length;
     private Object cleaner;
     private Method clean;
     private final AtomicBoolean disposed = new AtomicBoolean(false);
 
-    // todo: android support
     DirectMemoryArea(long bytes) {
+        this.length = bytes;
         this.bb = ByteBuffer.allocateDirect((int) bytes).order(LITTLE_ENDIAN);
         // http://stackoverflow.com/a/8191493/314015
         try {
@@ -53,6 +54,11 @@ class DirectMemoryArea extends MemoryArea {
     @Override
     public boolean isUnsafe() {
         return false;
+    }
+
+    @Override
+    public long length() {
+        return length;
     }
 
     @Override

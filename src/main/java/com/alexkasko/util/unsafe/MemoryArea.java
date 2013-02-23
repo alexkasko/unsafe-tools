@@ -31,6 +31,8 @@ public abstract class MemoryArea {
 
     public abstract boolean isUnsafe();
 
+    public abstract long length();
+
     public abstract void free();
 
     public abstract void write(long offset, byte[] buffer, int bufferOffset, int bytes);
