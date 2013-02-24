@@ -17,11 +17,11 @@ Library has no third-party dependencies and is available in [Maven cental](http:
     </dependency>
 
 Tools:
- - off-heap memory allocation and access ([javadoc](), [example]())
- - off-heap array of `long`'s with `long` indexing ([javadoc](), [example]())
- - quicksort implementation for off-heap arrays of `long`'s ([javadoc](), [example]())
- - byte arrays (on-heap) access using `sun.misc.Unsafe` ([javadoc](), [example]())
- - packing two limited values (one long and one int) into single long using bits shifting ([javadoc](), [example]())
+ - off-heap memory allocation and access ([javadoc](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/OffHeapMemory.html), [usage](https://github.com/alexkasko/unsafe-tools/blob/master/src/test/java/com/alexkasko/unsafe/OffHeapMemoryTest.java))
+ - off-heap array of `long`'s with `long` indexing ([javadoc](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/OffHeapLongArray.html), [usage](https://github.com/alexkasko/unsafe-tools/blob/master/src/test/java/com/alexkasko/unsafe/OffHeapLongArrayTest.java))
+ - quicksort implementation for off-heap arrays of `long`'s ([javadoc](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/OffHeapSorter.html), [usage](https://github.com/alexkasko/unsafe-tools/blob/master/src/test/java/com/alexkasko/unsafe/OffHeapSorterTest.java))
+ - byte arrays (on-heap) access using `sun.misc.Unsafe` ([javadoc](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/ByteArrayTool.html), [usage](https://github.com/alexkasko/unsafe-tools/blob/master/src/test/java/com/alexkasko/unsafe/ByteArrayToolTest.java))
+ - packing two limited values (one long and one int) into single long using bits shifting ([javadoc](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/LongPacker.html), [usage](https://github.com/alexkasko/unsafe-tools/blob/master/src/test/java/com/alexkasko/unsafe/LongPackerTest.java))
 
 License information
 -------------------
