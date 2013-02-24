@@ -3,7 +3,7 @@ package com.alexkasko.unsafe;
 /**
  * Implementation of array of long using {@link OffHeapMemory}.
  * Default implementation uses {@code sun.misc.Unsafe}, with all operations guarded with {@code assert} keyword.
- * With assert enabled in runtime ({@code -ea} java switch) {@link AssertionError}
+ * With assertions enabled in runtime ({@code -ea} java switch) {@link AssertionError}
  * will be thrown on illegal index access. Without assertions illegal index will crash JVM.
 
  *

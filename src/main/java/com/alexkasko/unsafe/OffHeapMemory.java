@@ -2,7 +2,8 @@ package com.alexkasko.unsafe;
 
 /**
  * Allocates an area of off-heap memory that is not a subject to GC.
- * Default implementation uses {@code sun.misc.Unsafe}, with all operations guarded with {@code assert} keyword.
+ * Default implementation uses {@code sun.misc.Unsafe}, with all operations guarded with {@code assert}
+ * boundary checks.
  * With assert enabled in runtime ({@code -ea} java switch) {@link AssertionError}
  * will be thrown on illegal input. Without assertions illegal input will crash JVM.
  *

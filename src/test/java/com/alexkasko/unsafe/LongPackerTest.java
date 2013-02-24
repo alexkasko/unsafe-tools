@@ -18,6 +18,7 @@ public class LongPackerTest {
         long big = Long.parseLong(bigBodyStr + bigTailStr, 2);
         int little = Integer.parseInt(littleBodyStr + littleTailStr, 2);
         long res = Long.parseLong(bigBodyStr + littleBodyStr + littleTailStr + bigTailStr, 2);
+
         long pack = LongPacker.pack(big, little, 34);
         long bigLoaded = LongPacker.big(pack, 34);
         int littleLoaded = LongPacker.little(pack, 34);
@@ -34,6 +35,7 @@ public class LongPackerTest {
         long big = Long.parseLong(bigBodyStr + bigTailStr, 2);
         int little = Integer.parseInt(littleTailStr, 2);
         long res = Long.parseLong(bigBodyStr + littleTailStr + bigTailStr, 2);
+
         long pack = LongPacker.pack(big, little, 59);
         long bigLoaded = LongPacker.big(pack, 59);
         int littleLoaded = LongPacker.little(pack, 59);

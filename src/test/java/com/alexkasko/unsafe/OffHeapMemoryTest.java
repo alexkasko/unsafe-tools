@@ -10,7 +10,6 @@ import static junit.framework.Assert.assertEquals;
  * User: alexkasko
  * Date: 2/16/13
  */
-// todo: complete me
 public class OffHeapMemoryTest {
 
     @Test
