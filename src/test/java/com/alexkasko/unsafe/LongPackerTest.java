@@ -1,4 +1,4 @@
-package com.alexkasko.util.unsafe;
+package com.alexkasko.unsafe;
 
 import org.junit.Test;
 
@@ -8,7 +8,7 @@ import static junit.framework.Assert.assertEquals;
 * User: alexkasko
 * Date: 1/14/13
 */
-public class LongPackUtilsTest {
+public class LongPackerTest {
     @Test
     public void test34() {
         String bigBodyStr = "01111111" + "10111111" + "11011111" + "11101111";
@@ -18,9 +18,9 @@ public class LongPackUtilsTest {
         long big = Long.parseLong(bigBodyStr + bigTailStr, 2);
         int little = Integer.parseInt(littleBodyStr + littleTailStr, 2);
         long res = Long.parseLong(bigBodyStr + littleBodyStr + littleTailStr + bigTailStr, 2);
-        long pack = LongPackUtils.pack(big, little, 34);
-        long bigLoaded = LongPackUtils.big(pack, 34);
-        int littleLoaded = LongPackUtils.little(pack, 34);
+        long pack = LongPacker.pack(big, little, 34);
+        long bigLoaded = LongPacker.big(pack, 34);
+        int littleLoaded = LongPacker.little(pack, 34);
         assertEquals("Pack fail", Long.toBinaryString(pack), Long.toBinaryString(res));
         assertEquals("Big load fail", Long.toBinaryString(big), Long.toBinaryString(bigLoaded));
         assertEquals("Little load fail", Integer.toBinaryString(little), Integer.toBinaryString(littleLoaded));
@@ -34,9 +34,9 @@ public class LongPackUtilsTest {
         long big = Long.parseLong(bigBodyStr + bigTailStr, 2);
         int little = Integer.parseInt(littleTailStr, 2);
         long res = Long.parseLong(bigBodyStr + littleTailStr + bigTailStr, 2);
-        long pack = LongPackUtils.pack(big, little, 59);
-        long bigLoaded = LongPackUtils.big(pack, 59);
-        int littleLoaded = LongPackUtils.little(pack, 59);
+        long pack = LongPacker.pack(big, little, 59);
+        long bigLoaded = LongPacker.big(pack, 59);
+        int littleLoaded = LongPacker.little(pack, 59);
         assertEquals("Pack fail", Long.toBinaryString(pack), Long.toBinaryString(res));
         assertEquals("Big load fail", Long.toBinaryString(big), Long.toBinaryString(bigLoaded));
         assertEquals("Little load fail", Integer.toBinaryString(little), Integer.toBinaryString(littleLoaded));

@@ -1,4 +1,4 @@
-package com.alexkasko.util.unsafe;
+package com.alexkasko.unsafe;
 
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
@@ -7,11 +7,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 
 /**
-* User: alexkasko
-* Date: 1/14/13
+ * Implementation of {@link OffHeapMemory} using {@link ByteBuffer#allocateDirect(int)}
+ *
+ * @author alexkasko
+ * Date: 1/14/13
 */
 
-class DirectMemoryArea extends MemoryArea {
+class DirectOffHeapMemory extends OffHeapMemory {
 
     private final ByteBuffer bb;
     private final long length;
@@ -19,7 +21,7 @@ class DirectMemoryArea extends MemoryArea {
     private Method clean;
     private final AtomicBoolean disposed = new AtomicBoolean(false);
 
-    DirectMemoryArea(long bytes) {
+    DirectOffHeapMemory(long bytes) {
         this.length = bytes;
         this.bb = ByteBuffer.allocateDirect((int) bytes).order(LITTLE_ENDIAN);
         // http://stackoverflow.com/a/8191493/314015
@@ -50,17 +52,25 @@ class DirectMemoryArea extends MemoryArea {
         this.cleaner = bb;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isUnsafe() {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long length() {
         return length;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void free() {
         if(!disposed.compareAndSet(false, true)) return;
@@ -71,97 +81,167 @@ class DirectMemoryArea extends MemoryArea {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void write(long offset, byte[] buffer, int bufferOffset, int bytes) {
+    public void put(long offset, byte[] buffer, int bufferOffset, int bytes) {
         bb.clear().position((int) offset);
         bb.put(buffer, bufferOffset, bytes);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void write(long offset, byte[] buffer) {
+    public void put(long offset, byte[] buffer) {
         bb.clear().position((int) offset);
         bb.put(buffer);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void read(long offset, byte[] buffer, int bufferOffset, int bytes) {
+    public void get(long offset, byte[] buffer, int bufferOffset, int bytes) {
         bb.clear().position((int) offset);
         bb.get(buffer, bufferOffset, bytes);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void read(long offset, byte[] buffer) {
+    public void get(long offset, byte[] buffer) {
         bb.clear().position((int) offset);
         bb.get(buffer);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public byte readByte(long offset) {
+    public byte getByte(long offset) {
         return bb.get((int) offset);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void writeByte(long offset, byte value) {
+    public void putByte(long offset, byte value) {
         bb.put((int) offset, value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public short readUnsignedByte(long offset) {
+    public short getUnsignedByte(long offset) {
         return (short) (bb.get((int) offset) & 0xff);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void writeUnsignedByte(long offset, short value) {
+    public void putUnsignedByte(long offset, short value) {
         bb.put((int) offset, (byte) value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public short readShort(long offset) {
+    public short getShort(long offset) {
         return bb.getShort((int) offset);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void writeShort(long offset, short value) {
+    public void putShort(long offset, short value) {
         bb.putShort((int) offset, value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public int readUnsignedShort(long offset) {
+    public int getUnsignedShort(long offset) {
         return bb.getShort((int) offset) & 0xffff;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void writeUnsignedShort(long offset, int value) {
+    public void putUnsignedShort(long offset, int value) {
         bb.putShort((int) offset, (short) value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public int readInt(long offset) {
+    public int getInt(long offset) {
         return bb.getInt((int) offset);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void writeInt(long offset, int value) {
+    public void putInt(long offset, int value) {
         bb.putInt((int) offset, value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public long readUnsignedInt(long offset) {
+    public long getUnsignedInt(long offset) {
         return bb.getInt((int) offset) & 0xffffffffL;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void writeUnsignedInt(long offset, long value) {
+    public void putUnsignedInt(long offset, long value) {
         bb.putInt((int) offset, (int) value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public long readLong(long offset) {
+    public long getLong(long offset) {
         return bb.getLong((int) offset);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void writeLong(long offset, long value) {
+    public void putLong(long offset, long value) {
         bb.putLong((int) offset, value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("DirectOffHeapMemory");
+        sb.append("{bb=").append(bb);
+        sb.append(", length=").append(length);
+        sb.append(", cleaner=").append(cleaner);
+        sb.append(", clean=").append(clean);
+        sb.append(", disposed=").append(disposed);
+        sb.append('}');
+        return sb.toString();
     }
 }

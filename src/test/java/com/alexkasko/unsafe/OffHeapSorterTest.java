@@ -1,4 +1,4 @@
-package com.alexkasko.util.unsafe;
+package com.alexkasko.unsafe;
 
 import org.junit.Test;
 
@@ -11,7 +11,7 @@ import static org.junit.Assert.assertArrayEquals;
 * User: alexkasko
 * Date: 2/20/13
 */
-public class MemorySorterTest {
+public class OffHeapSorterTest {
     private static final int THRESHOLD = 1 << 20;
 
     @Test
@@ -21,12 +21,12 @@ public class MemorySorterTest {
 //        long start = System.currentTimeMillis();
         Arrays.sort(heap);
 //        System.out.println((System.currentTimeMillis() - start));
-        MemoryLongArray la = new MemoryLongArray(THRESHOLD);
+        OffHeapLongArray la = new OffHeapLongArray(THRESHOLD);
         for (int i = 0; i < THRESHOLD; i++) {
-            la.put(i, unsafe[i]);
+            la.set(i, unsafe[i]);
         }
 //        start = System.currentTimeMillis();
-        MemorySorter.sort(la, 0, THRESHOLD);
+        OffHeapSorter.sort(la, 0, THRESHOLD);
 //        System.out.println((System.currentTimeMillis() - start));
         for (int i = 0; i < THRESHOLD; i++) {
             unsafe[i] = la.get(i);

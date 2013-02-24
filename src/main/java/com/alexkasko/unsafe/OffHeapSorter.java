@@ -1,8 +1,8 @@
-package com.alexkasko.util.unsafe;
+package com.alexkasko.unsafe;
 
 /**
  * alexkasko: borrowed from {@code https://android.googlesource.com/platform/libcore/+/android-4.2.2_r1/luni/src/main/java/java/util/DualPivotQuicksort.java}
- * and adapted to {@link MemoryLongArray}.
+ * and adapted to {@link OffHeapLongArray}.
  *
  * This class implements the Dual-Pivot Quicksort algorithm by
  * Vladimir Yaroslavskiy, Jon Bentley, and Joshua Bloch. The algorithm
@@ -16,7 +16,7 @@ package com.alexkasko.util.unsafe;
  *
  * @version 2009.11.29 m765.827.12i
  */
-public class MemorySorter {
+public class OffHeapSorter {
 
     /**
      * If the length of an array to be sorted is less than this
@@ -29,8 +29,8 @@ public class MemorySorter {
      *
      * @param a the memory array to be sorted
      */
-    public static void sort(MemoryLongArray a) {
-        sort(a, 0, a.length());
+    public static void sort(OffHeapLongArray a) {
+        sort(a, 0, a.size());
     }
 
     /**
@@ -46,10 +46,10 @@ public class MemorySorter {
      * @throws ArrayIndexOutOfBoundsException
      *     if {@code fromIndex < 0} or {@code toIndex > a.length}
      */
-    public static void sort(MemoryLongArray a, long fromIndex, long toIndex) {
-        if (fromIndex < 0 || toIndex > a.length()) {
+    public static void sort(OffHeapLongArray a, long fromIndex, long toIndex) {
+        if (fromIndex < 0 || toIndex > a.size()) {
             throw new ArrayIndexOutOfBoundsException("start < 0 || end > len."
-                    + " start=" + fromIndex + ", end=" + toIndex + ", len=" + a.length());
+                    + " start=" + fromIndex + ", end=" + toIndex + ", len=" + a.size());
         }
         if (fromIndex > toIndex) {
             throw new IllegalArgumentException("start > end: " + fromIndex + " > " + toIndex);
@@ -67,16 +67,16 @@ public class MemorySorter {
      * @param left the index of the first element, inclusive, to be sorted
      * @param right the index of the last element, inclusive, to be sorted
      */
-    private static void doSort(MemoryLongArray a, long left, long right) {
+    private static void doSort(OffHeapLongArray a, long left, long right) {
         // Use insertion sort on tiny arrays
         if (right - left + 1 < INSERTION_SORT_THRESHOLD) {
             for (long i = left + 1; i <= right; i++) {
                 long ai = a.get(i);
                 long j;
                 for (j = i - 1; j >= left && ai < a.get(j); j--) {
-                    a.put(j + 1, a.get(j));
+                    a.set(j + 1, a.get(j));
                 }
-                a.put(j + 1, ai);
+                a.set(j + 1, ai);
             }
         } else { // Use Dual-Pivot Quicksort on large arrays
             dualPivotQuicksort(a, left, right);
@@ -91,7 +91,7 @@ public class MemorySorter {
      * @param left the index of the first element, inclusive, to be sorted
      * @param right the index of the last element, inclusive, to be sorted
      */
-    private static void dualPivotQuicksort(MemoryLongArray a, long left, long right) {
+    private static void dualPivotQuicksort(OffHeapLongArray a, long left, long right) {
         // Compute indices of five evenly spaced elements
         long sixth = (right - left + 1) / 6;
         long e1 = left  + sixth;
@@ -113,7 +113,7 @@ public class MemorySorter {
         if (ae2 > ae3) { long t = ae2; ae2 = ae3; ae3 = t; }
         if (ae4 > ae5) { long t = ae4; ae4 = ae5; ae5 = t; }
 
-        a.put(e1, ae1); a.put(e3, ae3); a.put(e5, ae5);
+        a.set(e1, ae1); a.set(e3, ae3); a.set(e5, ae5);
 
         /*
          * Use the second and fourth of the five sorted elements as pivots.
@@ -126,8 +126,8 @@ public class MemorySorter {
          * the pivots are swapped back into their final positions, and
          * excluded from subsequent sorting.
          */
-        long pivot1 = ae2; a.put(e2, a.get(left));
-        long pivot2 = ae4; a.put(e4, a.get(right));
+        long pivot1 = ae2; a.set(e2, a.get(left));
+        long pivot2 = ae4; a.set(e4, a.get(right));
 
         // Pointers
         long less  = left  + 1; // The index of first element of center part
@@ -160,8 +160,8 @@ public class MemorySorter {
                 long ak = a.get(k);
                 if (ak < pivot1) { // Move a[k] to left part
                     if (k != less) {
-                        a.put(k, a.get(less));
-                        a.put(less, ak);
+                        a.set(k, a.get(less));
+                        a.set(less, ak);
                     }
                     less++;
                 } else if (ak > pivot2) { // Move a[k] to right part
@@ -171,12 +171,12 @@ public class MemorySorter {
                         }
                     }
                     if (a.get(great) < pivot1) {
-                        a.put(k, a.get(less));
-                        a.put(less++, a.get(great));
-                        a.put(great--, ak);
+                        a.set(k, a.get(less));
+                        a.set(less++, a.get(great));
+                        a.set(great--, ak);
                     } else { // pivot1 <= a[great] <= pivot2
-                        a.put(k, a.get(great));
-                        a.put(great--, ak);
+                        a.set(k, a.get(great));
+                        a.set(great--, ak);
                     }
                 }
             }
@@ -208,8 +208,8 @@ public class MemorySorter {
                 }
                 if (ak < pivot1) { // Move a[k] to left part
                     if (k != less) {
-                        a.put(k, a.get(less));
-                        a.put(less, ak);
+                        a.set(k, a.get(less));
+                        a.set(less, ak);
                     }
                     less++;
                 } else { // (a[k] > pivot1) -  Move a[k] to right part
@@ -223,20 +223,20 @@ public class MemorySorter {
                         great--;
                     }
                     if (a.get(great) < pivot1) {
-                        a.put(k, a.get(less));
-                        a.put(less++, a.get(great));
-                        a.put(great--, ak);
+                        a.set(k, a.get(less));
+                        a.set(less++, a.get(great));
+                        a.set(great--, ak);
                     } else { // a[great] == pivot1
-                        a.put(k, pivot1);
-                        a.put(great--, ak);
+                        a.set(k, pivot1);
+                        a.set(great--, ak);
                     }
                 }
             }
         }
 
         // Swap pivots into their final positions
-        a.put(left, a.get(less - 1)); a.put(less  - 1, pivot1);
-        a.put(right, a.get(great + 1)); a.put(great + 1, pivot2);
+        a.set(left, a.get(less - 1)); a.set(less - 1, pivot1);
+        a.set(right, a.get(great + 1)); a.set(great + 1, pivot2);
 
         // Sort left and right parts recursively, excluding known pivot values
         doSort(a, left,   less - 2);
@@ -291,15 +291,15 @@ public class MemorySorter {
                         }
                     }
                     if (a.get(great) == pivot1) {
-                        a.put(k, a.get(less));
-                        a.put(less++, pivot1);
+                        a.set(k, a.get(less));
+                        a.set(less++, pivot1);
                     } else { // pivot1 < a[great] < pivot2
-                        a.put(k, a.get(great));
+                        a.set(k, a.get(great));
                     }
-                    a.put(great--, pivot2);
+                    a.set(great--, pivot2);
                 } else if (ak == pivot1) { // Move a[k] to left part
-                    a.put(k, a.get(less));
-                    a.put(less++, pivot1);
+                    a.set(k, a.get(less));
+                    a.set(less++, pivot1);
                 }
             }
         }
