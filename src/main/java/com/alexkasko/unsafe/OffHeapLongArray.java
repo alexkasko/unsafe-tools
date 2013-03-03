@@ -16,9 +16,9 @@ package com.alexkasko.unsafe;
  * Date: 2/22/13
  */
 public class OffHeapLongArray {
-    private static final int ELEMENT_LENGTH = 8;
+    protected static final int ELEMENT_LENGTH = 8;
 
-    private final OffHeapMemory ma;
+    protected OffHeapMemory ohm;
 
     /**
      * Constructor
@@ -26,7 +26,7 @@ public class OffHeapLongArray {
      * @param size number of elements in array
      */
     public OffHeapLongArray(long size) {
-        this.ma = OffHeapMemory.allocateMemory(size * ELEMENT_LENGTH);
+        this.ohm = OffHeapMemory.allocateMemory(size * ELEMENT_LENGTH);
     }
 
     /**
@@ -35,7 +35,7 @@ public class OffHeapLongArray {
      * @return whether unsafe implementation of {@link OffHeapMemory} is used
      */
     public boolean isUnsafe() {
-        return ma.isUnsafe();
+        return ohm.isUnsafe();
     }
 
     /**
@@ -45,7 +45,7 @@ public class OffHeapLongArray {
      * @return long value
      */
     public long get(long index) {
-        return ma.getLong(index * ELEMENT_LENGTH);
+        return ohm.getLong(index * ELEMENT_LENGTH);
     }
 
     /**
@@ -55,7 +55,7 @@ public class OffHeapLongArray {
      * @param value long value
      */
     public void set(long index, long value) {
-        ma.putLong(index * ELEMENT_LENGTH, value);
+        ohm.putLong(index * ELEMENT_LENGTH, value);
     }
 
     /**
@@ -64,14 +64,14 @@ public class OffHeapLongArray {
      * @return number of elements in array
      */
     public long size() {
-        return ma.length() / ELEMENT_LENGTH;
+        return ohm.length() / ELEMENT_LENGTH;
     }
 
     /**
      * Frees allocated memory
      */
     public void free() {
-        ma.free();
+        ohm.free();
     }
 
     /**

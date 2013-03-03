@@ -235,4 +235,6 @@ public abstract class OffHeapMemory {
      * @param value long value
      */
     public abstract void putLong(long offset, long value);
+
+    public abstract void copy(long offset, OffHeapMemory destination, long destOffset, long bytes);
 }

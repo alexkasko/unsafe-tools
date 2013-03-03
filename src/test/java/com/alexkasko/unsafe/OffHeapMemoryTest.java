@@ -28,6 +28,7 @@ public class OffHeapMemoryTest {
         testWriteUnsignedInt(allocateMemoryUnsafe(128));
         testReadLong(allocateMemoryUnsafe(128));
         testWriteLong(allocateMemoryUnsafe(128));
+        testCopy(allocateMemoryUnsafe(128), allocateMemoryUnsafe(128));
 
         testReadByte(allocateMemoryDirect(128));
         testWriteByte(allocateMemoryDirect(128));
@@ -43,6 +44,7 @@ public class OffHeapMemoryTest {
         testWriteUnsignedInt(allocateMemoryDirect(128));
         testReadLong(allocateMemoryDirect(128));
         testWriteLong(allocateMemoryDirect(128));
+        testCopy(allocateMemoryDirect(128), allocateMemoryDirect(128));
     }
 
     private static void testReadByte(OffHeapMemory ma) {
@@ -257,5 +259,27 @@ public class OffHeapMemoryTest {
         assertEquals((byte) 0x0f, b[14]);
         assertEquals((byte) 0x80, b[15]);
         ma.free();
+    }
+
+    private static void testCopy(OffHeapMemory ma1, OffHeapMemory ma2) {
+        ma1.putByte(43, (byte) 0x7f);
+        ma1.putByte(44, (byte) 0xf0);
+        ma1.putByte(45, (byte) 0xed);
+        ma1.putByte(46, (byte) 0x89);
+        ma1.putByte(47, (byte) 0xa2);
+        ma1.putByte(48, (byte) 0x0b);
+        ma1.putByte(49, (byte) 0x36);
+        ma1.putByte(50, (byte) 0x4d);
+        ma1.copy(43, ma2, 42, 8);
+        assertEquals((byte) 0x7f, ma2.getByte(42));
+        assertEquals((byte) 0xf0, ma2.getByte(43));
+        assertEquals((byte) 0xed, ma2.getByte(44));
+        assertEquals((byte) 0x89, ma2.getByte(45));
+        assertEquals((byte) 0xa2, ma2.getByte(46));
+        assertEquals((byte) 0x0b, ma2.getByte(47));
+        assertEquals((byte) 0x36, ma2.getByte(48));
+        assertEquals((byte) 0x4d, ma2.getByte(49));
+        ma1.free();
+        ma2.free();
     }
 }

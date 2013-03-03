@@ -77,6 +77,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public void put(long offset, byte[] buffer, int bufferOffset, int bytes) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset < length : offset;
         assert bufferOffset >= 0 : bufferOffset;
@@ -91,6 +92,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public void put(long offset, byte[] buffer) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset < length : offset;
         assert null != buffer;
@@ -102,6 +104,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public void get(long offset, byte[] buffer, int bufferOffset, int bytes) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset < length : offset;
         assert bufferOffset >= 0 : bufferOffset;
@@ -116,6 +119,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public void get(long offset, byte[] buffer) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset < length : offset;
         assert null != buffer;
@@ -127,6 +131,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public byte getByte(long offset) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset <= length - 1 : offset;
         return UNSAFE.getByte(address + offset);
@@ -137,6 +142,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public void putByte(long offset, byte value) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset <= length - 1 : offset;
         UNSAFE.putByte(address + offset, value);
@@ -147,6 +153,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public short getUnsignedByte(long offset) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset <= length - 1 : offset;
         return (short) (UNSAFE.getByte(address + offset) & 0xff);
@@ -157,6 +164,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public void putUnsignedByte(long offset, short value) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset <= length - 1 : offset;
         assert value >= 0 : value;
@@ -169,6 +177,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public short getShort(long offset) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset <= length - 2 : offset;
         return UNSAFE.getShort(address + offset);
@@ -179,6 +188,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public void putShort(long offset, short value) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset <= length - 2 : offset;
         UNSAFE.putShort(address + offset, value);
@@ -189,6 +199,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public int getUnsignedShort(long offset) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset <= length - 2 : offset;
         return UNSAFE.getShort(address + offset) & 0xffff;
@@ -199,6 +210,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public void putUnsignedShort(long offset, int value) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset <= length - 2 : offset;
         assert value >= 0 : value;
@@ -211,6 +223,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public int getInt(long offset) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset <= length - 4 : offset;
         return UNSAFE.getInt(address + offset);
@@ -221,6 +234,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public void putInt(long offset, int value) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset <= length - 4 : offset;
         UNSAFE.putInt(address + offset, value);
@@ -231,6 +245,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public long getUnsignedInt(long offset) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset <= length - 4 : offset;
         return UNSAFE.getInt(address + offset) & 0xffffffffL;
@@ -241,6 +256,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public void putUnsignedInt(long offset, long value) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset <= length - 4 : offset;
         assert value >= 0 : value;
@@ -253,6 +269,7 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public long getLong(long offset) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset <= length - 8 : offset;
         return UNSAFE.getLong(address + offset);
@@ -263,9 +280,24 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      */
     @Override
     public void putLong(long offset, long value) {
+        assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
         assert offset <= length - 8 : offset;
         UNSAFE.putLong(address + offset, value);
+    }
+
+    // TODO, docs, check boundaries
+    @Override
+    public void copy(long offset, OffHeapMemory destination, long destOffset, long bytes) {
+        assert destination instanceof UnsafeOffHeapMemory : destination;
+        UnsafeOffHeapMemory dest = (UnsafeOffHeapMemory) destination;
+        assert !disposed.get() : "disposed";
+        assert !dest.disposed.get() : "disposed";
+        assert offset >= 0 : offset;
+        assert offset <= length - bytes : offset;
+        assert destOffset >= 0 : destOffset;
+        assert destOffset <= destination.length() - bytes :  destOffset;
+        UNSAFE.copyMemory(address + offset, dest.address + destOffset, bytes);
     }
 
     /**
