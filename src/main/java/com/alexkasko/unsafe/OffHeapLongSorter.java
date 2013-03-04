@@ -16,7 +16,7 @@ package com.alexkasko.unsafe;
  *
  * @version 2009.11.29 m765.827.12i
  */
-public class OffHeapSorter {
+public class OffHeapLongSorter {
 
     /**
      * If the length of an array to be sorted is less than this
@@ -29,7 +29,7 @@ public class OffHeapSorter {
      *
      * @param a the memory array to be sorted
      */
-    public static void sort(OffHeapLongArray a) {
+    public static void sort(OffHeapLongAddressable a) {
         sort(a, 0, a.size());
     }
 
@@ -46,7 +46,7 @@ public class OffHeapSorter {
      * @throws ArrayIndexOutOfBoundsException
      *     if {@code fromIndex < 0} or {@code toIndex > a.length}
      */
-    public static void sort(OffHeapLongArray a, long fromIndex, long toIndex) {
+    public static void sort(OffHeapLongAddressable a, long fromIndex, long toIndex) {
         if (fromIndex < 0 || toIndex > a.size()) {
             throw new ArrayIndexOutOfBoundsException("start < 0 || end > len."
                     + " start=" + fromIndex + ", end=" + toIndex + ", len=" + a.size());
@@ -67,7 +67,7 @@ public class OffHeapSorter {
      * @param left the index of the first element, inclusive, to be sorted
      * @param right the index of the last element, inclusive, to be sorted
      */
-    private static void doSort(OffHeapLongArray a, long left, long right) {
+    private static void doSort(OffHeapLongAddressable a, long left, long right) {
         // Use insertion sort on tiny arrays
         if (right - left + 1 < INSERTION_SORT_THRESHOLD) {
             for (long i = left + 1; i <= right; i++) {
@@ -91,7 +91,7 @@ public class OffHeapSorter {
      * @param left the index of the first element, inclusive, to be sorted
      * @param right the index of the last element, inclusive, to be sorted
      */
-    private static void dualPivotQuicksort(OffHeapLongArray a, long left, long right) {
+    private static void dualPivotQuicksort(OffHeapLongAddressable a, long left, long right) {
         // Compute indices of five evenly spaced elements
         long sixth = (right - left + 1) / 6;
         long e1 = left  + sixth;

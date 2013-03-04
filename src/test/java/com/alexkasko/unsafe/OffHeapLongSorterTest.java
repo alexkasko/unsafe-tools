@@ -11,7 +11,7 @@ import static org.junit.Assert.assertArrayEquals;
 * User: alexkasko
 * Date: 2/20/13
 */
-public class OffHeapSorterTest {
+public class OffHeapLongSorterTest {
     private static final int THRESHOLD = 1 << 20;
 
     @Test
@@ -26,7 +26,7 @@ public class OffHeapSorterTest {
             la.set(i, unsafe[i]);
         }
 //        start = System.currentTimeMillis();
-        OffHeapSorter.sort(la, 0, THRESHOLD);
+        OffHeapLongSorter.sort(la, 0, THRESHOLD);
 //        System.out.println((System.currentTimeMillis() - start));
         for (int i = 0; i < THRESHOLD; i++) {
             unsafe[i] = la.get(i);

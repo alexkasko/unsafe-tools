@@ -15,10 +15,10 @@ package com.alexkasko.unsafe;
  * @author alexkasko
  * Date: 2/22/13
  */
-public class OffHeapLongArray {
-    protected static final int ELEMENT_LENGTH = 8;
+public class OffHeapLongArray implements OffHeapLongAddressable {
+    private static final int ELEMENT_LENGTH = 8;
 
-    protected OffHeapMemory ohm;
+    private final OffHeapMemory ohm;
 
     /**
      * Constructor
@@ -44,6 +44,7 @@ public class OffHeapLongArray {
      * @param index array index
      * @return long value
      */
+    @Override
     public long get(long index) {
         return ohm.getLong(index * ELEMENT_LENGTH);
     }
@@ -54,6 +55,7 @@ public class OffHeapLongArray {
      * @param index array index
      * @param value long value
      */
+    @Override
     public void set(long index, long value) {
         ohm.putLong(index * ELEMENT_LENGTH, value);
     }
@@ -63,6 +65,7 @@ public class OffHeapLongArray {
      *
      * @return number of elements in array
      */
+    @Override
     public long size() {
         return ohm.length() / ELEMENT_LENGTH;
     }

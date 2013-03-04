@@ -4,9 +4,11 @@ package com.alexkasko.unsafe;
  * User: alexkasko
  * Date: 3/1/13
  */
-public class OffHeapLongArrayList extends OffHeapLongArray {
-
+public class OffHeapLongArrayList implements OffHeapLongAddressable {
     private static final int MIN_CAPACITY_INCREMENT = 12;
+    private static final int ELEMENT_LENGTH = 8;
+
+    private OffHeapMemory ohm;
     private long size;
 
     public OffHeapLongArrayList() {
@@ -14,21 +16,35 @@ public class OffHeapLongArrayList extends OffHeapLongArray {
     }
 
     public OffHeapLongArrayList(long capacity) {
-        super(capacity);
+        this.ohm = OffHeapMemory.allocateMemory(capacity * ELEMENT_LENGTH);
     }
 
     public void add(long value) {
         OffHeapMemory oh = ohm;
         long s = size;
-        if (s == super.size()) {
+        if (s == capacity()) {
             long len = s + (s < (MIN_CAPACITY_INCREMENT / 2) ? MIN_CAPACITY_INCREMENT : s >> 1);
             OffHeapMemory newOhm = OffHeapMemory.allocateMemory(len * ELEMENT_LENGTH);
             oh.copy(0, newOhm, 0, ohm.length());
             oh.free();
             ohm = newOhm;
         }
-        super.set(s, value);
+        set(s, value);
         size = s + 1;
+    }
+
+    public boolean isUnsafe() {
+        return ohm.isUnsafe();
+    }
+
+    @Override
+    public long get(long index) {
+        return ohm.getLong(index * ELEMENT_LENGTH);
+    }
+
+    @Override
+    public void set(long index, long value) {
+        ohm.putLong(index * ELEMENT_LENGTH, value);
     }
 
     @Override
@@ -37,6 +53,6 @@ public class OffHeapLongArrayList extends OffHeapLongArray {
     }
 
     public long capacity() {
-        return super.size();
+        return ohm.length() / ELEMENT_LENGTH;
     }
 }

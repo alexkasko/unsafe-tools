@@ -5,6 +5,8 @@ import sun.misc.Unsafe;
 import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static java.lang.Math.abs;
+
 /**
  * Implementation of {@link OffHeapMemory} using {@code sun.misc.Unsafe}
  *
@@ -96,7 +98,8 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
         assert offset >= 0 : offset;
         assert offset < length : offset;
         assert null != buffer;
-        UNSAFE.copyMemory(buffer, 0, null, address + offset, buffer.length);
+        assert buffer.length <= length : buffer.length;
+        UNSAFE.copyMemory(buffer, BYTE_ARRAY_OFFSET, null, address + offset, buffer.length);
     }
 
     /**
@@ -123,7 +126,8 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
         assert offset >= 0 : offset;
         assert offset < length : offset;
         assert null != buffer;
-        UNSAFE.copyMemory(null, address + offset, buffer, 0, buffer.length);
+        assert buffer.length <= length : buffer.length;
+        UNSAFE.copyMemory(null, address + offset, buffer, BYTE_ARRAY_OFFSET, buffer.length);
     }
 
     /**
