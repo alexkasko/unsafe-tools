@@ -290,7 +290,9 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
         UNSAFE.putLong(address + offset, value);
     }
 
-    // TODO, docs, check boundaries
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void copy(long offset, OffHeapMemory destination, long destOffset, long bytes) {
         assert destination instanceof UnsafeOffHeapMemory : destination;

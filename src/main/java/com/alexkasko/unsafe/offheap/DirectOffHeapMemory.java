@@ -12,7 +12,6 @@ import static java.nio.ByteOrder.LITTLE_ENDIAN;
  * @author alexkasko
  * Date: 1/14/13
 */
-
 class DirectOffHeapMemory extends OffHeapMemory {
 
     private final ByteBuffer bb;
@@ -229,6 +228,9 @@ class DirectOffHeapMemory extends OffHeapMemory {
         bb.putLong((int) offset, value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void copy(long offset, OffHeapMemory destination, long destOffset, long bytes) {
         DirectOffHeapMemory dest = (DirectOffHeapMemory) destination;

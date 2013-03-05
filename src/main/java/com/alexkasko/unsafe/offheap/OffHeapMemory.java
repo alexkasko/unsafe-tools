@@ -82,7 +82,7 @@ public abstract class OffHeapMemory {
     public abstract long length();
 
     /**
-     * Frees allocated memory. May be called multiple times from any thread.
+     * Frees allocated memory, may be called multiple times from any thread
      */
     public abstract void free();
 
@@ -236,5 +236,13 @@ public abstract class OffHeapMemory {
      */
     public abstract void putLong(long offset, long value);
 
+    /**
+     * Copies memory from this instance's area into another instance's area
+     *
+     * @param offset this memory area offset
+     * @param destination destination memory area
+     * @param destOffset destination memory area offset
+     * @param bytes memory length in bytes to copy
+     */
     public abstract void copy(long offset, OffHeapMemory destination, long destOffset, long bytes);
 }

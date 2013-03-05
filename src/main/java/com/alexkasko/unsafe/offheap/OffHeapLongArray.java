@@ -2,10 +2,10 @@ package com.alexkasko.unsafe.offheap;
 
 /**
  * Implementation of array of long using {@link OffHeapMemory}.
+ *
  * Default implementation uses {@code sun.misc.Unsafe}, with all operations guarded with {@code assert} keyword.
  * With assertions enabled in runtime ({@code -ea} java switch) {@link AssertionError}
  * will be thrown on illegal index access. Without assertions illegal index will crash JVM.
-
  *
  * Array won't be zeroed after creation (will contain garbage by default).
  * Allocated memory may be freed manually using {@link #free()} (thread-safe
@@ -15,7 +15,7 @@ package com.alexkasko.unsafe.offheap;
  * @author alexkasko
  * Date: 2/22/13
  */
-public class OffHeapLongArray implements OffHeapLongAddressable {
+public class OffHeapLongArray implements OffHeapLongAddressable, OffHeapDisposable {
     private static final int ELEMENT_LENGTH = 8;
 
     private final OffHeapMemory ohm;
@@ -71,7 +71,7 @@ public class OffHeapLongArray implements OffHeapLongAddressable {
     }
 
     /**
-     * Frees allocated memory
+     * Frees allocated memory, may be called multiple times from any thread
      */
     public void free() {
         ohm.free();

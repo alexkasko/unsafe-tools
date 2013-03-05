@@ -2,7 +2,7 @@ package com.alexkasko.unsafe.offheap;
 
 /**
  * alexkasko: borrowed from {@code https://android.googlesource.com/platform/libcore/+/android-4.2.2_r1/luni/src/main/java/java/util/DualPivotQuicksort.java}
- * and adapted to {@link OffHeapLongArray}.
+ * and adapted to {@link OffHeapLongAddressable}.
  *
  * This class implements the Dual-Pivot Quicksort algorithm by
  * Vladimir Yaroslavskiy, Jon Bentley, and Joshua Bloch. The algorithm
@@ -25,45 +25,40 @@ public class OffHeapLongSorter {
     private static final int INSERTION_SORT_THRESHOLD = 32;
 
     /**
-     * Sorts the specified memory array into ascending order.
+     * Sorts the specified off-heap collection into ascending order.
      *
-     * @param a the memory array to be sorted
+     * @param a the off-heap collection to be sorted
      */
     public static void sort(OffHeapLongAddressable a) {
         sort(a, 0, a.size());
     }
 
     /**
-     * Sorts the specified range of the memory array into ascending order. The range
+     * Sorts the specified range of the off-heap collection into ascending order. The range
      * to be sorted extends from the index {@code fromIndex}, inclusive, to
      * the index {@code toIndex}, exclusive. If {@code fromIndex == toIndex},
      * the range to be sorted is empty (and the call is a no-op).
      *
-     * @param a the memory array to be sorted
+     * @param a the off-heap collection to be sorted
      * @param fromIndex the index of the first element, inclusive, to be sorted
      * @param toIndex the index of the last element, exclusive, to be sorted
-     * @throws IllegalArgumentException if {@code fromIndex > toIndex}
-     * @throws ArrayIndexOutOfBoundsException
-     *     if {@code fromIndex < 0} or {@code toIndex > a.length}
+     * @throws IllegalArgumentException {@code if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size())}
      */
     public static void sort(OffHeapLongAddressable a, long fromIndex, long toIndex) {
-        if (fromIndex < 0 || toIndex > a.size()) {
-            throw new ArrayIndexOutOfBoundsException("start < 0 || end > len."
-                    + " start=" + fromIndex + ", end=" + toIndex + ", len=" + a.size());
-        }
-        if (fromIndex > toIndex) {
-            throw new IllegalArgumentException("start > end: " + fromIndex + " > " + toIndex);
+        if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size()) {
+            throw new IllegalArgumentException("Illegal input, collection size: [" + a.size() + "], " +
+                    "fromIndex: [" + fromIndex + "], toIndex: [" + toIndex + "]");
         }
         doSort(a, fromIndex, toIndex - 1);
     }
 
     /**
-     * Sorts the specified range of the memory array into ascending order. This
+     * Sorts the specified range of the off-heap collection into ascending order. This
      * method differs from the public {@code sort} method in that the
      * {@code right} index is inclusive, and it does no range checking on
      * {@code left} or {@code right}.
      *
-     * @param a the array to be sorted
+     * @param a the off-heap collection to be sorted
      * @param left the index of the first element, inclusive, to be sorted
      * @param right the index of the last element, inclusive, to be sorted
      */
@@ -84,10 +79,10 @@ public class OffHeapLongSorter {
     }
 
     /**
-     * Sorts the specified range of the memory array into ascending order by the
+     * Sorts the specified range of the off-heap collection into ascending order by the
      * Dual-Pivot Quicksort algorithm.
      *
-     * @param a the array to be sorted
+     * @param a the off-heap collection to be sorted
      * @param left the index of the first element, inclusive, to be sorted
      * @param right the index of the last element, inclusive, to be sorted
      */
