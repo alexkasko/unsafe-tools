@@ -1,8 +1,9 @@
-package com.alexkasko.unsafe;
+package com.alexkasko.unsafe.offheap;
 
 /**
  * Contains static methods for packing two values with limited size (one long and one int)
- * into one long value. Values are stored using bit shifting as follows:
+ * into one long value. May be used to pack values before placing them into {@link OffHeapLongAddressable}.
+ * Values are stored using bit shifting as follows:
  * <pre>
  * {@code
  *  0                             32        64-bits             64

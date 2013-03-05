@@ -1,9 +1,9 @@
-package com.alexkasko.unsafe;
+package com.alexkasko.unsafe.offheap;
 
 import org.junit.Test;
 
-import static com.alexkasko.unsafe.OffHeapMemory.allocateMemoryDirect;
-import static com.alexkasko.unsafe.OffHeapMemory.allocateMemoryUnsafe;
+import static com.alexkasko.unsafe.offheap.OffHeapMemory.allocateMemoryDirect;
+import static com.alexkasko.unsafe.offheap.OffHeapMemory.allocateMemoryUnsafe;
 import static junit.framework.Assert.assertEquals;
 
 /**

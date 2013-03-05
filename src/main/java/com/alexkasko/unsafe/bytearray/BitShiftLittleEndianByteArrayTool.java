@@ -1,4 +1,4 @@
-package com.alexkasko.unsafe;
+package com.alexkasko.unsafe.bytearray;
 
 import static java.lang.System.arraycopy;
 

@@ -1,4 +1,4 @@
-package com.alexkasko.unsafe;
+package com.alexkasko.unsafe.bytearray;
 
 /**
  * Front-end class for operations over byte arrays. Default implementation uses {@code sun.misc.Unsafe}

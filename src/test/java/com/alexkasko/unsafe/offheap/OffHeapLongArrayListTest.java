@@ -1,4 +1,4 @@
-package com.alexkasko.unsafe;
+package com.alexkasko.unsafe.offheap;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.alexkasko.unsafe;
+package com.alexkasko.unsafe.offheap;
 
 /**
  * User: alexkasko
@@ -23,12 +23,12 @@ public class OffHeapPayloadArray implements OffHeapPayloadAddressable {
     }
 
     @Override
-    public int getPayloadLength() {
+    public int payloadLength() {
         return payloadLength;
     }
 
     @Override
-    public long getHeader(long index) {
+    public long get(long index) {
         return ohm.getLong(index * elementLength);
     }
 

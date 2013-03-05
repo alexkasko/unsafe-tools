@@ -1,4 +1,4 @@
-package com.alexkasko.unsafe;
+package com.alexkasko.unsafe.offheap;
 
 /**
  * Implementation of array of long using {@link OffHeapMemory}.

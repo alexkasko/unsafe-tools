@@ -1,4 +1,4 @@
-package com.alexkasko.unsafe;
+package com.alexkasko.unsafe.offheap;
 
 /**
  * Allocates an area of off-heap memory that is not a subject to GC.

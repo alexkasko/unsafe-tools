@@ -1,5 +1,6 @@
-package com.alexkasko.unsafe;
+package com.alexkasko.unsafe.onheap;
 
+import com.alexkasko.unsafe.bytearray.ByteArrayTool;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;

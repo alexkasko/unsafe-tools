@@ -1,5 +1,6 @@
-package com.alexkasko.unsafe;
+package com.alexkasko.unsafe.offheap;
 
+import com.alexkasko.unsafe.bytearray.ByteArrayTool;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
@@ -40,7 +41,7 @@ public class OffHeapPayloadSorterTest {
 //        }
         OffHeapPayloadSorter.sort(arr);
         for (int i = 0; i < LENGTH; i++) {
-            long header = arr.getHeader(i);
+            long header = arr.get(i);
             assertEquals(header, heap[i]);
             arr.getPayload(i, buf);
             long payload = bat.getLong(buf, 0);

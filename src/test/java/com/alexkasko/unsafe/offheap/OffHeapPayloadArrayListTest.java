@@ -1,5 +1,6 @@
-package com.alexkasko.unsafe;
+package com.alexkasko.unsafe.offheap;
 
+import com.alexkasko.unsafe.bytearray.ByteArrayTool;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
@@ -23,13 +24,13 @@ public class OffHeapPayloadArrayListTest {
         list.add(1L << 42, buf);
         assertEquals("Size fail", 43, list.size());
         assertTrue("Capacity fail", list.capacity() >= 43);
-        assertEquals("Header fail", 42, list.getHeader(0));
+        assertEquals("Header fail", 42, list.get(0));
         list.getPayload(0, buf);
         assertEquals("Payload fail", 0, bat.getLong(buf, 0));
-        assertEquals("Header fail", 42, list.getHeader(41));
+        assertEquals("Header fail", 42, list.get(41));
         list.getPayload(41, buf);
         assertEquals("Payload fail", 41, bat.getLong(buf, 0));
-        assertEquals("Header fail", 1L << 42, list.getHeader(42));
+        assertEquals("Header fail", 1L << 42, list.get(42));
         list.getPayload(42, buf);
         assertEquals("Payload fail", 1L << 42, bat.getLong(buf, 0));
     }

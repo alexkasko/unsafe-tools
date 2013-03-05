@@ -1,8 +1,8 @@
-package com.alexkasko.unsafe;
+package com.alexkasko.unsafe.offheap;
 
 /**
  * alexkasko: borrowed from {@code https://android.googlesource.com/platform/libcore/+/android-4.2.2_r1/luni/src/main/java/java/util/DualPivotQuicksort.java}
- * and adapted to {@link com.alexkasko.unsafe.OffHeapLongArray}.
+ * and adapted to {@link OffHeapLongArray}.
  *
  * This class implements the Dual-Pivot Quicksort algorithm by
  * Vladimir Yaroslavskiy, Jon Bentley, and Joshua Bloch. The algorithm
@@ -54,7 +54,7 @@ public class OffHeapPayloadSorter {
         if (fromIndex > toIndex) {
             throw new IllegalArgumentException("start > end: " + fromIndex + " > " + toIndex);
         }
-        int len = a.getPayloadLength();
+        int len = a.payloadLength();
         doSort(a, fromIndex, toIndex - 1, new byte[len], new byte[len], new byte[len], new byte[len], new byte[len],
                 new byte[len], new byte[len]);
     }
@@ -75,12 +75,12 @@ public class OffHeapPayloadSorter {
         // Use insertion sort on tiny arrays
         if (right - left + 1 < INSERTION_SORT_THRESHOLD) {
             for (long i = left + 1; i <= right; i++) {
-                final long ai = a.getHeader(i);
+                final long ai = a.get(i);
                 a.getPayload(i, pi);
                 long j;
-                for (j = i - 1; j >= left && ai < a.getHeader(j); j--) {
+                for (j = i - 1; j >= left && ai < a.get(j); j--) {
                     a.getPayload(j, pj);
-                    a.set(j + 1, a.getHeader(j), pj);
+                    a.set(j + 1, a.get(j), pj);
                 }
                 a.set(j + 1, ai, pi);
             }
@@ -108,8 +108,8 @@ public class OffHeapPayloadSorter {
         long e2 = e3 - sixth;
 
         // Sort these elements using a 5-element sorting network
-        int pl = a.getPayloadLength();
-        long ae1 = a.getHeader(e1), ae2 = a.getHeader(e2), ae3 = a.getHeader(e3), ae4 = a.getHeader(e4), ae5 = a.getHeader(e5);
+        int pl = a.payloadLength();
+        long ae1 = a.get(e1), ae2 = a.get(e2), ae3 = a.get(e3), ae4 = a.get(e4), ae5 = a.get(e5);
         a.getPayload(e1, pe1); a.getPayload(e2, pe2); a.getPayload(e3, pe3); a.getPayload(e4, pe4); a.getPayload(e5, pe5);
 
         if (ae1 > ae2) { long t = ae1; byte[] pt = pe1; ae1 = ae2; pe1 = pe2; ae2 = t; pe2 = pt; }
@@ -136,9 +136,9 @@ public class OffHeapPayloadSorter {
          * excluded from subsequent sorting.
          */
         a.getPayload(left, pe1);
-        final long pivot1 = ae2; a.set(e2, a.getHeader(left), pe1);
+        final long pivot1 = ae2; a.set(e2, a.get(left), pe1);
         a.getPayload(right, pe1);
-        final long pivot2 = ae4; a.set(e4, a.getHeader(right), pe1);
+        final long pivot2 = ae4; a.set(e4, a.get(right), pe1);
 
         // Pointers
         long less  = left  + 1; // The index of first element of center part
@@ -168,30 +168,30 @@ public class OffHeapPayloadSorter {
              */
             outer:
             for (long k = less; k <= great; k++) {
-                final long ak = a.getHeader(k);
+                final long ak = a.get(k);
                 a.getPayload(k, pe1);
                 if (ak < pivot1) { // Move a[k] to left part
                     if (k != less) {
                         a.getPayload(less, pe3);
-                        a.set(k, a.getHeader(less), pe3);
+                        a.set(k, a.get(less), pe3);
                         a.set(less, ak, pe1);
                     }
                     less++;
                 } else if (ak > pivot2) { // Move a[k] to right part
-                    while (a.getHeader(great) > pivot2) {
+                    while (a.get(great) > pivot2) {
                         if (great-- == k) {
                             break outer;
                         }
                     }
-                    if (a.getHeader(great) < pivot1) {
+                    if (a.get(great) < pivot1) {
                         a.getPayload(less, pe3);
-                        a.set(k, a.getHeader(less), pe3);
+                        a.set(k, a.get(less), pe3);
                         a.getPayload(great, pe3);
-                        a.set(less++, a.getHeader(great), pe3);
+                        a.set(less++, a.get(great), pe3);
                         a.set(great--, ak, pe1);
                     } else { // pivot1 <= a[great] <= pivot2
                         a.getPayload(great, pe3);
-                        a.set(k, a.getHeader(great), pe3);
+                        a.set(k, a.get(great), pe3);
                         a.set(great--, ak, pe1);
                     }
                 }
@@ -218,7 +218,7 @@ public class OffHeapPayloadSorter {
              * Pointer k is the first index of ?-part
              */
             for (long k = less; k <= great; k++) {
-                final long ak = a.getHeader(k);
+                final long ak = a.get(k);
                 a.getPayload(k, pe1);
                 if (ak == pivot1) {
                     continue;
@@ -226,7 +226,7 @@ public class OffHeapPayloadSorter {
                 if (ak < pivot1) { // Move a[k] to left part
                     if (k != less) {
                         a.getPayload(less, pe3);
-                        a.set(k, a.getHeader(less), pe3);
+                        a.set(k, a.get(less), pe3);
                         a.set(less, ak, pe1);
                     }
                     less++;
@@ -237,14 +237,14 @@ public class OffHeapPayloadSorter {
                      * terminates, even though we don't test for it explicitly.
                      * In other words, a[e3] acts as a sentinel for great.
                      */
-                    while (a.getHeader(great) > pivot1) {
+                    while (a.get(great) > pivot1) {
                         great--;
                     }
-                    if (a.getHeader(great) < pivot1) {
+                    if (a.get(great) < pivot1) {
                         a.getPayload(less, pe3);
-                        a.set(k, a.getHeader(less), pe3);
+                        a.set(k, a.get(less), pe3);
                         a.getPayload(great, pe3);
-                        a.set(less++, a.getHeader(great), pe3);
+                        a.set(less++, a.get(great), pe3);
                         a.set(great--, ak, pe1);
                     } else { // a[great] == pivot1
                         a.set(k, pivot1, pe2);
@@ -256,9 +256,9 @@ public class OffHeapPayloadSorter {
 
         // Swap pivots into their final positions
         a.getPayload(less - 1, pe1);
-        a.set(left, a.getHeader(less - 1), pe1); a.set(less - 1, pivot1, pe2);
+        a.set(left, a.get(less - 1), pe1); a.set(less - 1, pivot1, pe2);
         a.getPayload(great + 1, pe1);
-        a.set(right, a.getHeader(great + 1), pe1); a.set(great + 1, pivot2, pe4);
+        a.set(right, a.get(great + 1), pe1); a.set(great + 1, pivot2, pe4);
 
         // Sort left and right parts recursively, excluding known pivot values
         doSort(a, left,   less - 2, pi, pj, pe1, pe2, pe3, pe4, pe5);
@@ -277,10 +277,10 @@ public class OffHeapPayloadSorter {
          * swap internal pivot values to ends
          */
         if (less < e1 && great > e5) {
-            while (a.getHeader(less) == pivot1) {
+            while (a.get(less) == pivot1) {
                 less++;
             }
-            while (a.getHeader(great) == pivot2) {
+            while (a.get(great) == pivot2) {
                 great--;
             }
 
@@ -305,26 +305,26 @@ public class OffHeapPayloadSorter {
              */
             outer:
             for (long k = less; k <= great; k++) {
-                final long ak = a.getHeader(k);
+                final long ak = a.get(k);
                 a.getPayload(k, pe1);
                 if (ak == pivot2) { // Move a[k] to right part
-                    while (a.getHeader(great) == pivot2) {
+                    while (a.get(great) == pivot2) {
                         if (great-- == k) {
                             break outer;
                         }
                     }
-                    if (a.getHeader(great) == pivot1) {
+                    if (a.get(great) == pivot1) {
                         a.getPayload(less, pe3);
-                        a.set(k, a.getHeader(less), pe3);
+                        a.set(k, a.get(less), pe3);
                         a.set(less++, pivot1, pe2);
                     } else { // pivot1 < a[great] < pivot2
                         a.getPayload(great, pe3);
-                        a.set(k, a.getHeader(great), pe3);
+                        a.set(k, a.get(great), pe3);
                     }
                     a.set(great--, pivot2, pe4);
                 } else if (ak == pivot1) { // Move a[k] to left part
                     a.getPayload(less, pe3);
-                    a.set(k, a.getHeader(less), pe3);
+                    a.set(k, a.get(less), pe3);
                     a.set(less++, pivot1, pe2);
                 }
             }
