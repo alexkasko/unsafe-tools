@@ -1,1 +1,2 @@
-com.alexkasko.unsafe
+com.alexkasko.unsafe.bytearray
+com.alexkasko.unsafe.offheap
