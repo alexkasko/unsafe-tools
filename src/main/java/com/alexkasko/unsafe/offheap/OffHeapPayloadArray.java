@@ -140,7 +140,7 @@ public class OffHeapPayloadArray implements OffHeapPayloadAddressable, OffHeapDi
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("OffHeapLongArray");
+        sb.append("OffHeapPayloadArray");
         sb.append("{size=").append(size());
         sb.append(", unsafe=").append(isUnsafe());
         sb.append(", payloadLength=").append(payloadLength);

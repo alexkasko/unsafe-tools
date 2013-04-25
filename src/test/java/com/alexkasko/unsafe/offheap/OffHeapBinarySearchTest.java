@@ -13,16 +13,19 @@ import static junit.framework.Assert.assertEquals;
  * Date: 3/5/13
  */
 public class OffHeapBinarySearchTest {
+//    private static final int LENGTH = 1000000;
+    private static final int LENGTH = 10000;
+
     @Test
     public void test() {
         OffHeapLongArray oha = null;
         try {
-            oha = new OffHeapLongArray(100000);
+            oha = new OffHeapLongArray(LENGTH);
             Random random = new Random(42);
-            long[] arr = new long[100000];
+            long[] arr = new long[LENGTH];
             long val4242 = -1;
             long val4243 = -1;
-            for (int i = 0; i < 100000; i++) {
+            for (int i = 0; i < LENGTH; i++) {
                 long ra = random.nextLong();
                 arr[i] = ra;
                 oha.set(i, ra);
