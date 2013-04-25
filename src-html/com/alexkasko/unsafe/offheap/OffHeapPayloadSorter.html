@@ -73,7 +73,7 @@
 <FONT color="green">070</FONT>            // Use insertion sort on tiny arrays<a name="line.70"></a>
 <FONT color="green">071</FONT>            if (right - left + 1 &lt; INSERTION_SORT_THRESHOLD) {<a name="line.71"></a>
 <FONT color="green">072</FONT>                for (long i = left + 1; i &lt;= right; i++) {<a name="line.72"></a>
-<FONT color="green">073</FONT>                    final long ai = a.get(i);<a name="line.73"></a>
+<FONT color="green">073</FONT>                    long ai = a.get(i);<a name="line.73"></a>
 <FONT color="green">074</FONT>                    a.getPayload(i, pi);<a name="line.74"></a>
 <FONT color="green">075</FONT>                    long j;<a name="line.75"></a>
 <FONT color="green">076</FONT>                    for (j = i - 1; j &gt;= left &amp;&amp; ai &lt; a.get(j); j--) {<a name="line.76"></a>
@@ -106,146 +106,146 @@
 <FONT color="green">103</FONT>            long e2 = e3 - sixth;<a name="line.103"></a>
 <FONT color="green">104</FONT>    <a name="line.104"></a>
 <FONT color="green">105</FONT>            // Sort these elements using a 5-element sorting network<a name="line.105"></a>
-<FONT color="green">106</FONT>            int pl = a.payloadLength();<a name="line.106"></a>
-<FONT color="green">107</FONT>            long ae1 = a.get(e1), ae2 = a.get(e2), ae3 = a.get(e3), ae4 = a.get(e4), ae5 = a.get(e5);<a name="line.107"></a>
-<FONT color="green">108</FONT>            a.getPayload(e1, pe1); a.getPayload(e2, pe2); a.getPayload(e3, pe3); a.getPayload(e4, pe4); a.getPayload(e5, pe5);<a name="line.108"></a>
-<FONT color="green">109</FONT>    <a name="line.109"></a>
-<FONT color="green">110</FONT>            if (ae1 &gt; ae2) { long t = ae1; byte[] pt = pe1; ae1 = ae2; pe1 = pe2; ae2 = t; pe2 = pt; }<a name="line.110"></a>
-<FONT color="green">111</FONT>            if (ae4 &gt; ae5) { long t = ae4; byte[] pt = pe4; ae4 = ae5; pe4 = pe5; ae5 = t; pe5 = pt; }<a name="line.111"></a>
-<FONT color="green">112</FONT>            if (ae1 &gt; ae3) { long t = ae1; byte[] pt = pe1; ae1 = ae3; pe1 = pe3; ae3 = t; pe3 = pt; }<a name="line.112"></a>
-<FONT color="green">113</FONT>            if (ae2 &gt; ae3) { long t = ae2; byte[] pt = pe2; ae2 = ae3; pe2 = pe3; ae3 = t; pe3 = pt; }<a name="line.113"></a>
-<FONT color="green">114</FONT>            if (ae1 &gt; ae4) { long t = ae1; byte[] pt = pe1; ae1 = ae4; pe1 = pe4; ae4 = t; pe4 = pt; }<a name="line.114"></a>
-<FONT color="green">115</FONT>            if (ae3 &gt; ae4) { long t = ae3; byte[] pt = pe3; ae3 = ae4; pe3 = pe4; ae4 = t; pe4 = pt; }<a name="line.115"></a>
-<FONT color="green">116</FONT>            if (ae2 &gt; ae5) { long t = ae2; byte[] pt = pe2; ae2 = ae5; pe2 = pe5; ae5 = t; pe5 = pt; }<a name="line.116"></a>
-<FONT color="green">117</FONT>            if (ae2 &gt; ae3) { long t = ae2; byte[]pt = pe2; ae2 = ae3; pe2 = pe3; ae3 = t; pe3 = pt; }<a name="line.117"></a>
-<FONT color="green">118</FONT>            if (ae4 &gt; ae5) { long t = ae4; byte[]pt = pe4; ae4 = ae5; pe4 = pe5; ae5 = t; pe5 = pt; }<a name="line.118"></a>
-<FONT color="green">119</FONT>    <a name="line.119"></a>
-<FONT color="green">120</FONT>            a.set(e1, ae1, pe1); a.set(e3, ae3, pe3); a.set(e5, ae5, pe5);<a name="line.120"></a>
-<FONT color="green">121</FONT>    <a name="line.121"></a>
-<FONT color="green">122</FONT>            /*<a name="line.122"></a>
-<FONT color="green">123</FONT>             * Use the second and fourth of the five sorted elements as pivots.<a name="line.123"></a>
-<FONT color="green">124</FONT>             * These values are inexpensive approximations of the first and<a name="line.124"></a>
-<FONT color="green">125</FONT>             * second terciles of the array. Note that pivot1 &lt;= pivot2.<a name="line.125"></a>
-<FONT color="green">126</FONT>             *<a name="line.126"></a>
-<FONT color="green">127</FONT>             * The pivots are stored in local variables, and the first and<a name="line.127"></a>
-<FONT color="green">128</FONT>             * the last of the elements to be sorted are moved to the locations<a name="line.128"></a>
-<FONT color="green">129</FONT>             * formerly occupied by the pivots. When partitioning is complete,<a name="line.129"></a>
-<FONT color="green">130</FONT>             * the pivots are swapped back into their final positions, and<a name="line.130"></a>
-<FONT color="green">131</FONT>             * excluded from subsequent sorting.<a name="line.131"></a>
-<FONT color="green">132</FONT>             */<a name="line.132"></a>
-<FONT color="green">133</FONT>            a.getPayload(left, pe1);<a name="line.133"></a>
-<FONT color="green">134</FONT>            final long pivot1 = ae2; a.set(e2, a.get(left), pe1);<a name="line.134"></a>
-<FONT color="green">135</FONT>            a.getPayload(right, pe1);<a name="line.135"></a>
-<FONT color="green">136</FONT>            final long pivot2 = ae4; a.set(e4, a.get(right), pe1);<a name="line.136"></a>
-<FONT color="green">137</FONT>    <a name="line.137"></a>
-<FONT color="green">138</FONT>            // Pointers<a name="line.138"></a>
-<FONT color="green">139</FONT>            long less  = left  + 1; // The index of first element of center part<a name="line.139"></a>
-<FONT color="green">140</FONT>            long great = right - 1; // The index before first element of right part<a name="line.140"></a>
-<FONT color="green">141</FONT>    <a name="line.141"></a>
-<FONT color="green">142</FONT>            boolean pivotsDiffer = (pivot1 != pivot2);<a name="line.142"></a>
-<FONT color="green">143</FONT>    <a name="line.143"></a>
-<FONT color="green">144</FONT>            if (pivotsDiffer) {<a name="line.144"></a>
-<FONT color="green">145</FONT>                /*<a name="line.145"></a>
-<FONT color="green">146</FONT>                 * Partitioning:<a name="line.146"></a>
-<FONT color="green">147</FONT>                 *<a name="line.147"></a>
-<FONT color="green">148</FONT>                 *   left part         center part                    right part<a name="line.148"></a>
-<FONT color="green">149</FONT>                 * +------------------------------------------------------------+<a name="line.149"></a>
-<FONT color="green">150</FONT>                 * | &lt; pivot1  |  pivot1 &lt;= &amp;&amp; &lt;= pivot2  |    ?    |  &gt; pivot2 |<a name="line.150"></a>
-<FONT color="green">151</FONT>                 * +------------------------------------------------------------+<a name="line.151"></a>
-<FONT color="green">152</FONT>                 *              ^                          ^       ^<a name="line.152"></a>
-<FONT color="green">153</FONT>                 *              |                          |       |<a name="line.153"></a>
-<FONT color="green">154</FONT>                 *             less                        k     great<a name="line.154"></a>
-<FONT color="green">155</FONT>                 *<a name="line.155"></a>
-<FONT color="green">156</FONT>                 * Invariants:<a name="line.156"></a>
-<FONT color="green">157</FONT>                 *<a name="line.157"></a>
-<FONT color="green">158</FONT>                 *              all in (left, less)   &lt; pivot1<a name="line.158"></a>
-<FONT color="green">159</FONT>                 *    pivot1 &lt;= all in [less, k)     &lt;= pivot2<a name="line.159"></a>
-<FONT color="green">160</FONT>                 *              all in (great, right) &gt; pivot2<a name="line.160"></a>
-<FONT color="green">161</FONT>                 *<a name="line.161"></a>
-<FONT color="green">162</FONT>                 * Pointer k is the first index of ?-part<a name="line.162"></a>
-<FONT color="green">163</FONT>                 */<a name="line.163"></a>
-<FONT color="green">164</FONT>                outer:<a name="line.164"></a>
-<FONT color="green">165</FONT>                for (long k = less; k &lt;= great; k++) {<a name="line.165"></a>
-<FONT color="green">166</FONT>                    final long ak = a.get(k);<a name="line.166"></a>
-<FONT color="green">167</FONT>                    a.getPayload(k, pe1);<a name="line.167"></a>
-<FONT color="green">168</FONT>                    if (ak &lt; pivot1) { // Move a[k] to left part<a name="line.168"></a>
-<FONT color="green">169</FONT>                        if (k != less) {<a name="line.169"></a>
-<FONT color="green">170</FONT>                            a.getPayload(less, pe3);<a name="line.170"></a>
-<FONT color="green">171</FONT>                            a.set(k, a.get(less), pe3);<a name="line.171"></a>
-<FONT color="green">172</FONT>                            a.set(less, ak, pe1);<a name="line.172"></a>
-<FONT color="green">173</FONT>                        }<a name="line.173"></a>
-<FONT color="green">174</FONT>                        less++;<a name="line.174"></a>
-<FONT color="green">175</FONT>                    } else if (ak &gt; pivot2) { // Move a[k] to right part<a name="line.175"></a>
-<FONT color="green">176</FONT>                        while (a.get(great) &gt; pivot2) {<a name="line.176"></a>
-<FONT color="green">177</FONT>                            if (great-- == k) {<a name="line.177"></a>
-<FONT color="green">178</FONT>                                break outer;<a name="line.178"></a>
-<FONT color="green">179</FONT>                            }<a name="line.179"></a>
-<FONT color="green">180</FONT>                        }<a name="line.180"></a>
-<FONT color="green">181</FONT>                        if (a.get(great) &lt; pivot1) {<a name="line.181"></a>
-<FONT color="green">182</FONT>                            a.getPayload(less, pe3);<a name="line.182"></a>
-<FONT color="green">183</FONT>                            a.set(k, a.get(less), pe3);<a name="line.183"></a>
-<FONT color="green">184</FONT>                            a.getPayload(great, pe3);<a name="line.184"></a>
-<FONT color="green">185</FONT>                            a.set(less++, a.get(great), pe3);<a name="line.185"></a>
-<FONT color="green">186</FONT>                            a.set(great--, ak, pe1);<a name="line.186"></a>
-<FONT color="green">187</FONT>                        } else { // pivot1 &lt;= a[great] &lt;= pivot2<a name="line.187"></a>
-<FONT color="green">188</FONT>                            a.getPayload(great, pe3);<a name="line.188"></a>
-<FONT color="green">189</FONT>                            a.set(k, a.get(great), pe3);<a name="line.189"></a>
-<FONT color="green">190</FONT>                            a.set(great--, ak, pe1);<a name="line.190"></a>
-<FONT color="green">191</FONT>                        }<a name="line.191"></a>
-<FONT color="green">192</FONT>                    }<a name="line.192"></a>
-<FONT color="green">193</FONT>                }<a name="line.193"></a>
-<FONT color="green">194</FONT>            } else { // Pivots are equal<a name="line.194"></a>
-<FONT color="green">195</FONT>                /*<a name="line.195"></a>
-<FONT color="green">196</FONT>                 * Partition degenerates to the traditional 3-way,<a name="line.196"></a>
-<FONT color="green">197</FONT>                 * or "Dutch National Flag", partition:<a name="line.197"></a>
-<FONT color="green">198</FONT>                 *<a name="line.198"></a>
-<FONT color="green">199</FONT>                 *   left part   center part            right part<a name="line.199"></a>
-<FONT color="green">200</FONT>                 * +----------------------------------------------+<a name="line.200"></a>
-<FONT color="green">201</FONT>                 * |  &lt; pivot  |  == pivot  |    ?    |  &gt; pivot  |<a name="line.201"></a>
-<FONT color="green">202</FONT>                 * +----------------------------------------------+<a name="line.202"></a>
-<FONT color="green">203</FONT>                 *              ^            ^       ^<a name="line.203"></a>
-<FONT color="green">204</FONT>                 *              |            |       |<a name="line.204"></a>
-<FONT color="green">205</FONT>                 *             less          k     great<a name="line.205"></a>
-<FONT color="green">206</FONT>                 *<a name="line.206"></a>
-<FONT color="green">207</FONT>                 * Invariants:<a name="line.207"></a>
-<FONT color="green">208</FONT>                 *<a name="line.208"></a>
-<FONT color="green">209</FONT>                 *   all in (left, less)   &lt; pivot<a name="line.209"></a>
-<FONT color="green">210</FONT>                 *   all in [less, k)     == pivot<a name="line.210"></a>
-<FONT color="green">211</FONT>                 *   all in (great, right) &gt; pivot<a name="line.211"></a>
-<FONT color="green">212</FONT>                 *<a name="line.212"></a>
-<FONT color="green">213</FONT>                 * Pointer k is the first index of ?-part<a name="line.213"></a>
-<FONT color="green">214</FONT>                 */<a name="line.214"></a>
-<FONT color="green">215</FONT>                for (long k = less; k &lt;= great; k++) {<a name="line.215"></a>
-<FONT color="green">216</FONT>                    final long ak = a.get(k);<a name="line.216"></a>
-<FONT color="green">217</FONT>                    a.getPayload(k, pe1);<a name="line.217"></a>
-<FONT color="green">218</FONT>                    if (ak == pivot1) {<a name="line.218"></a>
-<FONT color="green">219</FONT>                        continue;<a name="line.219"></a>
-<FONT color="green">220</FONT>                    }<a name="line.220"></a>
-<FONT color="green">221</FONT>                    if (ak &lt; pivot1) { // Move a[k] to left part<a name="line.221"></a>
-<FONT color="green">222</FONT>                        if (k != less) {<a name="line.222"></a>
-<FONT color="green">223</FONT>                            a.getPayload(less, pe3);<a name="line.223"></a>
-<FONT color="green">224</FONT>                            a.set(k, a.get(less), pe3);<a name="line.224"></a>
-<FONT color="green">225</FONT>                            a.set(less, ak, pe1);<a name="line.225"></a>
-<FONT color="green">226</FONT>                        }<a name="line.226"></a>
-<FONT color="green">227</FONT>                        less++;<a name="line.227"></a>
-<FONT color="green">228</FONT>                    } else { // (a[k] &gt; pivot1) -  Move a[k] to right part<a name="line.228"></a>
-<FONT color="green">229</FONT>                        /*<a name="line.229"></a>
-<FONT color="green">230</FONT>                         * We know that pivot1 == a[e3] == pivot2. Thus, we know<a name="line.230"></a>
-<FONT color="green">231</FONT>                         * that great will still be &gt;= k when the following loop<a name="line.231"></a>
-<FONT color="green">232</FONT>                         * terminates, even though we don't test for it explicitly.<a name="line.232"></a>
-<FONT color="green">233</FONT>                         * In other words, a[e3] acts as a sentinel for great.<a name="line.233"></a>
-<FONT color="green">234</FONT>                         */<a name="line.234"></a>
-<FONT color="green">235</FONT>                        while (a.get(great) &gt; pivot1) {<a name="line.235"></a>
-<FONT color="green">236</FONT>                            great--;<a name="line.236"></a>
-<FONT color="green">237</FONT>                        }<a name="line.237"></a>
-<FONT color="green">238</FONT>                        if (a.get(great) &lt; pivot1) {<a name="line.238"></a>
-<FONT color="green">239</FONT>                            a.getPayload(less, pe3);<a name="line.239"></a>
-<FONT color="green">240</FONT>                            a.set(k, a.get(less), pe3);<a name="line.240"></a>
-<FONT color="green">241</FONT>                            a.getPayload(great, pe3);<a name="line.241"></a>
-<FONT color="green">242</FONT>                            a.set(less++, a.get(great), pe3);<a name="line.242"></a>
-<FONT color="green">243</FONT>                            a.set(great--, ak, pe1);<a name="line.243"></a>
-<FONT color="green">244</FONT>                        } else { // a[great] == pivot1<a name="line.244"></a>
-<FONT color="green">245</FONT>                            a.set(k, pivot1, pe2);<a name="line.245"></a>
+<FONT color="green">106</FONT>            long ae1 = a.get(e1), ae2 = a.get(e2), ae3 = a.get(e3), ae4 = a.get(e4), ae5 = a.get(e5);<a name="line.106"></a>
+<FONT color="green">107</FONT>            a.getPayload(e1, pe1); a.getPayload(e2, pe2); a.getPayload(e3, pe3); a.getPayload(e4, pe4); a.getPayload(e5, pe5);<a name="line.107"></a>
+<FONT color="green">108</FONT>    <a name="line.108"></a>
+<FONT color="green">109</FONT>            if (ae1 &gt; ae2) { long t = ae1; byte[] pt = pe1; ae1 = ae2; pe1 = pe2; ae2 = t; pe2 = pt; }<a name="line.109"></a>
+<FONT color="green">110</FONT>            if (ae4 &gt; ae5) { long t = ae4; byte[] pt = pe4; ae4 = ae5; pe4 = pe5; ae5 = t; pe5 = pt; }<a name="line.110"></a>
+<FONT color="green">111</FONT>            if (ae1 &gt; ae3) { long t = ae1; byte[] pt = pe1; ae1 = ae3; pe1 = pe3; ae3 = t; pe3 = pt; }<a name="line.111"></a>
+<FONT color="green">112</FONT>            if (ae2 &gt; ae3) { long t = ae2; byte[] pt = pe2; ae2 = ae3; pe2 = pe3; ae3 = t; pe3 = pt; }<a name="line.112"></a>
+<FONT color="green">113</FONT>            if (ae1 &gt; ae4) { long t = ae1; byte[] pt = pe1; ae1 = ae4; pe1 = pe4; ae4 = t; pe4 = pt; }<a name="line.113"></a>
+<FONT color="green">114</FONT>            if (ae3 &gt; ae4) { long t = ae3; byte[] pt = pe3; ae3 = ae4; pe3 = pe4; ae4 = t; pe4 = pt; }<a name="line.114"></a>
+<FONT color="green">115</FONT>            if (ae2 &gt; ae5) { long t = ae2; byte[] pt = pe2; ae2 = ae5; pe2 = pe5; ae5 = t; pe5 = pt; }<a name="line.115"></a>
+<FONT color="green">116</FONT>            if (ae2 &gt; ae3) { long t = ae2; byte[] pt = pe2; ae2 = ae3; pe2 = pe3; ae3 = t; pe3 = pt; }<a name="line.116"></a>
+<FONT color="green">117</FONT>            if (ae4 &gt; ae5) { long t = ae4; byte[] pt = pe4; ae4 = ae5; pe4 = pe5; ae5 = t; pe5 = pt; }<a name="line.117"></a>
+<FONT color="green">118</FONT>    <a name="line.118"></a>
+<FONT color="green">119</FONT>            a.set(e1, ae1, pe1); a.set(e3, ae3, pe3); a.set(e5, ae5, pe5);<a name="line.119"></a>
+<FONT color="green">120</FONT>    <a name="line.120"></a>
+<FONT color="green">121</FONT>            /*<a name="line.121"></a>
+<FONT color="green">122</FONT>             * Use the second and fourth of the five sorted elements as pivots.<a name="line.122"></a>
+<FONT color="green">123</FONT>             * These values are inexpensive approximations of the first and<a name="line.123"></a>
+<FONT color="green">124</FONT>             * second terciles of the array. Note that pivot1 &lt;= pivot2.<a name="line.124"></a>
+<FONT color="green">125</FONT>             *<a name="line.125"></a>
+<FONT color="green">126</FONT>             * The pivots are stored in local variables, and the first and<a name="line.126"></a>
+<FONT color="green">127</FONT>             * the last of the elements to be sorted are moved to the locations<a name="line.127"></a>
+<FONT color="green">128</FONT>             * formerly occupied by the pivots. When partitioning is complete,<a name="line.128"></a>
+<FONT color="green">129</FONT>             * the pivots are swapped back into their final positions, and<a name="line.129"></a>
+<FONT color="green">130</FONT>             * excluded from subsequent sorting.<a name="line.130"></a>
+<FONT color="green">131</FONT>             */<a name="line.131"></a>
+<FONT color="green">132</FONT>            a.getPayload(left, pe1);<a name="line.132"></a>
+<FONT color="green">133</FONT>            long pivot1 = ae2; a.set(e2, a.get(left), pe1);<a name="line.133"></a>
+<FONT color="green">134</FONT>            a.getPayload(right, pe1);<a name="line.134"></a>
+<FONT color="green">135</FONT>            long pivot2 = ae4; a.set(e4, a.get(right), pe1);<a name="line.135"></a>
+<FONT color="green">136</FONT>    <a name="line.136"></a>
+<FONT color="green">137</FONT>            // Pointers<a name="line.137"></a>
+<FONT color="green">138</FONT>            long less  = left  + 1; // The index of first element of center part<a name="line.138"></a>
+<FONT color="green">139</FONT>            long great = right - 1; // The index before first element of right part<a name="line.139"></a>
+<FONT color="green">140</FONT>    <a name="line.140"></a>
+<FONT color="green">141</FONT>            boolean pivotsDiffer = (pivot1 != pivot2);<a name="line.141"></a>
+<FONT color="green">142</FONT>    <a name="line.142"></a>
+<FONT color="green">143</FONT>            if (pivotsDiffer) {<a name="line.143"></a>
+<FONT color="green">144</FONT>                /*<a name="line.144"></a>
+<FONT color="green">145</FONT>                 * Partitioning:<a name="line.145"></a>
+<FONT color="green">146</FONT>                 *<a name="line.146"></a>
+<FONT color="green">147</FONT>                 *   left part         center part                    right part<a name="line.147"></a>
+<FONT color="green">148</FONT>                 * +------------------------------------------------------------+<a name="line.148"></a>
+<FONT color="green">149</FONT>                 * | &lt; pivot1  |  pivot1 &lt;= &amp;&amp; &lt;= pivot2  |    ?    |  &gt; pivot2 |<a name="line.149"></a>
+<FONT color="green">150</FONT>                 * +------------------------------------------------------------+<a name="line.150"></a>
+<FONT color="green">151</FONT>                 *              ^                          ^       ^<a name="line.151"></a>
+<FONT color="green">152</FONT>                 *              |                          |       |<a name="line.152"></a>
+<FONT color="green">153</FONT>                 *             less                        k     great<a name="line.153"></a>
+<FONT color="green">154</FONT>                 *<a name="line.154"></a>
+<FONT color="green">155</FONT>                 * Invariants:<a name="line.155"></a>
+<FONT color="green">156</FONT>                 *<a name="line.156"></a>
+<FONT color="green">157</FONT>                 *              all in (left, less)   &lt; pivot1<a name="line.157"></a>
+<FONT color="green">158</FONT>                 *    pivot1 &lt;= all in [less, k)     &lt;= pivot2<a name="line.158"></a>
+<FONT color="green">159</FONT>                 *              all in (great, right) &gt; pivot2<a name="line.159"></a>
+<FONT color="green">160</FONT>                 *<a name="line.160"></a>
+<FONT color="green">161</FONT>                 * Pointer k is the first index of ?-part<a name="line.161"></a>
+<FONT color="green">162</FONT>                 */<a name="line.162"></a>
+<FONT color="green">163</FONT>                outer:<a name="line.163"></a>
+<FONT color="green">164</FONT>                for (long k = less; k &lt;= great; k++) {<a name="line.164"></a>
+<FONT color="green">165</FONT>                    long ak = a.get(k);<a name="line.165"></a>
+<FONT color="green">166</FONT>                    a.getPayload(k, pe1);<a name="line.166"></a>
+<FONT color="green">167</FONT>                    if (ak &lt; pivot1) { // Move a[k] to left part<a name="line.167"></a>
+<FONT color="green">168</FONT>                        if (k != less) {<a name="line.168"></a>
+<FONT color="green">169</FONT>                            a.getPayload(less, pe3);<a name="line.169"></a>
+<FONT color="green">170</FONT>                            a.set(k, a.get(less), pe3);<a name="line.170"></a>
+<FONT color="green">171</FONT>                            a.set(less, ak, pe1);<a name="line.171"></a>
+<FONT color="green">172</FONT>                        }<a name="line.172"></a>
+<FONT color="green">173</FONT>                        less++;<a name="line.173"></a>
+<FONT color="green">174</FONT>                    } else if (ak &gt; pivot2) { // Move a[k] to right part<a name="line.174"></a>
+<FONT color="green">175</FONT>                        while (a.get(great) &gt; pivot2) {<a name="line.175"></a>
+<FONT color="green">176</FONT>                            if (great-- == k) {<a name="line.176"></a>
+<FONT color="green">177</FONT>                                break outer;<a name="line.177"></a>
+<FONT color="green">178</FONT>                            }<a name="line.178"></a>
+<FONT color="green">179</FONT>                        }<a name="line.179"></a>
+<FONT color="green">180</FONT>                        if (a.get(great) &lt; pivot1) {<a name="line.180"></a>
+<FONT color="green">181</FONT>                            a.getPayload(less, pe3);<a name="line.181"></a>
+<FONT color="green">182</FONT>                            a.set(k, a.get(less), pe3);<a name="line.182"></a>
+<FONT color="green">183</FONT>                            a.getPayload(great, pe3);<a name="line.183"></a>
+<FONT color="green">184</FONT>                            a.set(less++, a.get(great), pe3);<a name="line.184"></a>
+<FONT color="green">185</FONT>                            a.set(great--, ak, pe1);<a name="line.185"></a>
+<FONT color="green">186</FONT>                        } else { // pivot1 &lt;= a[great] &lt;= pivot2<a name="line.186"></a>
+<FONT color="green">187</FONT>                            a.getPayload(great, pe3);<a name="line.187"></a>
+<FONT color="green">188</FONT>                            a.set(k, a.get(great), pe3);<a name="line.188"></a>
+<FONT color="green">189</FONT>                            a.set(great--, ak, pe1);<a name="line.189"></a>
+<FONT color="green">190</FONT>                        }<a name="line.190"></a>
+<FONT color="green">191</FONT>                    }<a name="line.191"></a>
+<FONT color="green">192</FONT>                }<a name="line.192"></a>
+<FONT color="green">193</FONT>            } else { // Pivots are equal<a name="line.193"></a>
+<FONT color="green">194</FONT>                /*<a name="line.194"></a>
+<FONT color="green">195</FONT>                 * Partition degenerates to the traditional 3-way,<a name="line.195"></a>
+<FONT color="green">196</FONT>                 * or "Dutch National Flag", partition:<a name="line.196"></a>
+<FONT color="green">197</FONT>                 *<a name="line.197"></a>
+<FONT color="green">198</FONT>                 *   left part   center part            right part<a name="line.198"></a>
+<FONT color="green">199</FONT>                 * +----------------------------------------------+<a name="line.199"></a>
+<FONT color="green">200</FONT>                 * |  &lt; pivot  |  == pivot  |    ?    |  &gt; pivot  |<a name="line.200"></a>
+<FONT color="green">201</FONT>                 * +----------------------------------------------+<a name="line.201"></a>
+<FONT color="green">202</FONT>                 *              ^            ^       ^<a name="line.202"></a>
+<FONT color="green">203</FONT>                 *              |            |       |<a name="line.203"></a>
+<FONT color="green">204</FONT>                 *             less          k     great<a name="line.204"></a>
+<FONT color="green">205</FONT>                 *<a name="line.205"></a>
+<FONT color="green">206</FONT>                 * Invariants:<a name="line.206"></a>
+<FONT color="green">207</FONT>                 *<a name="line.207"></a>
+<FONT color="green">208</FONT>                 *   all in (left, less)   &lt; pivot<a name="line.208"></a>
+<FONT color="green">209</FONT>                 *   all in [less, k)     == pivot<a name="line.209"></a>
+<FONT color="green">210</FONT>                 *   all in (great, right) &gt; pivot<a name="line.210"></a>
+<FONT color="green">211</FONT>                 *<a name="line.211"></a>
+<FONT color="green">212</FONT>                 * Pointer k is the first index of ?-part<a name="line.212"></a>
+<FONT color="green">213</FONT>                 */<a name="line.213"></a>
+<FONT color="green">214</FONT>                for (long k = less; k &lt;= great; k++) {<a name="line.214"></a>
+<FONT color="green">215</FONT>                    long ak = a.get(k);<a name="line.215"></a>
+<FONT color="green">216</FONT>                    a.getPayload(k, pe1);<a name="line.216"></a>
+<FONT color="green">217</FONT>                    if (ak == pivot1) {<a name="line.217"></a>
+<FONT color="green">218</FONT>                        continue;<a name="line.218"></a>
+<FONT color="green">219</FONT>                    }<a name="line.219"></a>
+<FONT color="green">220</FONT>                    if (ak &lt; pivot1) { // Move a[k] to left part<a name="line.220"></a>
+<FONT color="green">221</FONT>                        if (k != less) {<a name="line.221"></a>
+<FONT color="green">222</FONT>                            a.getPayload(less, pe3);<a name="line.222"></a>
+<FONT color="green">223</FONT>                            a.set(k, a.get(less), pe3);<a name="line.223"></a>
+<FONT color="green">224</FONT>                            a.set(less, ak, pe1);<a name="line.224"></a>
+<FONT color="green">225</FONT>                        }<a name="line.225"></a>
+<FONT color="green">226</FONT>                        less++;<a name="line.226"></a>
+<FONT color="green">227</FONT>                    } else { // (a[k] &gt; pivot1) -  Move a[k] to right part<a name="line.227"></a>
+<FONT color="green">228</FONT>                        /*<a name="line.228"></a>
+<FONT color="green">229</FONT>                         * We know that pivot1 == a[e3] == pivot2. Thus, we know<a name="line.229"></a>
+<FONT color="green">230</FONT>                         * that great will still be &gt;= k when the following loop<a name="line.230"></a>
+<FONT color="green">231</FONT>                         * terminates, even though we don't test for it explicitly.<a name="line.231"></a>
+<FONT color="green">232</FONT>                         * In other words, a[e3] acts as a sentinel for great.<a name="line.232"></a>
+<FONT color="green">233</FONT>                         */<a name="line.233"></a>
+<FONT color="green">234</FONT>                        while (a.get(great) &gt; pivot1) {<a name="line.234"></a>
+<FONT color="green">235</FONT>                            great--;<a name="line.235"></a>
+<FONT color="green">236</FONT>                        }<a name="line.236"></a>
+<FONT color="green">237</FONT>                        if (a.get(great) &lt; pivot1) {<a name="line.237"></a>
+<FONT color="green">238</FONT>                            a.getPayload(less, pe3);<a name="line.238"></a>
+<FONT color="green">239</FONT>                            a.set(k, a.get(less), pe3);<a name="line.239"></a>
+<FONT color="green">240</FONT>                            a.getPayload(great, pe3);<a name="line.240"></a>
+<FONT color="green">241</FONT>                            a.set(less++, a.get(great), pe3);<a name="line.241"></a>
+<FONT color="green">242</FONT>                            a.set(great--, ak, pe1);<a name="line.242"></a>
+<FONT color="green">243</FONT>                        } else { // a[great] == pivot1<a name="line.243"></a>
+<FONT color="green">244</FONT>                            a.getPayload(great, pe3);<a name="line.244"></a>
+<FONT color="green">245</FONT>                            a.set(k, pivot1, pe3);<a name="line.245"></a>
 <FONT color="green">246</FONT>                            a.set(great--, ak, pe1);<a name="line.246"></a>
 <FONT color="green">247</FONT>                        }<a name="line.247"></a>
 <FONT color="green">248</FONT>                    }<a name="line.248"></a>
@@ -303,7 +303,7 @@
 <FONT color="green">300</FONT>                 */<a name="line.300"></a>
 <FONT color="green">301</FONT>                outer:<a name="line.301"></a>
 <FONT color="green">302</FONT>                for (long k = less; k &lt;= great; k++) {<a name="line.302"></a>
-<FONT color="green">303</FONT>                    final long ak = a.get(k);<a name="line.303"></a>
+<FONT color="green">303</FONT>                    long ak = a.get(k);<a name="line.303"></a>
 <FONT color="green">304</FONT>                    a.getPayload(k, pe1);<a name="line.304"></a>
 <FONT color="green">305</FONT>                    if (ak == pivot2) { // Move a[k] to right part<a name="line.305"></a>
 <FONT color="green">306</FONT>                        while (a.get(great) == pivot2) {<a name="line.306"></a>
@@ -314,24 +314,25 @@
 <FONT color="green">311</FONT>                        if (a.get(great) == pivot1) {<a name="line.311"></a>
 <FONT color="green">312</FONT>                            a.getPayload(less, pe3);<a name="line.312"></a>
 <FONT color="green">313</FONT>                            a.set(k, a.get(less), pe3);<a name="line.313"></a>
-<FONT color="green">314</FONT>                            a.set(less++, pivot1, pe2);<a name="line.314"></a>
-<FONT color="green">315</FONT>                        } else { // pivot1 &lt; a[great] &lt; pivot2<a name="line.315"></a>
-<FONT color="green">316</FONT>                            a.getPayload(great, pe3);<a name="line.316"></a>
-<FONT color="green">317</FONT>                            a.set(k, a.get(great), pe3);<a name="line.317"></a>
-<FONT color="green">318</FONT>                        }<a name="line.318"></a>
-<FONT color="green">319</FONT>                        a.set(great--, pivot2, pe4);<a name="line.319"></a>
-<FONT color="green">320</FONT>                    } else if (ak == pivot1) { // Move a[k] to left part<a name="line.320"></a>
-<FONT color="green">321</FONT>                        a.getPayload(less, pe3);<a name="line.321"></a>
-<FONT color="green">322</FONT>                        a.set(k, a.get(less), pe3);<a name="line.322"></a>
-<FONT color="green">323</FONT>                        a.set(less++, pivot1, pe2);<a name="line.323"></a>
-<FONT color="green">324</FONT>                    }<a name="line.324"></a>
-<FONT color="green">325</FONT>                }<a name="line.325"></a>
-<FONT color="green">326</FONT>            }<a name="line.326"></a>
-<FONT color="green">327</FONT>    <a name="line.327"></a>
-<FONT color="green">328</FONT>            // Sort center part recursively, excluding known pivot values<a name="line.328"></a>
-<FONT color="green">329</FONT>            doSort(a, less, great, pi, pj, pe1, pe2, pe3, pe4, pe5);<a name="line.329"></a>
-<FONT color="green">330</FONT>        }<a name="line.330"></a>
-<FONT color="green">331</FONT>    }<a name="line.331"></a>
+<FONT color="green">314</FONT>                            a.getPayload(great, pe3);<a name="line.314"></a>
+<FONT color="green">315</FONT>                            a.set(less++, pivot1, pe3);<a name="line.315"></a>
+<FONT color="green">316</FONT>                        } else { // pivot1 &lt; a[great] &lt; pivot2<a name="line.316"></a>
+<FONT color="green">317</FONT>                            a.getPayload(great, pe3);<a name="line.317"></a>
+<FONT color="green">318</FONT>                            a.set(k, a.get(great), pe3);<a name="line.318"></a>
+<FONT color="green">319</FONT>                        }<a name="line.319"></a>
+<FONT color="green">320</FONT>                        a.set(great--, ak, pe1);<a name="line.320"></a>
+<FONT color="green">321</FONT>                    } else if (ak == pivot1) { // Move a[k] to left part<a name="line.321"></a>
+<FONT color="green">322</FONT>                        a.getPayload(less, pe3);<a name="line.322"></a>
+<FONT color="green">323</FONT>                        a.set(k, a.get(less), pe3);<a name="line.323"></a>
+<FONT color="green">324</FONT>                        a.set(less++, ak, pe1);<a name="line.324"></a>
+<FONT color="green">325</FONT>                    }<a name="line.325"></a>
+<FONT color="green">326</FONT>                }<a name="line.326"></a>
+<FONT color="green">327</FONT>            }<a name="line.327"></a>
+<FONT color="green">328</FONT>    <a name="line.328"></a>
+<FONT color="green">329</FONT>            // Sort center part recursively, excluding known pivot values<a name="line.329"></a>
+<FONT color="green">330</FONT>            doSort(a, less, great, pi, pj, pe1, pe2, pe3, pe4, pe5);<a name="line.330"></a>
+<FONT color="green">331</FONT>        }<a name="line.331"></a>
+<FONT color="green">332</FONT>    }<a name="line.332"></a>
 
 
 
