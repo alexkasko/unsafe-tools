@@ -1,6 +1,5 @@
 package com.alexkasko.unsafe.offheap;
 
-import com.alexkasko.unsafe.bytearray.ByteArrayTool;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
@@ -15,51 +14,47 @@ import static org.junit.Assert.assertTrue;
  * User: alexkasko
  * Date: 3/4/13
  */
-public class OffHeapPayloadSorterTest {
+public class OffHeapPayloadIntSorterTest {
 //    private static final int LENGTH = 1000000;
     private static final int LENGTH = 10000;
 
     @Test
     public void test() throws UnsupportedEncodingException {
 //        for(int j=0; j< 100000; j++) {
-        OffHeapPayloadArray arr = null;
+        OffHeapPayloadIntArray arr = null;
         try {
 //            System.out.println(j);
-            ByteArrayTool bat = ByteArrayTool.get();
 //            Random random = new Random(j);
             Random random = new Random(42);
             long[] heapHeaders = new long[LENGTH];
-            Map<Long, List<Long>> heapPayloads = new HashMap<Long, List<Long>>();
-            arr = new OffHeapPayloadArray(LENGTH, 8);
-            byte[] buf = new byte[8];
+            Map<Long, List<Integer>> heapPayloads = new HashMap<Long, List<Integer>>();
+            arr = new OffHeapPayloadIntArray(LENGTH);
             long header = 0;
             for (int i = 0; i < LENGTH; i++) {
-                long payload = random.nextInt();
+                int payload = random.nextInt();
                 if(0 == i % 5) {
                     header = random.nextInt();
                 }
                 heapHeaders[i] = header;
-                List<Long> existed = heapPayloads.get(header);
+                List<Integer> existed = heapPayloads.get(header);
                 if (null != existed) {
                     existed.add(payload);
                 } else {
-                    List<Long> li = new ArrayList<Long>();
+                    List<Integer> li = new ArrayList<Integer>();
                     li.add(payload);
                     heapPayloads.put(header, li);
                 }
-                bat.putLong(buf, 0, payload);
-                arr.set(i, header, buf);
+                arr.set(i, header, payload);
             }
             // standard sort for heap array
             Arrays.sort(heapHeaders);
             // off-heap sort
-            OffHeapPayloadSorter.sort(arr);
+            OffHeapPayloadIntSorter.sort(arr);
             // compare results
             for (int i = 0; i < LENGTH; i++) {
                 long head = arr.get(i);
                 assertEquals(head, heapHeaders[i]);
-                arr.getPayload(i, buf);
-                long payl = bat.getLong(buf, 0);
+                Integer payl = arr.getPayload(i);
                 assertTrue(heapPayloads.get(head).remove(payl));
             }
         } finally {
