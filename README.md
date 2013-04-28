@@ -97,6 +97,10 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 Changelog
 ---------
 
+**1.2.2** (2013-04-28)
+
+ * prevent result object instantiation in ranged search
+
 **1.2.1** (2013-04-28)
 
  * ranges support for binary search

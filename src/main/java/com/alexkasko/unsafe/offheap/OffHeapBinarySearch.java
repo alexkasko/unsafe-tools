@@ -1,5 +1,7 @@
 package com.alexkasko.unsafe.offheap;
 
+import java.io.Serializable;
+
 /**
  * Binary search implementation borrowed from {@code https://android.googlesource.com/platform/libcore/+/android-4.2.2_r1/luni/src/main/java/java/util/Arrays.java}
  * and adapted to {@link OffHeapAddressable}
@@ -70,8 +72,8 @@ public class OffHeapBinarySearch {
      * @param value the element to find.
      * @return range of indices having given value or empty range
      */
-    public static IndexRange binarySearchRange(OffHeapAddressable collection, long value) {
-        return binarySearchRange(collection, 0, collection.size(), value);
+    public static void binarySearchRange(OffHeapAddressable collection, long value, IndexRange out) {
+        binarySearchRange(collection, 0, collection.size(), value, out);
     }
 
     /**
@@ -86,16 +88,20 @@ public class OffHeapBinarySearch {
      * @param value the element to find.
      * @return range of indices having given value or empty range
      */
-    public static IndexRange binarySearchRange(OffHeapAddressable collection, long startIndex, long endIndex, long value) {
+    public static void binarySearchRange(OffHeapAddressable collection, long startIndex, long endIndex,
+                                               long value, IndexRange out) {
         long ind = binarySearch(collection, startIndex, endIndex, value);
-        if(ind < 0) return new IndexRange(ind);
+        if(ind < 0) {
+            out.setEmpty(ind);
+            return;
+        }
         long from = ind;
         while (from >= startIndex && value == collection.get(from)) from -= 1;
         from += 1;
         long to = ind;
         while (to < endIndex && value == collection.get(to)) to += 1;
         to -= 1;
-        return new IndexRange(from, to);
+        out.set(from, to);
     }
 
     /**
@@ -105,15 +111,22 @@ public class OffHeapBinarySearch {
      * {@code -index - 1} where the element would be inserted.
      * Range with size {@code 1} will contain equal indices.
      */
-    public static class IndexRange {
-        private final boolean empty;
-        private final long fromIndex;
-        private final long toIndex;
+    public static class IndexRange implements Serializable {
+        private static final long serialVersionUID = 879348143026038919L;
+        private boolean empty;
+        private long fromIndex;
+        private long toIndex;
+
+        public IndexRange() {
+            this.empty = false;
+            this.fromIndex = -1;
+            this.toIndex = -1;
+        }
 
         /**
          * Empty range constructor
          */
-        private IndexRange(long value) {
+        private void setEmpty(long value) {
             this.empty = true;
             this.fromIndex = value;
             this.toIndex = value;
@@ -125,7 +138,7 @@ public class OffHeapBinarySearch {
          * @param from start index
          * @param to end index
          */
-        private IndexRange(long from, long to) {
+        private void set(long from, long to) {
             this.empty = false;
             this.fromIndex = from;
             this.toIndex = to;
@@ -169,6 +182,31 @@ public class OffHeapBinarySearch {
          */
         public long getToIndex() {
             return toIndex;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            IndexRange that = (IndexRange) o;
+            if (empty != that.empty) return false;
+            if (fromIndex != that.fromIndex) return false;
+            if (toIndex != that.toIndex) return false;
+            return true;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode() {
+            int result = (empty ? 1 : 0);
+            result = 31 * result + (int) (fromIndex ^ (fromIndex >>> 32));
+            result = 31 * result + (int) (toIndex ^ (toIndex >>> 32));
+            return result;
         }
 
         /**
