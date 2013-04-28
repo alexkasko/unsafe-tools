@@ -13,7 +13,7 @@ Library has no third-party dependencies and is available in [Maven central](http
     <dependency>
         <groupId>com.alexkasko.unsafe</groupId>
         <artifactId>unsafe-tools</artifactId>
-        <version>1.2</version>
+        <version>1.2.1</version>
     </dependency>
 
 Off-heap memory, data structures, operations
@@ -69,7 +69,7 @@ Off-heap data structures have next distinctive features:
  - long indexed growing header-long_payload array-lists ([javadoc](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/offheap/OffHeapPayloadLongArrayList.html),
 [usage](https://github.com/alexkasko/unsafe-tools/blob/master/src/test/java/com/alexkasko/unsafe/offheap/OffHeapPayloadLongArrayListTest.java))
 
-Payloads are stored in memory next to headers. Byte arrays of arbitrary size be used as payloads for storing non-primitive values.
+Payloads are stored in memory next to headers. Byte arrays of arbitrary size may be used as payloads for storing non-primitive values.
 Special collections for `long` and `int` payloads should be faster than `byte[]` ones.
 
 ###Operations
@@ -96,6 +96,10 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 
 Changelog
 ---------
+
+**1.2.1** (2013-04-28)
+
+ * ranges support for binary search
 
 **1.2** (2013-04-25)
 

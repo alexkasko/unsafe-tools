@@ -5,8 +5,10 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Random;
 
+import static com.alexkasko.unsafe.offheap.OffHeapBinarySearch.binarySearchRange;
 import static com.alexkasko.unsafe.offheap.OffHeapUtils.free;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * User: alexkasko
@@ -40,6 +42,39 @@ public class OffHeapBinarySearchTest {
             long ind4243a = OffHeapBinarySearch.binarySearch(oha, val4243);
             assertEquals(ind4242e, ind4242a);
             assertEquals(ind4243e, ind4243a);
+        } finally {
+            free(oha);
+        }
+    }
+
+    @Test
+    public void testRange() {
+        OffHeapLongArray oha = null;
+        try {
+            oha = new OffHeapLongArray(6);
+            oha.set(0, 41);
+            oha.set(1, 41);
+            oha.set(2, 42);
+            oha.set(3, 42);
+            oha.set(4, 42);
+            oha.set(5, 43);
+            OffHeapBinarySearch.IndexRange range41 = binarySearchRange(oha, 41);
+            assertTrue(range41.isNotEmpty());
+            assertEquals("Start fail", 0, range41.getFromIndex());
+            assertEquals("Start fail", 1, range41.getToIndex());
+            OffHeapBinarySearch.IndexRange range42 = binarySearchRange(oha, 42);
+            assertTrue(range42.isNotEmpty());
+            assertEquals("Middle fail", 2, range42.getFromIndex());
+            assertEquals("Middle fail", 4, range42.getToIndex());
+            OffHeapBinarySearch.IndexRange range43 = binarySearchRange(oha, 43);
+            assertTrue(range43.isNotEmpty());
+            assertEquals("End fail", 5, range43.getFromIndex());
+            assertEquals("End fail", 5, range43.getToIndex());
+            OffHeapBinarySearch.IndexRange range44 = binarySearchRange(oha, 44);
+            assertTrue(range44.isEmpty());
+            assertTrue("Empty fail", range44.getFromIndex() == range44.getToIndex());
+            assertTrue("Empty fail", range44.getFromIndex() < 0);
+            assertTrue("Empty fail", range44.getToIndex() < 0);
         } finally {
             free(oha);
         }
