@@ -5,8 +5,6 @@ import sun.misc.Unsafe;
 import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static java.lang.Math.abs;
-
 /**
  * Implementation of {@link OffHeapMemory} using {@code sun.misc.Unsafe}
  *
@@ -81,10 +79,11 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
     public void put(long offset, byte[] buffer, int bufferOffset, int bytes) {
         assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
-        assert offset < length : offset;
+        assert offset <= length - bytes : offset;
         assert bufferOffset >= 0 : bufferOffset;
         assert bytes > 0 : bytes;
         assert bytes <= length : bytes;
+        assert null != buffer;
         assert bufferOffset <= buffer.length - bytes : bufferOffset;
         UNSAFE.copyMemory(buffer, BYTE_ARRAY_OFFSET + bufferOffset, null, address + offset, bytes);
     }
@@ -96,8 +95,8 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
     public void put(long offset, byte[] buffer) {
         assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
-        assert offset < length : offset;
         assert null != buffer;
+        assert offset <= length - buffer.length : offset;
         assert buffer.length <= length : buffer.length;
         UNSAFE.copyMemory(buffer, BYTE_ARRAY_OFFSET, null, address + offset, buffer.length);
     }
@@ -109,10 +108,11 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
     public void get(long offset, byte[] buffer, int bufferOffset, int bytes) {
         assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
-        assert offset < length : offset;
+        assert offset <= length - bytes : offset;
         assert bufferOffset >= 0 : bufferOffset;
         assert bytes > 0 : bytes;
         assert bytes <= length : bytes;
+        assert null != buffer;
         assert bufferOffset <= buffer.length - bytes : bufferOffset;
         UNSAFE.copyMemory(null, address + offset, buffer, BYTE_ARRAY_OFFSET + bufferOffset, bytes);
     }
@@ -124,8 +124,8 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
     public void get(long offset, byte[] buffer) {
         assert !disposed.get() : "disposed";
         assert offset >= 0 : offset;
-        assert offset < length : offset;
         assert null != buffer;
+        assert offset <= length - buffer.length : offset;
         assert buffer.length <= length : buffer.length;
         UNSAFE.copyMemory(null, address + offset, buffer, BYTE_ARRAY_OFFSET, buffer.length);
     }

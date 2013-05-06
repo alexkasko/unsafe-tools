@@ -13,7 +13,7 @@ Library has no third-party dependencies and is available in [Maven central](http
     <dependency>
         <groupId>com.alexkasko.unsafe</groupId>
         <artifactId>unsafe-tools</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.3</version>
     </dependency>
 
 Off-heap memory, data structures, operations
@@ -96,6 +96,10 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 
 Changelog
 ---------
+
+**1.2.3** (2013-05-06)
+
+ * improve `assert` checks for off-heap memory
 
 **1.2.2** (2013-04-28)
 
