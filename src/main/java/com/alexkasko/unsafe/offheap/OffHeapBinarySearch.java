@@ -70,7 +70,7 @@ public class OffHeapBinarySearch {
      *
      * @param collection the sorted array to search.
      * @param value the element to find.
-     * @return range of indices having given value or empty range
+     * @param out range instance, will be set with start/end indices having given value or with empty value
      */
     public static void binarySearchRange(OffHeapAddressable collection, long value, IndexRange out) {
         binarySearchRange(collection, 0, collection.size(), value, out);
@@ -86,7 +86,7 @@ public class OffHeapBinarySearch {
      * @param startIndex the inclusive start index.
      * @param endIndex   the exclusive end index.
      * @param value the element to find.
-     * @return range of indices having given value or empty range
+     * @param out range instance, will be set with start/end indices having given value or with empty value
      */
     public static void binarySearchRange(OffHeapAddressable collection, long startIndex, long endIndex,
                                                long value, IndexRange out) {
@@ -106,6 +106,7 @@ public class OffHeapBinarySearch {
 
     /**
      * {@link OffHeapAddressable} index range representation.
+     * Was made mutable to prevent new object instantiation for each search.
      * {@link #isEmpty()} method should be checked before accessing indices.
      * Empty range will contain negative equal indices which values are
      * {@code -index - 1} where the element would be inserted.
@@ -124,7 +125,9 @@ public class OffHeapBinarySearch {
         }
 
         /**
-         * Empty range constructor
+         * Sets value for empty range
+         *
+         * @param value negative value for empty range returned by search
          */
         private void setEmpty(long value) {
             this.empty = true;
@@ -133,7 +136,7 @@ public class OffHeapBinarySearch {
         }
 
         /**
-         * Non-empty range constructor
+         * Sets boundaries for non-empty range
          *
          * @param from start index
          * @param to end index

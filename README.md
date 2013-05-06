@@ -100,6 +100,7 @@ Changelog
 **1.2.3** (2013-05-06)
 
  * improve `assert` checks for off-heap memory
+ * binary search javadoc fixes
 
 **1.2.2** (2013-04-28)
 
