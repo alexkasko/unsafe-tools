@@ -117,6 +117,29 @@ public class OffHeapPayloadArray implements OffHeapPayloadAddressable, OffHeapDi
     }
 
     /**
+     * Copies payload data on provided index
+     *
+     * @param index collection index to set payload
+     * @param payload payload value
+     */
+    public void setPayload(long index, byte[] payload) {
+        long addr = index * elementLength;
+        ohm.put(addr + HEADER_LENGTH, payload);
+    }
+
+    /**
+     * Copies payload data on provided index
+     *
+     * @param index collection index to set payload
+     * @param payload payload value
+     * @param payloadPos payload offset
+     */
+    public void setPayload(long index, byte[] payload, int payloadPos) {
+        long addr = index * elementLength;
+        ohm.put(addr + HEADER_LENGTH, payload, payloadPos, payloadLength);
+    }
+
+    /**
      * Returns number of elements in array
      *
      * @return number of elements in array

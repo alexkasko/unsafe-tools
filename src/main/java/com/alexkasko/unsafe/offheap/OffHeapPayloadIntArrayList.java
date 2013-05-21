@@ -70,8 +70,8 @@ public class OffHeapPayloadIntArrayList implements OffHeapPayloadIntAddressable,
             oh.free();
             ohm = newOhm;
         }
-        set(s, header, payload);
         size = s + 1;
+        set(s, header, payload);
     }
 
     /**
@@ -106,9 +106,21 @@ public class OffHeapPayloadIntArrayList implements OffHeapPayloadIntAddressable,
      */
     @Override
     public void set(long index, long header, int payload) {
-        assert index <= size : index;
+        assert index < size : index;
         long addr = index * ELEMENT_LENGTH;
         ohm.putLong(addr, header);
+        ohm.putInt(addr + HEADER_LENGTH, payload);
+    }
+
+    /**
+     * Sets payload value on specified index
+     *
+     * @param index collection index to set payload
+     * @param payload payload value
+     */
+    public void setPayload(long index, int payload) {
+        assert index < size : index;
+        long addr = index * ELEMENT_LENGTH;
         ohm.putInt(addr + HEADER_LENGTH, payload);
     }
 

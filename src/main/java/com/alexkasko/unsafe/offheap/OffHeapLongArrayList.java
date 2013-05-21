@@ -57,8 +57,8 @@ public class OffHeapLongArrayList implements OffHeapLongAddressable, OffHeapDisp
             oh.free();
             ohm = newOhm;
         }
-        set(s, value);
         size = s + 1;
+        set(s, value);
     }
 
     /**
@@ -90,7 +90,7 @@ public class OffHeapLongArrayList implements OffHeapLongAddressable, OffHeapDisp
      */
     @Override
     public void set(long index, long value) {
-        assert index <= size : index;
+        assert index < size : index;
         ohm.putLong(index * ELEMENT_LENGTH, value);
     }
 

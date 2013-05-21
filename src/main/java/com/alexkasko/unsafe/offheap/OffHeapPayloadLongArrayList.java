@@ -70,8 +70,8 @@ public class OffHeapPayloadLongArrayList implements OffHeapPayloadLongAddressabl
             oh.free();
             ohm = newOhm;
         }
-        set(s, header, payload);
         size = s + 1;
+        set(s, header, payload);
     }
 
     /**
@@ -106,9 +106,21 @@ public class OffHeapPayloadLongArrayList implements OffHeapPayloadLongAddressabl
      */
     @Override
     public void set(long index, long header, long payload) {
-        assert index <= size : index;
+        assert index < size : index;
         long addr = index * ELEMENT_LENGTH;
         ohm.putLong(addr, header);
+        ohm.putLong(addr + HEADER_LENGTH, payload);
+    }
+
+    /**
+     * Sets payload value on specified index
+     *
+     * @param index collection index to set payload
+     * @param payload payload value
+     */
+    public void setPayload(long index, long payload) {
+        assert index < size : index;
+        long addr = index * ELEMENT_LENGTH;
         ohm.putLong(addr + HEADER_LENGTH, payload);
     }
 

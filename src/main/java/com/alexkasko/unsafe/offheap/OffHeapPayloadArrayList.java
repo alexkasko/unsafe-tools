@@ -59,14 +59,19 @@ public class OffHeapPayloadArrayList implements OffHeapPayloadAddressable, OffHe
         return ohm.isUnsafe();
     }
 
+    public void add(long header, byte[] payload) {
+        add(header, payload, 0);
+    }
+
     /**
      * Adds element to the end of this list. Memory area will be allocated another time and copied
      * on capacity exceed.
      *
      * @param header header to add
      * @param payload payload to add
+     * @param payloadPos payload offset
      */
-    public void add(long header, byte[] payload) {
+    public void add(long header, byte[] payload, int payloadPos) {
         OffHeapMemory oh = ohm;
         long s = size;
         if (s == capacity()) {
@@ -77,8 +82,8 @@ public class OffHeapPayloadArrayList implements OffHeapPayloadAddressable, OffHe
             oh.free();
             ohm = newOhm;
         }
-        set(s, header, payload);
         size = s + 1;
+        set(s, header, payload, payloadPos);
     }
 
     /**
@@ -136,7 +141,7 @@ public class OffHeapPayloadArrayList implements OffHeapPayloadAddressable, OffHe
      */
     @Override
     public void set(long index, long header, byte[] payload) {
-        assert index <= size : index;
+        assert index < size : index;
         long addr = index * elementLength;
         ohm.putLong(addr, header);
         ohm.put(addr + HEADER_LENGTH, payload);
@@ -151,11 +156,37 @@ public class OffHeapPayloadArrayList implements OffHeapPayloadAddressable, OffHe
      * @param payloadPos payload position
      */
     public void set(long index, long header, byte[] payload, int payloadPos) {
-        assert index <= size : index;
+        assert index < size : index;
         long addr = index * elementLength;
         ohm.putLong(addr, header);
         ohm.put(addr + HEADER_LENGTH, payload, payloadPos, payloadLength);
     }
+
+    /**
+     * Copies payload data on provided index
+     *
+     * @param index collection index to set payload
+     * @param payload payload value
+     */
+    public void setPayload(long index, byte[] payload) {
+        assert index < size : index;
+        long addr = index * elementLength;
+        ohm.put(addr + HEADER_LENGTH, payload);
+    }
+
+    /**
+     * Copies payload data on provided index
+     *
+     * @param index collection index to set payload
+     * @param payload payload value
+     * @param payloadPos payload offset
+     */
+    public void setPayload(long index, byte[] payload, int payloadPos) {
+        assert index < size : index;
+        long addr = index * elementLength;
+        ohm.put(addr + HEADER_LENGTH, payload, payloadPos, payloadLength);
+    }
+
 
     /**
      * Returns number of elements in list

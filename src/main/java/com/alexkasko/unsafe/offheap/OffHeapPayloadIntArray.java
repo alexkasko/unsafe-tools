@@ -76,6 +76,17 @@ public class OffHeapPayloadIntArray implements OffHeapPayloadIntAddressable, Off
     }
 
     /**
+     * Sets payload value on specified index
+     *
+     * @param index collection index to set payload
+     * @param payload payload value
+     */
+    public void setPayload(long index, int payload) {
+        long addr = index * ELEMENT_LENGTH;
+        ohm.putInt(addr + HEADER_LENGTH, payload);
+    }
+
+    /**
      * Returns number of elements in array
      *
      * @return number of elements in array
