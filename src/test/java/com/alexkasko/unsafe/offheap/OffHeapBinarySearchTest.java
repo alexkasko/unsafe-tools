@@ -1,5 +1,7 @@
 package com.alexkasko.unsafe.offheap;
 
+import com.alexkasko.unsafe.offheaplong.OffHeapLongArray;
+import com.alexkasko.unsafe.offheaplong.OffHeapLongSorter;
 import org.junit.Test;
 
 import java.util.Arrays;

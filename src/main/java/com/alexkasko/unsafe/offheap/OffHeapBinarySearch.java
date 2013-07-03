@@ -8,8 +8,8 @@ import java.io.Serializable;
  *
  * @author alexkasko
  * Date: 3/5/13
- * @see OffHeapLongSorter
- * @see OffHeapPayloadSorter
+ * @see com.alexkasko.unsafe.offheaplong.OffHeapLongSorter
+ * @see com.alexkasko.unsafe.offheappayload.OffHeapPayloadSorter
  */
 public class OffHeapBinarySearch {
     /**

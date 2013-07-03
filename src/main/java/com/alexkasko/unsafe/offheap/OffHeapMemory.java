@@ -14,7 +14,7 @@ package com.alexkasko.unsafe.offheap;
  * Unsafe implementation uses native endianness (LE on most platforms). Fallback implementation uses Little Endian byte order.
  *
  * Provides methods to access allocated memory. More complex data structures (off-heap quasi-objects) may be
- * constructed wrapping this class, see {@link OffHeapLongArray}.
+ * constructed wrapping this class, see {@link com.alexkasko.unsafe.offheaplong.OffHeapLongArray}.
  *
  * Memory may be freed manually calling {@link #free()} (thread-safe and may be called safely more than one time),
  * or it will be freed when {@link OffHeapMemory} instance itself will be garbage collected.
