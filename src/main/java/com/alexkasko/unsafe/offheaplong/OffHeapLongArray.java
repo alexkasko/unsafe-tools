@@ -3,6 +3,8 @@ package com.alexkasko.unsafe.offheaplong;
 import com.alexkasko.unsafe.offheap.OffHeapDisposable;
 import com.alexkasko.unsafe.offheap.OffHeapMemory;
 
+import java.util.Iterator;
+
 /**
  * Implementation of array of long using {@link com.alexkasko.unsafe.offheap.OffHeapMemory}.
  *
@@ -15,10 +17,13 @@ import com.alexkasko.unsafe.offheap.OffHeapMemory;
  * and may be called multiple times) or it will be freed after {@link OffHeapLongArray}
  * will be garbage collected.
  *
+ * Note: while class implements Iterable, iterator will create new autoboxed Long object
+ * <b>on every</b> {@code next()} call, this behaviour is inevitable with iterators in java 6/7.
+ *
  * @author alexkasko
  * Date: 2/22/13
  */
-public class OffHeapLongArray implements OffHeapLongAddressable, OffHeapDisposable {
+public class OffHeapLongArray implements OffHeapLongAddressable, OffHeapDisposable, Iterable<Long> {
     private static final int ELEMENT_LENGTH = 8;
 
     private final OffHeapMemory ohm;
@@ -78,6 +83,14 @@ public class OffHeapLongArray implements OffHeapLongAddressable, OffHeapDisposab
      */
     public void free() {
         ohm.free();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterator<Long> iterator() {
+        return new OffHeapLongIterator(this);
     }
 
     /**
