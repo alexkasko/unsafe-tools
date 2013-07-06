@@ -13,62 +13,44 @@ Library has no third-party dependencies and is available in [Maven central](http
     <dependency>
         <groupId>com.alexkasko.unsafe</groupId>
         <artifactId>unsafe-tools</artifactId>
-        <version>1.2.4</version>
+        <version>1.3.0</version>
     </dependency>
 
 Off-heap memory, data structures, operations
 --------------------------------------------
 
-JVM allows to allocate and use memory outside of java heap. Such off-heap memory is not managed by garbage collector and may be allocated using
-public API: [ByteBuffer.allocateDirect](http://docs.oracle.com/javase/6/docs/api/java/nio/ByteBuffer.html#allocateDirect%28int%29).
-In OpenJDK (and in Oracle java) direct bytes buffers use `sun.misc.Unsafe` under the hood to work with off-heap memory.
+JVM allows to allocate and use memory outside of java heap. Such off-heap memory may be allocated/used/deallocated
+without additional load on garbage collector.
 
 ###Off-heap memory management
 
-All off-heap data structures in this library are based on [OffHeapMemory](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/offheap/OffHeapMemory.html).
-It has two implementations:
+Off-heap memory manager implemented as a thin wrapper over `sun.misc.Unsafe`. Other data structures implemented on top of it.
 
- - main implementation: thin wrapper over `sun.misc.Unsafe` with boundary checks using `assert` keyword
- - fallback implementation: wrapper over `ByteBuffer.allocateDirect`
+See `com.alexkasko.unsafe.offheap` [package description](http://alexkasko.github.io/unsafe-tools/com/alexkasko/unsafe/offheap/package-summary.html)
+for details.
 
-Both implementations have the same methods, but `DirectByteBuffer` (fallback) implementation has some drawbacks and
-should be used only if proper implementation of `sun.misc.Unsafe` is not available in runtime (i.e. in Android's Dalvik VM):
+###Off-heap collections of longs
 
- - mandatory boundary checks
- - each memory allocation is limited by `Integer.MAX_VALUE`
- - by default off-heap memory is freed only when `DirectByteBuffer` is garbage collector; this library uses
-  reflection hacks (different for OpenJDK and Android implementations) to free memory eagerly
+Maximum array length in Java is bounded by `Integer.MAX_VALUE`. This library provides long-sized fixed and growing arrays of longs.
 
-###Off-heap data structures
+See `com.alexkasko.unsafe.offheaplong` [package description](http://alexkasko.github.io/unsafe-tools/com/alexkasko/unsafe/offheaplong/package-summary.html)
+for details.
 
-Off-heap data structures have next distinctive features:
+###Off-heap collections of structs (memory areas)
 
- - off-heap collections may use long indexes (not bounded by `Integer.MAX_VALUE`)
- - GC doesn't know about allocated memory so you can allocate gigabytes of memory without additional load on GC
- - memory may be freed to OS eagerly (it's not mandatory, `OffHeapMemory` will free memory when it's instance will be garbage collected)
+Equal-sized memory areas may be stored in off-heap memory contiguously as collections. Such memory areas also may be used
+like C structs (without compiler checks, though). Sorting and searching of these collections may be done using arbitrary
+(int or long) "fields" of such "structs".
 
-**Off-heap collections with `long` elements:**
+See `com.alexkasko.unsafe.offheapstruct` [package description](http://alexkasko.github.io/unsafe-tools/com/alexkasko/unsafe/offheapstruct/package-summary.html)
+for details.
 
- - long indexed fixed-size arrays of `long` ([javadoc](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/offheap/OffHeapLongArray.html),
-[usage](https://github.com/alexkasko/unsafe-tools/blob/master/src/test/java/com/alexkasko/unsafe/offheap/OffHeapLongArrayTest.java))
- - long indexed growing array-lists of `long` ([javadoc](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/offheap/OffHeapLongArrayList.html),
-[usage](https://github.com/alexkasko/unsafe-tools/blob/master/src/test/java/com/alexkasko/unsafe/offheap/OffHeapLongArrayListTest.java))
+###Off-heap header-payload collections
 
-**Off-heap collections where each element contains `long` 'header' and an additional 'payload' value:**
+_Note: header-payload collections were deprecated in favor of struct collections._
 
- - long indexed fixed-size header-payload (each element contain `long` header and `byte[]` payload) arrays ([javadoc](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/offheap/OffHeapPayloadArray.html),
-[usage](https://github.com/alexkasko/unsafe-tools/blob/master/src/test/java/com/alexkasko/unsafe/offheap/OffHeapPayloadArrayTest.java))
- - long indexed growing header-payload array-lists ([javadoc](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/offheap/OffHeapPayloadArrayList.html),
-[usage](https://github.com/alexkasko/unsafe-tools/blob/master/src/test/java/com/alexkasko/unsafe/offheap/OffHeapPayloadArrayListTest.java))
- - long indexed fixed-size header-int_payload (each element contain `long` header and `int` payload) arrays ([javadoc](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/offheap/OffHeapPayloadIntArray.html),
-[usage](https://github.com/alexkasko/unsafe-tools/blob/master/src/test/java/com/alexkasko/unsafe/offheap/OffHeapPayloadIntArrayTest.java))
- - long indexed growing header-int_payload array-lists ([javadoc](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/offheap/OffHeapPayloadIntArrayList.html),
-[usage](https://github.com/alexkasko/unsafe-tools/blob/master/src/test/java/com/alexkasko/unsafe/offheap/OffHeapPayloadIntArrayListTest.java))
- - long indexed fixed-size header-long_payload (each element contain `long` header and `long` payload) arrays ([javadoc](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/offheap/OffHeapPayloadLongArray.html),
-[usage](https://github.com/alexkasko/unsafe-tools/blob/master/src/test/java/com/alexkasko/unsafe/offheap/OffHeapPayloadLongArrayTest.java))
- - long indexed growing header-long_payload array-lists ([javadoc](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/offheap/OffHeapPayloadLongArrayList.html),
-[usage](https://github.com/alexkasko/unsafe-tools/blob/master/src/test/java/com/alexkasko/unsafe/offheap/OffHeapPayloadLongArrayListTest.java))
-
+In [header-payload collections](http://alexkasko.github.io/unsafe-tools/com/alexkasko/unsafe/offheappayload/package-summary.html)
+each element contains long header (which is used for sorting and searching) and an additional payload.
 Payloads are stored in memory next to headers. Byte arrays of arbitrary size may be used as payloads for storing non-primitive values.
 Special collections for `long` and `int` payloads should be faster than `byte[]` ones.
 
@@ -76,18 +58,17 @@ Special collections for `long` and `int` payloads should be faster than `byte[]`
 
 Next operations are implemented for all off-heap data structures:
 
- - Dual-Pivot Quicksort implementation, adapted from [here](https://android.googlesource.com/platform/libcore/+/android-4.2.2_r1/luni/src/main/java/java/util/DualPivotQuicksort.java)
- - Binary Search implementation, adapted from [here](https://android.googlesource.com/platform/libcore/+/android-4.2.2_r1/luni/src/main/java/java/util/Arrays.java)
+ - Dual-Pivot Quicksort implementation, adapted from [here](https://android.googlesource.com/platform/libcore/+/android-4.2.2_r1/luni/src/main/java/java/util/DualPivotQuicksort.java).
+ - Binary Search implementation, adapted from [here](https://android.googlesource.com/platform/libcore/+/android-4.2.2_r1/luni/src/main/java/java/util/Arrays.java).
 
 Byte array tool
 ---------------
 
 `sun.misc.Unsafe` may be used for writing/reading primitive values to/from byte arrays and to copying memory between byte arrays.
-Such operations use platform byte order (little endian usually) and does not have boundary checks.
+Byte array tool is implemented on top of it.
 
-`ByteArrayTool` ([javadoc](http://alexkasko.github.com/unsafe-tools/com/alexkasko/unsafe/bytearray/ByteArrayTool.html),
-[usage](https://github.com/alexkasko/unsafe-tools/blob/master/src/test/java/com/alexkasko/unsafe/bytearray/ByteArrayToolTest.java))
-was created on top of such operations with `assert` boundary checks. It uses little endian bit-shifting as fallback implementation.
+See `com.alexkasko.unsafe.bytearray` [package description](http://alexkasko.github.io/unsafe-tools/com/alexkasko/unsafe/bytearray/package-summary.html)
+for details.
 
 License information
 -------------------
@@ -96,6 +77,12 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 
 Changelog
 ---------
+
+**1.3.0** (2013-07-07)
+
+ * packages changed
+ * struct collectons added
+ * payload collections deprecated
 
 **1.2.4** (2013-05-21)
 
