@@ -14,18 +14,8 @@
  * limitations under the License.
  */
 
-package com.alexkasko.unsafe.offheap;
-
 /**
- * Basic interface for off-heap classes that support manual memory freeing.
- * Not freed memory will be released on {@link OffHeapMemory} (impl) instances garbage collection.
- *
- * @author alexkasko
- * Date: 3/5/13
+ * All classes from this package are deprecated, use {@link com.alexkasko.unsafe.offheapstruct} package instead.
  */
-public interface OffHeapDisposable {
-    /**
-     * Frees allocated memory, may be called multiple times from any thread
-     */
-    void free();
-}
+
+package com.alexkasko.unsafe.offheappayload;

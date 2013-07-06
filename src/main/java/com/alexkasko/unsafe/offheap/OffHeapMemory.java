@@ -1,22 +1,38 @@
+/*
+ * Copyright 2013 Alex Kasko (alexkasko.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.alexkasko.unsafe.offheap;
 
 /**
- * Allocates an area of off-heap memory that is not a subject to GC.
+ * <p>Allocates an area of off-heap memory that is not a subject to GC.
  * Default implementation uses {@code sun.misc.Unsafe}, with all operations guarded with {@code assert}
  * boundary checks.
  * With assert enabled in runtime ({@code -ea} java switch) {@link AssertionError}
  * will be thrown on illegal input. Without assertions illegal input will crash JVM.
  *
- * Fallback implementation uses {@link java.nio.ByteBuffer#allocateDirect(int)} that may (OpenJDK)
+ * <p>Fallback implementation uses {@link java.nio.ByteBuffer#allocateDirect(int)} that may (OpenJDK)
  * or may not (Dalvik) use {@code sun.misc.Unsafe} under the hood.
  * Note: only unsafe implementation ({@link #allocateMemoryUnsafe(long)}) may use memory areas longer than {@code Integer.MAX_VALUE}
  *
- * Unsafe implementation uses native endianness (LE on most platforms). Fallback implementation uses Little Endian byte order.
+ * <p>Unsafe implementation uses native endianness (LE on most platforms). Fallback implementation uses Little Endian byte order.
  *
- * Provides methods to access allocated memory. More complex data structures (off-heap quasi-objects) may be
+ * <p>Provides methods to access allocated memory. More complex data structures (off-heap quasi-objects) may be
  * constructed wrapping this class, see {@link com.alexkasko.unsafe.offheaplong.OffHeapLongArray}.
  *
- * Memory may be freed manually calling {@link #free()} (thread-safe and may be called safely more than one time),
+ * <p>Memory may be freed manually calling {@link #free()} (thread-safe and may be called safely more than one time),
  * or it will be freed when {@link OffHeapMemory} instance itself will be garbage collected.
  *
  * @author alexkasko

@@ -135,6 +135,7 @@
                         <configuration>
                             <linksource>true</linksource>
                             <quiet>true</quiet>
+                            <show>private</show>
                         </configuration>
                     </execution>
                 </executions>

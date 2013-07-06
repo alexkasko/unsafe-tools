@@ -1,3 +1,19 @@
+/*
+ * Copyright 2013 Alex Kasko (alexkasko.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.alexkasko.unsafe.offheaplong;
 
 import com.alexkasko.unsafe.offheap.OffHeapDisposable;
@@ -6,18 +22,18 @@ import com.alexkasko.unsafe.offheap.OffHeapMemory;
 import java.util.Iterator;
 
 /**
- * Implementation of array of long using {@link com.alexkasko.unsafe.offheap.OffHeapMemory}.
+ * <p>Implementation of array of long using {@link com.alexkasko.unsafe.offheap.OffHeapMemory}.
  *
- * Default implementation uses {@code sun.misc.Unsafe}, with all operations guarded with {@code assert} keyword.
+ * <p>Default implementation uses {@code sun.misc.Unsafe}, with all operations guarded with {@code assert} keyword.
  * With assertions enabled in runtime ({@code -ea} java switch) {@link AssertionError}
  * will be thrown on illegal index access. Without assertions illegal index will crash JVM.
  *
- * Array won't be zeroed after creation (will contain garbage by default).
+ * <p>Array won't be zeroed after creation (will contain garbage by default).
  * Allocated memory may be freed manually using {@link #free()} (thread-safe
  * and may be called multiple times) or it will be freed after {@link OffHeapLongArray}
  * will be garbage collected.
  *
- * Note: while class implements Iterable, iterator will create new autoboxed Long object
+ * <p>Note: while class implements Iterable, iterator will create new autoboxed Long object
  * <b>on every</b> {@code next()} call, this behaviour is inevitable with iterators in java 6/7.
  *
  * @author alexkasko
