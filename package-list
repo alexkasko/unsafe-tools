@@ -1,2 +1,5 @@
 com.alexkasko.unsafe.bytearray
 com.alexkasko.unsafe.offheap
+com.alexkasko.unsafe.offheaplong
+com.alexkasko.unsafe.offheappayload
+com.alexkasko.unsafe.offheapstruct
