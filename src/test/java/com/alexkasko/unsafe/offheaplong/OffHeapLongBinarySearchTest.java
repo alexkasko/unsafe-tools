@@ -1,5 +1,6 @@
-package com.alexkasko.unsafe.offheap;
+package com.alexkasko.unsafe.offheaplong;
 
+import com.alexkasko.unsafe.offheaplong.OffHeapLongBinarySearch;
 import com.alexkasko.unsafe.offheaplong.OffHeapLongArray;
 import com.alexkasko.unsafe.offheaplong.OffHeapLongSorter;
 import org.junit.Test;
@@ -7,7 +8,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Random;
 
-import static com.alexkasko.unsafe.offheap.OffHeapBinarySearch.binarySearchRange;
+import static com.alexkasko.unsafe.offheaplong.OffHeapLongBinarySearch.binarySearchRange;
 import static com.alexkasko.unsafe.offheap.OffHeapUtils.free;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -16,7 +17,7 @@ import static junit.framework.Assert.assertTrue;
  * User: alexkasko
  * Date: 3/5/13
  */
-public class OffHeapBinarySearchTest {
+public class OffHeapLongBinarySearchTest {
 //    private static final int LENGTH = 1000000;
     private static final int LENGTH = 10000;
 
@@ -39,9 +40,9 @@ public class OffHeapBinarySearchTest {
             Arrays.sort(arr);
             OffHeapLongSorter.sort(oha);
             long ind4242e = Arrays.binarySearch(arr, val4242);
-            long ind4242a = OffHeapBinarySearch.binarySearch(oha, val4242);
+            long ind4242a = OffHeapLongBinarySearch.binarySearch(oha, val4242);
             long ind4243e = Arrays.binarySearch(arr, val4243);
-            long ind4243a = OffHeapBinarySearch.binarySearch(oha, val4243);
+            long ind4243a = OffHeapLongBinarySearch.binarySearch(oha, val4243);
             assertEquals(ind4242e, ind4242a);
             assertEquals(ind4243e, ind4243a);
         } finally {
@@ -60,22 +61,22 @@ public class OffHeapBinarySearchTest {
             oha.set(3, 42);
             oha.set(4, 42);
             oha.set(5, 43);
-            OffHeapBinarySearch.IndexRange range41 = new OffHeapBinarySearch.IndexRange();
+            OffHeapLongBinarySearch.IndexRange range41 = new OffHeapLongBinarySearch.IndexRange();
             binarySearchRange(oha, 41, range41);
             assertTrue(range41.isNotEmpty());
             assertEquals("Start fail", 0, range41.getFromIndex());
             assertEquals("Start fail", 1, range41.getToIndex());
-            OffHeapBinarySearch.IndexRange range42 = new OffHeapBinarySearch.IndexRange();
+            OffHeapLongBinarySearch.IndexRange range42 = new OffHeapLongBinarySearch.IndexRange();
             binarySearchRange(oha, 42, range42);
             assertTrue(range42.isNotEmpty());
             assertEquals("Middle fail", 2, range42.getFromIndex());
             assertEquals("Middle fail", 4, range42.getToIndex());
-            OffHeapBinarySearch.IndexRange range43 = new OffHeapBinarySearch.IndexRange();
+            OffHeapLongBinarySearch.IndexRange range43 = new OffHeapLongBinarySearch.IndexRange();
             binarySearchRange(oha, 43, range43);
             assertTrue(range43.isNotEmpty());
             assertEquals("End fail", 5, range43.getFromIndex());
             assertEquals("End fail", 5, range43.getToIndex());
-            OffHeapBinarySearch.IndexRange range44 = new OffHeapBinarySearch.IndexRange();
+            OffHeapLongBinarySearch.IndexRange range44 = new OffHeapLongBinarySearch.IndexRange();
             binarySearchRange(oha, 44, range44);
             assertTrue(range44.isEmpty());
             assertTrue("Empty fail", range44.getFromIndex() == range44.getToIndex());

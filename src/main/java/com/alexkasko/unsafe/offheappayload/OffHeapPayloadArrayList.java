@@ -22,6 +22,7 @@ import com.alexkasko.unsafe.offheap.OffHeapMemory;
  * @author alexkasko
  * Date: 3/4/13
  */
+@Deprecated // use offheapstruct package
 public class OffHeapPayloadArrayList implements OffHeapPayloadAddressable, OffHeapDisposable {
     private static final int MIN_CAPACITY_INCREMENT = 12;
     private static final int HEADER_LENGTH = 8;
@@ -62,6 +63,13 @@ public class OffHeapPayloadArrayList implements OffHeapPayloadAddressable, OffHe
         return ohm.isUnsafe();
     }
 
+    /**
+     * Adds element to the end of this list. Memory area will be allocated another time and copied
+     * on capacity exceed.
+     *
+     * @param header header to add
+     * @param payload payload to add
+     */
     public void add(long header, byte[] payload) {
         add(header, payload, 0);
     }

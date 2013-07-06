@@ -16,6 +16,7 @@ package com.alexkasko.unsafe.offheappayload;
  *
  * @version 2009.11.29 m765.827.12i
  */
+@Deprecated // use offheapstruct package
 public class OffHeapPayloadSorter {
 
     /**

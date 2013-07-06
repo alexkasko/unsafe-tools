@@ -19,6 +19,7 @@ import com.alexkasko.unsafe.offheap.OffHeapMemory;
  * @author alexkasko
  * Date: 4/24/13
  */
+@Deprecated // use offheapstruct package
 public class OffHeapPayloadIntArray implements OffHeapPayloadIntAddressable, OffHeapDisposable {
     private static final int HEADER_LENGTH = 8;
     private static final int ELEMENT_LENGTH = 12;

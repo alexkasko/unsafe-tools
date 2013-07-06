@@ -13,12 +13,13 @@ import com.alexkasko.unsafe.offheap.OffHeapMemory;
  *
  * Array won't be zeroed after creation (will contain garbage by default).
  * Allocated memory may be freed manually using {@link #free()} (thread-safe
- * and may be called multiple times) or it will be freed after {@link com.alexkasko.unsafe.offheaplong.OffHeapLongArray}
+ * and may be called multiple times) or it will be freed after {@link OffHeapPayloadArray} instance
  * will be garbage collected.
  *
  * @author alexkasko
  * Date: 3/3/13
  */
+@Deprecated // use offheapstruct package
 public class OffHeapPayloadArray implements OffHeapPayloadAddressable, OffHeapDisposable {
     private static final int HEADER_LENGTH = 8;
 

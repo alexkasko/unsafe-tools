@@ -1,7 +1,7 @@
 package com.alexkasko.unsafe.offheap;
 
 /**
- * Basic interface for off-heap long-indexed collections. Required for {@link OffHeapBinarySearch}.
+ * Basic interface for off-heap long-indexed collections. Required for {@link com.alexkasko.unsafe.offheaplong.OffHeapLongBinarySearch}.
  *
  * @author alexkasko
  * Date: 3/5/13

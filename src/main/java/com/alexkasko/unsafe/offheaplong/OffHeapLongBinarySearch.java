@@ -1,17 +1,19 @@
-package com.alexkasko.unsafe.offheap;
+package com.alexkasko.unsafe.offheaplong;
+
+import com.alexkasko.unsafe.offheap.OffHeapAddressable;
 
 import java.io.Serializable;
 
 /**
  * Binary search implementation borrowed from {@code https://android.googlesource.com/platform/libcore/+/android-4.2.2_r1/luni/src/main/java/java/util/Arrays.java}
- * and adapted to {@link OffHeapAddressable}
+ * and adapted to {@link com.alexkasko.unsafe.offheap.OffHeapAddressable}
  *
  * @author alexkasko
  * Date: 3/5/13
  * @see com.alexkasko.unsafe.offheaplong.OffHeapLongSorter
  * @see com.alexkasko.unsafe.offheappayload.OffHeapPayloadSorter
  */
-public class OffHeapBinarySearch {
+public class OffHeapLongBinarySearch {
     /**
      * Performs a binary search for {@code value} in the ascending sorted off-heap collection.
      * Searching in an unsorted collection has an undefined result. It's also undefined which element

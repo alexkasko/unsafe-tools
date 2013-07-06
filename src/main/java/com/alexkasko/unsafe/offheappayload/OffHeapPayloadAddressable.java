@@ -8,6 +8,7 @@ import com.alexkasko.unsafe.offheap.OffHeapAddressable;
  * @author alexkasko
  * Date: 3/4/13
  */
+@Deprecated // use offheapstruct package
 public interface OffHeapPayloadAddressable extends OffHeapAddressable {
 
     /**

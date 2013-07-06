@@ -22,6 +22,7 @@ import com.alexkasko.unsafe.offheap.OffHeapMemory;
  * @author alexkasko
  * Date: 4/24/13
  */
+@Deprecated // use offheapstruct package
 public class OffHeapPayloadLongArrayList implements OffHeapPayloadLongAddressable, OffHeapDisposable {
     private static final int MIN_CAPACITY_INCREMENT = 12;
     private static final int HEADER_LENGTH = 8;
