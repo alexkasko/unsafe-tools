@@ -16,8 +16,6 @@
 
 package com.alexkasko.unsafe.offheapstruct;
 
-import com.alexkasko.unsafe.offheap.OffHeapAddressable;
-
 /**
  * Base interface for off-heap struct (memory areas of equal sizes) collection.
  *

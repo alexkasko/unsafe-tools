@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 /**
  * Binary search implementation borrowed from {@code https://android.googlesource.com/platform/libcore/+/android-4.2.2_r1/luni/src/main/java/java/util/Arrays.java}
- * and adapted to {@link com.alexkasko.unsafe.offheap.OffHeapAddressable}
+ * and adapted to {@link com.alexkasko.unsafe.offheapstruct.OffHeapStructCollection}
  *
  * @author alexkasko
  * Date: 7/4/13
@@ -29,105 +29,9 @@ import java.io.Serializable;
  */
 public class OffHeapStructBinarySearch {
 
-    // int key part
-
-    /**
-     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using int struct key.
-     * Searching in an unsorted collection has an undefined result. It's also undefined which element
-     * is found if there are multiple occurrences of the same element.
-     *
-     * @param collection the sorted array to search.
-     * @param value the element to find.
-     * @param keyOffset int key field offset within stuct bounds
-     * @return the non-negative index of the element, or a negative index which
-     *         is {@code -index - 1} where the element would be inserted.
-     */
-    public static long binarySearchByIntKey(OffHeapStructCollection collection, long value, int keyOffset) {
-        return binarySearchByIntKey(collection, 0, collection.size(), value, keyOffset);
-    }
-
-    /**
-     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using int struct key.
-     * in the range specified by fromIndex (inclusive) and toIndex (exclusive).
-     * Searching in an unsorted collection has an undefined result. It's also undefined which element
-     * is found if there are multiple occurrences of the same element.
-     *
-     * @param collection      the sorted collection to search.
-     * @param startIndex the inclusive start index.
-     * @param endIndex   the exclusive end index.
-     * @param value      the element to find.
-     * @param keyOffset  int key field offset within stuct bounds
-     * @return the non-negative index of the element, or a negative index which
-     *         is {@code -index - 1} where the element would be inserted.
-     * @throws IllegalArgumentException {@code if (startIndex < 0 || startIndex > endIndex || endIndex > collection.size()}
-     */
-    public static long binarySearchByIntKey(OffHeapStructCollection collection, long startIndex, long endIndex, long value, int keyOffset) {
-        if (startIndex < 0 || startIndex > endIndex || endIndex > collection.size()) {
-            throw new IllegalArgumentException("Illegal input, collection size: [" + collection.size() + "], " +
-                    "startIndex: [" + startIndex + "], endIndex: [" + endIndex + "]");
-        }
-        long lo = startIndex;
-        long hi = endIndex - 1;
-        while (lo <= hi) {
-            long mid = (lo + hi) >>> 1;
-            long midVal = collection.getInt(mid, keyOffset);
-
-            if (midVal < value) {
-                lo = mid + 1;
-            } else if (midVal > value) {
-                hi = mid - 1;
-            } else {
-                return mid;  // value found
-            }
-        }
-        return ~lo;  // value not present
-    }
-
-    /**
-     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using int struct key.
-     * Returns range of indices having given value or empty range.
-     * Searching in an unsorted collection has an undefined result. It's also undefined which element
-     * is found if there are multiple occurrences of the same element.
-     *
-     * @param collection the sorted array to search.
-     * @param value the element to find.
-     * @param keyOffset  int key field offset within stuct bounds
-     * @param out range instance, will be set with start/end indices having given value or with empty value
-     */
-    public static void binarySearchRangeByIntKey(OffHeapStructCollection collection, long value, int keyOffset, IndexRange out) {
-        binarySearchRangeByIntKey(collection, 0, collection.size(), value, keyOffset, out);
-    }
-
-    /**
-     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using int struct key.
-     * Returns range of indices having given value or empty range.
-     * Searching in an unsorted collection has an undefined result. It's also undefined which element
-     * is found if there are multiple occurrences of the same element.
-     *
-     * @param collection the sorted array to search.
-     * @param startIndex the inclusive start index.
-     * @param endIndex   the exclusive end index.
-     * @param value the element to find.
-     * @param keyOffset  int key field offset within stuct bounds
-     * @param out range instance, will be set with start/end indices having given value or with empty value
-     */
-    public static void binarySearchRangeByIntKey(OffHeapStructCollection collection, long startIndex, long endIndex,
-                                               long value, int keyOffset, IndexRange out) {
-        long ind = binarySearchByIntKey(collection, startIndex, endIndex, value, keyOffset);
-        if(ind < 0) {
-            out.setEmpty(ind);
-            return;
-        }
-        long from = ind;
-        while (from >= startIndex && value == collection.getInt(from, keyOffset)) from -= 1;
-        from += 1;
-        long to = ind;
-        while (to < endIndex && value == collection.getInt(to, keyOffset)) to += 1;
-        to -= 1;
-        out.set(from, to);
-    }
 
     // long key part
+
 
     /**
      * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using long struct key.
@@ -224,6 +128,307 @@ public class OffHeapStructBinarySearch {
         to -= 1;
         out.set(from, to);
     }
+
+
+    // int key part
+
+
+    /**
+     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using int struct key.
+     * Searching in an unsorted collection has an undefined result. It's also undefined which element
+     * is found if there are multiple occurrences of the same element.
+     *
+     * @param collection the sorted array to search.
+     * @param value the element to find.
+     * @param keyOffset int key field offset within stuct bounds
+     * @return the non-negative index of the element, or a negative index which
+     *         is {@code -index - 1} where the element would be inserted.
+     */
+    public static long binarySearchByIntKey(OffHeapStructCollection collection, long value, int keyOffset) {
+        return binarySearchByIntKey(collection, 0, collection.size(), value, keyOffset);
+    }
+
+    /**
+     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using int struct key.
+     * in the range specified by fromIndex (inclusive) and toIndex (exclusive).
+     * Searching in an unsorted collection has an undefined result. It's also undefined which element
+     * is found if there are multiple occurrences of the same element.
+     *
+     * @param collection      the sorted collection to search.
+     * @param startIndex the inclusive start index.
+     * @param endIndex   the exclusive end index.
+     * @param value      the element to find.
+     * @param keyOffset  int key field offset within stuct bounds
+     * @return the non-negative index of the element, or a negative index which
+     *         is {@code -index - 1} where the element would be inserted.
+     * @throws IllegalArgumentException {@code if (startIndex < 0 || startIndex > endIndex || endIndex > collection.size()}
+     */
+    public static long binarySearchByIntKey(OffHeapStructCollection collection, long startIndex, long endIndex, long value, int keyOffset) {
+        if (startIndex < 0 || startIndex > endIndex || endIndex > collection.size()) {
+            throw new IllegalArgumentException("Illegal input, collection size: [" + collection.size() + "], " +
+                    "startIndex: [" + startIndex + "], endIndex: [" + endIndex + "]");
+        }
+        long lo = startIndex;
+        long hi = endIndex - 1;
+        while (lo <= hi) {
+            long mid = (lo + hi) >>> 1;
+            long midVal = collection.getInt(mid, keyOffset);
+
+            if (midVal < value) {
+                lo = mid + 1;
+            } else if (midVal > value) {
+                hi = mid - 1;
+            } else {
+                return mid;  // value found
+            }
+        }
+        return ~lo;  // value not present
+    }
+
+    /**
+     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using int struct key.
+     * Returns range of indices having given value or empty range.
+     * Searching in an unsorted collection has an undefined result. It's also undefined which element
+     * is found if there are multiple occurrences of the same element.
+     *
+     * @param collection the sorted array to search.
+     * @param value the element to find.
+     * @param keyOffset int key field offset within stuct bounds
+     * @param out range instance, will be set with start/end indices having given value or with empty value
+     */
+    public static void binarySearchRangeByIntKey(OffHeapStructCollection collection, long value, int keyOffset, IndexRange out) {
+        binarySearchRangeByIntKey(collection, 0, collection.size(), value, keyOffset, out);
+    }
+
+    /**
+     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using int struct key.
+     * Returns range of indices having given value or empty range.
+     * Searching in an unsorted collection has an undefined result. It's also undefined which element
+     * is found if there are multiple occurrences of the same element.
+     *
+     * @param collection the sorted array to search.
+     * @param startIndex the inclusive start index.
+     * @param endIndex   the exclusive end index.
+     * @param value the element to find.
+     * @param keyOffset  int key field offset within stuct bounds
+     * @param out range instance, will be set with start/end indices having given value or with empty value
+     */
+    public static void binarySearchRangeByIntKey(OffHeapStructCollection collection, long startIndex, long endIndex,
+                                               long value, int keyOffset, IndexRange out) {
+        long ind = binarySearchByIntKey(collection, startIndex, endIndex, value, keyOffset);
+        if(ind < 0) {
+            out.setEmpty(ind);
+            return;
+        }
+        long from = ind;
+        while (from >= startIndex && value == collection.getInt(from, keyOffset)) from -= 1;
+        from += 1;
+        long to = ind;
+        while (to < endIndex && value == collection.getInt(to, keyOffset)) to += 1;
+        to -= 1;
+        out.set(from, to);
+    }
+
+
+    // short key part
+
+
+    /**
+     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using short struct key.
+     * Searching in an unsorted collection has an undefined result. It's also undefined which element
+     * is found if there are multiple occurrences of the same element.
+     *
+     * @param collection the sorted array to search.
+     * @param value the element to find.
+     * @param keyOffset short key field offset within stuct bounds
+     * @return the non-negative index of the element, or a negative index which
+     *         is {@code -index - 1} where the element would be inserted.
+     */
+    public static long binarySearchByShortKey(OffHeapStructCollection collection, short value, int keyOffset) {
+        return binarySearchByShortKey(collection, 0, collection.size(), value, keyOffset);
+    }
+
+    /**
+     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using short struct key.
+     * in the range specified by fromIndex (inclusive) and toIndex (exclusive).
+     * Searching in an unsorted collection has an undefined result. It's also undefined which element
+     * is found if there are multiple occurrences of the same element.
+     *
+     * @param collection      the sorted collection to search.
+     * @param startIndex the inclusive start index.
+     * @param endIndex   the exclusive end index.
+     * @param value      the element to find.
+     * @param keyOffset  short key field offset within stuct bounds
+     * @return the non-negative index of the element, or a negative index which
+     *         is {@code -index - 1} where the element would be inserted.
+     * @throws IllegalArgumentException {@code if (startIndex < 0 || startIndex > endIndex || endIndex > collection.size()}
+     */
+    public static long binarySearchByShortKey(OffHeapStructCollection collection, long startIndex, long endIndex, short value, int keyOffset) {
+        if (startIndex < 0 || startIndex > endIndex || endIndex > collection.size()) {
+            throw new IllegalArgumentException("Illegal input, collection size: [" + collection.size() + "], " +
+                    "startIndex: [" + startIndex + "], endIndex: [" + endIndex + "]");
+        }
+        long lo = startIndex;
+        long hi = endIndex - 1;
+        while (lo <= hi) {
+            long mid = (lo + hi) >>> 1;
+            long midVal = collection.getShort(mid, keyOffset);
+
+            if (midVal < value) {
+                lo = mid + 1;
+            } else if (midVal > value) {
+                hi = mid - 1;
+            } else {
+                return mid;  // value found
+            }
+        }
+        return ~lo;  // value not present
+    }
+
+    /**
+     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using short struct key.
+     * Returns range of indices having given value or empty range.
+     * Searching in an unsorted collection has an undefined result. It's also undefined which element
+     * is found if there are multiple occurrences of the same element.
+     *
+     * @param collection the sorted array to search.
+     * @param value the element to find.
+     * @param keyOffset  short key field offset within stuct bounds
+     * @param out range instance, will be set with start/end indices having given value or with empty value
+     */
+    public static void binarySearchRangeByShortKey(OffHeapStructCollection collection, short value, int keyOffset, IndexRange out) {
+        binarySearchRangeByShortKey(collection, 0, collection.size(), value, keyOffset, out);
+    }
+
+    /**
+     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using short struct key.
+     * Returns range of indices having given value or empty range.
+     * Searching in an unsorted collection has an undefined result. It's also undefined which element
+     * is found if there are multiple occurrences of the same element.
+     *
+     * @param collection the sorted array to search.
+     * @param startIndex the inclusive start index.
+     * @param endIndex   the exclusive end index.
+     * @param value the element to find.
+     * @param keyOffset  short key field offset within stuct bounds
+     * @param out range instance, will be set with start/end indices having given value or with empty value
+     */
+    public static void binarySearchRangeByShortKey(OffHeapStructCollection collection, long startIndex, long endIndex,
+                                                   short value, int keyOffset, IndexRange out) {
+        long ind = binarySearchByShortKey(collection, startIndex, endIndex, value, keyOffset);
+        if(ind < 0) {
+            out.setEmpty(ind);
+            return;
+        }
+        long from = ind;
+        while (from >= startIndex && value == collection.getShort(from, keyOffset)) from -= 1;
+        from += 1;
+        long to = ind;
+        while (to < endIndex && value == collection.getShort(to, keyOffset)) to += 1;
+        to -= 1;
+        out.set(from, to);
+    }
+
+
+    // byte key part
+
+
+    /**
+     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using byte struct key.
+     * Searching in an unsorted collection has an undefined result. It's also undefined which element
+     * is found if there are multiple occurrences of the same element.
+     *
+     * @param collection the sorted array to search.
+     * @param value the element to find.
+     * @param keyOffset byte key field offset within stuct bounds
+     * @return the non-negative index of the element, or a negative index which
+     *         is {@code -index - 1} where the element would be inserted.
+     */
+    public static long binarySearchByByteKey(OffHeapStructCollection collection, byte value, int keyOffset) {
+        return binarySearchByByteKey(collection, 0, collection.size(), value, keyOffset);
+    }
+
+    /**
+     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using byte struct key.
+     * in the range specified by fromIndex (inclusive) and toIndex (exclusive).
+     * Searching in an unsorted collection has an undefined result. It's also undefined which element
+     * is found if there are multiple occurrences of the same element.
+     *
+     * @param collection      the sorted collection to search.
+     * @param startIndex the inclusive start index.
+     * @param endIndex   the exclusive end index.
+     * @param value      the element to find.
+     * @param keyOffset  byte key field offset within stuct bounds
+     * @return the non-negative index of the element, or a negative index which
+     *         is {@code -index - 1} where the element would be inserted.
+     * @throws IllegalArgumentException {@code if (startIndex < 0 || startIndex > endIndex || endIndex > collection.size()}
+     */
+    public static long binarySearchByByteKey(OffHeapStructCollection collection, long startIndex, long endIndex, byte value, int keyOffset) {
+        if (startIndex < 0 || startIndex > endIndex || endIndex > collection.size()) {
+            throw new IllegalArgumentException("Illegal input, collection size: [" + collection.size() + "], " +
+                    "startIndex: [" + startIndex + "], endIndex: [" + endIndex + "]");
+        }
+        long lo = startIndex;
+        long hi = endIndex - 1;
+        while (lo <= hi) {
+            long mid = (lo + hi) >>> 1;
+            long midVal = collection.getByte(mid, keyOffset);
+
+            if (midVal < value) {
+                lo = mid + 1;
+            } else if (midVal > value) {
+                hi = mid - 1;
+            } else {
+                return mid;  // value found
+            }
+        }
+        return ~lo;  // value not present
+    }
+
+    /**
+     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using byte struct key.
+     * Returns range of indices having given value or empty range.
+     * Searching in an unsorted collection has an undefined result. It's also undefined which element
+     * is found if there are multiple occurrences of the same element.
+     *
+     * @param collection the sorted array to search.
+     * @param value the element to find.
+     * @param keyOffset  byte key field offset within stuct bounds
+     * @param out range instance, will be set with start/end indices having given value or with empty value
+     */
+    public static void binarySearchRangeByByteKey(OffHeapStructCollection collection, byte value, int keyOffset, IndexRange out) {
+        binarySearchRangeByByteKey(collection, 0, collection.size(), value, keyOffset, out);
+    }
+
+    /**
+     * Performs a binary search for {@code value} in the ascending sorted off-heap struct collection using byte struct key.
+     * Returns range of indices having given value or empty range.
+     * Searching in an unsorted collection has an undefined result. It's also undefined which element
+     * is found if there are multiple occurrences of the same element.
+     *
+     * @param collection the sorted array to search.
+     * @param startIndex the inclusive start index.
+     * @param endIndex   the exclusive end index.
+     * @param value the element to find.
+     * @param keyOffset  byte key field offset within stuct bounds
+     * @param out range instance, will be set with start/end indices having given value or with empty value
+     */
+    public static void binarySearchRangeByByteKey(OffHeapStructCollection collection, long startIndex, long endIndex,
+                                                  byte value, int keyOffset, IndexRange out) {
+        long ind = binarySearchByByteKey(collection, startIndex, endIndex, value, keyOffset);
+        if(ind < 0) {
+            out.setEmpty(ind);
+            return;
+        }
+        long from = ind;
+        while (from >= startIndex && value == collection.getByte(from, keyOffset)) from -= 1;
+        from += 1;
+        long to = ind;
+        while (to < endIndex && value == collection.getByte(to, keyOffset)) to += 1;
+        to -= 1;
+        out.set(from, to);
+    }
+
 
     /**
      * {@link OffHeapStructCollection} index range representation.

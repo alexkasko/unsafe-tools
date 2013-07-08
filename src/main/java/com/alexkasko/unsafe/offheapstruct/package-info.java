@@ -25,7 +25,7 @@
  * <h2>Structs</h2>
  * <p>Struct here means a memory area (located in off-heap memory or loaded into byte array) of limited size
  * with predefined locations of primitive "fields" in it. Such memory areas may be used like C structs
- * (this library doesn't enforce memory alighment o it's more alike to packed C structs).
+ * (this library doesn't enforce memory alighment so they are more alike to packed C structs).
  *
  * <h2>Features</h2>
  * <ul>
@@ -42,7 +42,7 @@
  * <ul>
  *     <li>reading/writng primitives directly from/into off-heap memory without copying full structs into byte arrays</li>
  *     <li>sorting using {@link com.alexkasko.unsafe.offheapstruct.OffHeapStructSorter}: implementation of Dual-Pivot quicksort algorithm
- *      adapted to off-heap collections. May use arbitrary long or int field from struct as sort key.</li>
+ *      adapted to off-heap collections. May use arbitrary fields from struct as sort keys.</li>
  *     <li>binary search over sorted collections using {@link com.alexkasko.unsafe.offheapstruct.OffHeapStructBinarySearch}.
  *      May use arbitrary long or int field from struct as sort key.</li>
  *     <li>binary search returning ranges of equal values:

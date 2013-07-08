@@ -13,7 +13,7 @@ Library has no third-party dependencies and is available in [Maven central](http
     <dependency>
         <groupId>com.alexkasko.unsafe</groupId>
         <artifactId>unsafe-tools</artifactId>
-        <version>1.3.0</version>
+        <version>1.3.1</version>
     </dependency>
 
 Off-heap memory, data structures, operations
@@ -77,6 +77,11 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 
 Changelog
 ---------
+
+**1.3.1** (2013-07-08)
+
+ * struct collections sorting using `short` and `byte` fields
+ * struct collections sorting with multiple keys
 
 **1.3.0** (2013-07-07)
 

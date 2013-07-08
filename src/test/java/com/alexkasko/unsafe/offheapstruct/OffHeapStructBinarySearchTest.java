@@ -35,7 +35,7 @@ public class OffHeapStructBinarySearchTest {
     private static final int LENGTH = 10000;
 
     @Test
-    public void test() {
+    public void testLong() {
         ByteArrayTool bat = ByteArrayTool.get();
         byte[] buf = new byte[8];
         OffHeapStructArray oha = null;
@@ -67,7 +67,84 @@ public class OffHeapStructBinarySearchTest {
     }
 
     @Test
-    public void testRange() {
+    public void testLongRange() {
+        ByteArrayTool bat = ByteArrayTool.get();
+        byte[] buf = new byte[8];
+        OffHeapStructArray oha = null;
+        try {
+            oha = new OffHeapStructArray(6, 8);
+            bat.putLong(buf, 0, 41);
+            oha.set(0, buf);
+            bat.putLong(buf, 0, 41);
+            oha.set(1, buf);
+            bat.putLong(buf, 0, 42);
+            oha.set(2, buf);
+            bat.putLong(buf, 0, 42);
+            oha.set(3, buf);
+            bat.putLong(buf, 0, 42);
+            oha.set(4, buf);
+            bat.putLong(buf, 0, 43);
+            oha.set(5, buf);
+            OffHeapStructBinarySearch.IndexRange range41 = new OffHeapStructBinarySearch.IndexRange();
+            OffHeapStructBinarySearch.binarySearchRangeByLongKey(oha, 41, 0, range41);
+            assertTrue(range41.isNotEmpty());
+            assertEquals("Start fail", 0, range41.getFromIndex());
+            assertEquals("Start fail", 1, range41.getToIndex());
+            OffHeapStructBinarySearch.IndexRange range42 = new OffHeapStructBinarySearch.IndexRange();
+            OffHeapStructBinarySearch.binarySearchRangeByLongKey(oha, 42, 0, range42);
+            assertTrue(range42.isNotEmpty());
+            assertEquals("Middle fail", 2, range42.getFromIndex());
+            assertEquals("Middle fail", 4, range42.getToIndex());
+            OffHeapStructBinarySearch.IndexRange range43 = new OffHeapStructBinarySearch.IndexRange();
+            OffHeapStructBinarySearch.binarySearchRangeByLongKey(oha, 43, 0, range43);
+            assertTrue(range43.isNotEmpty());
+            assertEquals("End fail", 5, range43.getFromIndex());
+            assertEquals("End fail", 5, range43.getToIndex());
+            OffHeapStructBinarySearch.IndexRange range44 = new OffHeapStructBinarySearch.IndexRange();
+            OffHeapStructBinarySearch.binarySearchRangeByLongKey(oha, 44, 0, range44);
+            assertTrue(range44.isEmpty());
+            assertTrue("Empty fail", range44.getFromIndex() == range44.getToIndex());
+            assertTrue("Empty fail", range44.getFromIndex() < 0);
+            assertTrue("Empty fail", range44.getToIndex() < 0);
+        } finally {
+            OffHeapUtils.free(oha);
+        }
+    }
+
+    @Test
+    public void testInt() {
+        ByteArrayTool bat = ByteArrayTool.get();
+        byte[] buf = new byte[8];
+        OffHeapStructArray oha = null;
+        try {
+            oha = new OffHeapStructArray(LENGTH, 8);
+            Random random = new Random(42);
+            int[] arr = new int[LENGTH];
+            int val4242 = -1;
+            int val4243 = -1;
+            for (int i = 0; i < LENGTH; i++) {
+                int ra = random.nextInt();
+                arr[i] = ra;
+                bat.putLong(buf, 0, ra);
+                oha.set(i, buf);
+                if (4242 == i) val4242 = ra;
+                if (4243 == i) val4243 = ra;
+            }
+            Arrays.sort(arr);
+            OffHeapStructSorter.sortByIntKey(oha, 0);
+            long ind4242e = Arrays.binarySearch(arr, val4242);
+            long ind4242a = OffHeapStructBinarySearch.binarySearchByIntKey(oha, val4242, 0);
+            long ind4243e = Arrays.binarySearch(arr, val4243);
+            long ind4243a = OffHeapStructBinarySearch.binarySearchByIntKey(oha, val4243, 0);
+            assertEquals(ind4242e, ind4242a);
+            assertEquals(ind4243e, ind4243a);
+        } finally {
+            OffHeapUtils.free(oha);
+        }
+    }
+
+    @Test
+    public void testIntRange() {
         ByteArrayTool bat = ByteArrayTool.get();
         byte[] buf = new byte[8];
         OffHeapStructArray oha = null;
@@ -102,6 +179,160 @@ public class OffHeapStructBinarySearchTest {
             assertEquals("End fail", 5, range43.getToIndex());
             OffHeapStructBinarySearch.IndexRange range44 = new OffHeapStructBinarySearch.IndexRange();
             OffHeapStructBinarySearch.binarySearchRangeByIntKey(oha, 44, 0, range44);
+            assertTrue(range44.isEmpty());
+            assertTrue("Empty fail", range44.getFromIndex() == range44.getToIndex());
+            assertTrue("Empty fail", range44.getFromIndex() < 0);
+            assertTrue("Empty fail", range44.getToIndex() < 0);
+        } finally {
+            OffHeapUtils.free(oha);
+        }
+    }
+
+    @Test
+    public void testShort() {
+        ByteArrayTool bat = ByteArrayTool.get();
+        byte[] buf = new byte[8];
+        OffHeapStructArray oha = null;
+        try {
+            oha = new OffHeapStructArray(LENGTH, 8);
+            Random random = new Random(42);
+            short[] arr = new short[LENGTH];
+            short val4242 = -1;
+            short val4243 = -1;
+            for (int i = 0; i < LENGTH; i++) {
+                short ra = (short) random.nextInt();
+                arr[i] = ra;
+                bat.putLong(buf, 0, ra);
+                oha.set(i, buf);
+                if (4242 == i) val4242 = ra;
+                if (4243 == i) val4243 = ra;
+            }
+            Arrays.sort(arr);
+            OffHeapStructSorter.sortByShortKey(oha, 0);
+            long ind4242e = Arrays.binarySearch(arr, val4242);
+            long ind4242a = OffHeapStructBinarySearch.binarySearchByShortKey(oha, val4242, 0);
+            long ind4243e = Arrays.binarySearch(arr, val4243);
+            long ind4243a = OffHeapStructBinarySearch.binarySearchByShortKey(oha, val4243, 0);
+            assertEquals(ind4242e, ind4242a);
+            assertEquals(ind4243e, ind4243a);
+        } finally {
+            OffHeapUtils.free(oha);
+        }
+    }
+
+    @Test
+    public void testShortRange() {
+        ByteArrayTool bat = ByteArrayTool.get();
+        byte[] buf = new byte[8];
+        OffHeapStructArray oha = null;
+        try {
+            oha = new OffHeapStructArray(6, 8);
+            bat.putLong(buf, 0, 41);
+            oha.set(0, buf);
+            bat.putLong(buf, 0, 41);
+            oha.set(1, buf);
+            bat.putLong(buf, 0, 42);
+            oha.set(2, buf);
+            bat.putLong(buf, 0, 42);
+            oha.set(3, buf);
+            bat.putLong(buf, 0, 42);
+            oha.set(4, buf);
+            bat.putLong(buf, 0, 43);
+            oha.set(5, buf);
+            OffHeapStructBinarySearch.IndexRange range41 = new OffHeapStructBinarySearch.IndexRange();
+            OffHeapStructBinarySearch.binarySearchRangeByShortKey(oha, (short) 41, 0, range41);
+            assertTrue(range41.isNotEmpty());
+            assertEquals("Start fail", 0, range41.getFromIndex());
+            assertEquals("Start fail", 1, range41.getToIndex());
+            OffHeapStructBinarySearch.IndexRange range42 = new OffHeapStructBinarySearch.IndexRange();
+            OffHeapStructBinarySearch.binarySearchRangeByShortKey(oha, (short) 42, 0, range42);
+            assertTrue(range42.isNotEmpty());
+            assertEquals("Middle fail", 2, range42.getFromIndex());
+            assertEquals("Middle fail", 4, range42.getToIndex());
+            OffHeapStructBinarySearch.IndexRange range43 = new OffHeapStructBinarySearch.IndexRange();
+            OffHeapStructBinarySearch.binarySearchRangeByShortKey(oha, (short) 43, 0, range43);
+            assertTrue(range43.isNotEmpty());
+            assertEquals("End fail", 5, range43.getFromIndex());
+            assertEquals("End fail", 5, range43.getToIndex());
+            OffHeapStructBinarySearch.IndexRange range44 = new OffHeapStructBinarySearch.IndexRange();
+            OffHeapStructBinarySearch.binarySearchRangeByShortKey(oha, (short) 44, 0, range44);
+            assertTrue(range44.isEmpty());
+            assertTrue("Empty fail", range44.getFromIndex() == range44.getToIndex());
+            assertTrue("Empty fail", range44.getFromIndex() < 0);
+            assertTrue("Empty fail", range44.getToIndex() < 0);
+        } finally {
+            OffHeapUtils.free(oha);
+        }
+    }
+
+    @Test
+    public void testByte() {
+        ByteArrayTool bat = ByteArrayTool.get();
+        byte[] buf = new byte[8];
+        OffHeapStructArray oha = null;
+        try {
+            oha = new OffHeapStructArray(LENGTH, 8);
+            Random random = new Random(42);
+            byte[] arr = new byte[LENGTH];
+            byte val4242 = -1;
+            byte val4243 = -1;
+            for (int i = 0; i < LENGTH; i++) {
+                byte ra = (byte) random.nextInt();
+                arr[i] = ra;
+                bat.putLong(buf, 0, ra);
+                oha.set(i, buf);
+                if (4242 == i) val4242 = ra;
+                if (4243 == i) val4243 = ra;
+            }
+            Arrays.sort(arr);
+            OffHeapStructSorter.sortByByteKey(oha, 0);
+            long ind4242e = Arrays.binarySearch(arr, val4242);
+            long ind4242a = OffHeapStructBinarySearch.binarySearchByByteKey(oha, val4242, 0);
+            long ind4243e = Arrays.binarySearch(arr, val4243);
+            long ind4243a = OffHeapStructBinarySearch.binarySearchByByteKey(oha, val4243, 0);
+            assertEquals(ind4242e, ind4242a);
+            assertEquals(ind4243e, ind4243a);
+        } finally {
+            OffHeapUtils.free(oha);
+        }
+    }
+
+    @Test
+    public void testByteRange() {
+        ByteArrayTool bat = ByteArrayTool.get();
+        byte[] buf = new byte[8];
+        OffHeapStructArray oha = null;
+        try {
+            oha = new OffHeapStructArray(6, 8);
+            bat.putLong(buf, 0, 41);
+            oha.set(0, buf);
+            bat.putLong(buf, 0, 41);
+            oha.set(1, buf);
+            bat.putLong(buf, 0, 42);
+            oha.set(2, buf);
+            bat.putLong(buf, 0, 42);
+            oha.set(3, buf);
+            bat.putLong(buf, 0, 42);
+            oha.set(4, buf);
+            bat.putLong(buf, 0, 43);
+            oha.set(5, buf);
+            OffHeapStructBinarySearch.IndexRange range41 = new OffHeapStructBinarySearch.IndexRange();
+            OffHeapStructBinarySearch.binarySearchRangeByByteKey(oha, (byte) 41, 0, range41);
+            assertTrue(range41.isNotEmpty());
+            assertEquals("Start fail", 0, range41.getFromIndex());
+            assertEquals("Start fail", 1, range41.getToIndex());
+            OffHeapStructBinarySearch.IndexRange range42 = new OffHeapStructBinarySearch.IndexRange();
+            OffHeapStructBinarySearch.binarySearchRangeByByteKey(oha, (byte) 42, 0, range42);
+            assertTrue(range42.isNotEmpty());
+            assertEquals("Middle fail", 2, range42.getFromIndex());
+            assertEquals("Middle fail", 4, range42.getToIndex());
+            OffHeapStructBinarySearch.IndexRange range43 = new OffHeapStructBinarySearch.IndexRange();
+            OffHeapStructBinarySearch.binarySearchRangeByByteKey(oha, (byte) 43, 0, range43);
+            assertTrue(range43.isNotEmpty());
+            assertEquals("End fail", 5, range43.getFromIndex());
+            assertEquals("End fail", 5, range43.getToIndex());
+            OffHeapStructBinarySearch.IndexRange range44 = new OffHeapStructBinarySearch.IndexRange();
+            OffHeapStructBinarySearch.binarySearchRangeByByteKey(oha, (byte) 44, 0, range44);
             assertTrue(range44.isEmpty());
             assertTrue("Empty fail", range44.getFromIndex() == range44.getToIndex());
             assertTrue("Empty fail", range44.getFromIndex() < 0);
