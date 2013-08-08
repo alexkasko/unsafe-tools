@@ -304,4 +304,17 @@ public class OffHeapStructSorterTest {
         }
 //          }
     }
+
+    @Test
+    public void testMultisortEmpty() {
+        OffHeapStructArray arr = null;
+        try {
+            arr = new OffHeapStructArray(0, 42);
+            OffHeapStructSortKey key1 = new OffHeapStructSortKey(0, long.class);
+            OffHeapStructSortKey key2 = new OffHeapStructSortKey(8, long.class);
+            OffHeapStructSorter.sort(arr, key1, key2);
+        } finally {
+            free(arr);
+        }
+    }
 }

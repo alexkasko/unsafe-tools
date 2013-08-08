@@ -69,7 +69,25 @@ public class OffHeapStructSorter {
      * @param keys keys list
      */
     public static void sort(OffHeapStructCollection collection, List<OffHeapStructSortKey> keys) {
-        multisortInternal(collection, 0, collection.size(), keys, 0);
+        sort(collection, keys, 0, collection.size());
+    }
+
+    /**
+     * Sorts collection using multiple keys. Every subsequent keys is used on
+     * collections interval where previous key has equal values
+     *
+     * @param collection off-heap struct collection
+     * @param keys keys list
+     * @param fromIndex start sort collection index
+     * @param toIndex end sort collection index
+     */
+    public static void sort(OffHeapStructCollection collection, List<OffHeapStructSortKey> keys, long fromIndex, long toIndex) {
+        if (fromIndex < 0 || fromIndex > toIndex || toIndex > collection.size()) {
+            throw new IllegalArgumentException("Illegal input, collection size: [" + collection.size() + "], " +
+                    "fromIndex: [" + fromIndex + "], toIndex: [" + toIndex + "]");
+        }
+        if(fromIndex == toIndex) return; // nothing to sort here
+        multisortInternal(collection, fromIndex, toIndex, keys, 0);
     }
 
     private static void multisortInternal(OffHeapStructCollection collection, long start, long end,
