@@ -17,44 +17,114 @@
 package com.alexkasko.unsafe.offheapstruct;
 
 import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
- * Helper container for struct sort key. Contains key offset and type:
- * {@code long.class}, {@code int.class}, {@code short.class} or {@code byte.class}
+ * Struct sort key class to use for sorting with multiple keys
  *
  * @author alexkasko
  * Date: 7/8/13
  */
-public class OffHeapStructSortKey implements Serializable {
+public abstract class OffHeapStructSortKey implements Serializable {
     private static final long serialVersionUID = 6811864689863999749L;
-    private static final Map<Class<? extends Number>, Integer> KEY_TYPES;
-
-    static {
-        KEY_TYPES = new LinkedHashMap<Class<? extends Number>, Integer>();
-        KEY_TYPES.put(long.class, 8);
-        KEY_TYPES.put(int.class, 4);
-        KEY_TYPES.put(short.class, 2);
-        KEY_TYPES.put(byte.class, 1);
-    }
 
     private final int offset;
-    private final int len;
 
     /**
-     * Constructor. Allowed key types are:
-     * {@code long.class}, {@code int.class}, {@code short.class} or {@code byte.class}
+     * Protected constructor for inheritors.
      *
-     * @param offset key offset
-     * @param type key type
+     * @param offset key field offset in struct
      */
-    public OffHeapStructSortKey(int offset, Class<? extends Number> type) {
-        if(null == type) throw new IllegalArgumentException("Specified type is null");
-        if(!KEY_TYPES.containsKey(type)) throw new IllegalArgumentException(
-                "Unsupported type, supported types are: [" + KEY_TYPES.keySet() + "]");
+    protected OffHeapStructSortKey(int offset) {
+        if(offset < 0) throw new IllegalArgumentException("Specified offset: [" + offset + "] must not be negative");
         this.offset = offset;
-        this.len = KEY_TYPES.get(type);
+    }
+
+    /**
+     * Factory method for struct sort key implementation
+     * that uses signed byte comparison on specified struct offset
+     *
+     * @param offset struct key offset
+     * @return sort key instance
+     */
+    public static OffHeapStructSortKey byteSortKey(int offset) {
+        return new ByteKey(offset);
+    }
+
+    /**
+     * Factory method for struct sort key implementation
+     * that uses unsigned byte comparison on specified struct offset
+     *
+     * @param offset struct key offset
+     * @return sort key instance
+     */
+    public static OffHeapStructSortKey unsignedByteSortKey(int offset) {
+        return new UnsignedByteKey(offset);
+    }
+
+    /**
+     * Factory method for struct sort key implementation
+     * that uses signed short comparison on specified struct offset
+     *
+     * @param offset struct key offset
+     * @return sort key instance
+     */
+    public static OffHeapStructSortKey shortSortKey(int offset) {
+        return new ShortKey(offset);
+    }
+
+    /**
+     * Factory method for struct sort key implementation
+     * that uses unsigned short comparison on specified struct offset
+     *
+     * @param offset struct key offset
+     * @return sort key instance
+     */
+    public static OffHeapStructSortKey unsignedShortSortKey(int offset) {
+        return new UnsignedShortKey(offset);
+    }
+
+    /**
+     * Factory method for struct sort key implementation
+     * that uses signed int comparison on specified struct offset
+     *
+     * @param offset struct key offset
+     * @return sort key instance
+     */
+    public static OffHeapStructSortKey intSortKey(int offset) {
+        return new IntKey(offset);
+    }
+
+    /**
+     * Factory method for struct sort key implementation
+     * that uses unsigned int comparison on specified struct offset
+     *
+     * @param offset struct key offset
+     * @return sort key instance
+     */
+    public static OffHeapStructSortKey unsignedIntSortKey(int offset) {
+        return new UnsignedIntKey(offset);
+    }
+
+    /**
+     * Factory method for struct sort key implementation
+     * that uses signed long comparison on specified struct offset
+     *
+     * @param offset struct key offset
+     * @return sort key instance
+     */
+    public static OffHeapStructSortKey longSortKey(int offset) {
+        return new LongKey(offset);
+    }
+
+    /**
+     * Factory method for struct sort key implementation
+     * that uses unsigned long comparison on specified struct offset
+     *
+     * @param offset struct key offset
+     * @return sort key instance
+     */
+    public static OffHeapStructSortKey unsignedLongSortKey(int offset) {
+        return new UnsignedLongKey(offset);
     }
 
     /**
@@ -67,23 +137,13 @@ public class OffHeapStructSortKey implements Serializable {
     }
 
     /**
-     * Type length accessor
-     *
-     * @return key type length in bytes
-     */
-    public int length() {
-        return len;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof OffHeapStructSortKey)) return false;
         OffHeapStructSortKey that = (OffHeapStructSortKey) o;
-        if (len != that.len) return false;
         if (offset != that.offset) return false;
         return true;
     }
@@ -93,9 +153,7 @@ public class OffHeapStructSortKey implements Serializable {
      */
     @Override
     public int hashCode() {
-        int result = offset;
-        result = 31 * result + len;
-        return result;
+        return offset;
     }
 
     /**
@@ -104,10 +162,137 @@ public class OffHeapStructSortKey implements Serializable {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("OffHeapStructSortCondition");
+        sb.append(getClass().getSimpleName());
         sb.append("{offset=").append(offset);
-        sb.append(", len=").append(len);
         sb.append('}');
         return sb.toString();
+    }
+
+    /**
+     * Struct sort key implementation, uses signed byte comparison on specified struct offset
+     */
+    public static class ByteKey extends OffHeapStructSortKey {
+        private static final long serialVersionUID = -5201378839882085844L;
+
+        /**
+         * Constructor
+         *
+         * @param offset key field offset in struct
+         */
+        public ByteKey(int offset) {
+            super(offset);
+        }
+    }
+
+    /**
+     * Struct sort key implementation, uses unsigned byte comparison on specified struct offset
+     */
+    public static class UnsignedByteKey extends OffHeapStructSortKey {
+        private static final long serialVersionUID = -4704362633057709836L;
+
+        /**
+         * Constructor
+         *
+         * @param offset key field offset in struct
+         */
+        public UnsignedByteKey(int offset) {
+            super(offset);
+        }
+    }
+
+    /**
+     * Struct sort key implementation, uses signed short comparison on specified struct offset
+     */
+    public static class ShortKey extends OffHeapStructSortKey {
+        private static final long serialVersionUID = -4704362633057709836L;
+
+        /**
+         * Constructor
+         *
+         * @param offset key field offset in struct
+         */
+        public ShortKey(int offset) {
+            super(offset);
+        }
+    }
+
+    /**
+     * Struct sort key implementation, uses unsigned short comparison on specified struct offset
+     */
+    public static class UnsignedShortKey extends OffHeapStructSortKey {
+        private static final long serialVersionUID = -4704362633057709836L;
+
+        /**
+         * Constructor
+         *
+         * @param offset key field offset in struct
+         */
+        public UnsignedShortKey(int offset) {
+            super(offset);
+        }
+    }
+
+    /**
+     * Struct sort key implementation, uses signed int comparison on specified struct offset
+     */
+    public static class IntKey extends OffHeapStructSortKey {
+        private static final long serialVersionUID = -4704362633057709836L;
+
+        /**
+         * Constructor
+         *
+         * @param offset key field offset in struct
+         */
+        public IntKey(int offset) {
+            super(offset);
+        }
+    }
+
+    /**
+     * Struct sort key implementation, uses unsigned int comparison on specified struct offset
+     */
+    public static class UnsignedIntKey extends OffHeapStructSortKey {
+        private static final long serialVersionUID = -4704362633057709836L;
+
+        /**
+         * Constructor
+         *
+         * @param offset key field offset in struct
+         */
+        public UnsignedIntKey(int offset) {
+            super(offset);
+        }
+    }
+
+    /**
+     * Struct sort key implementation, uses signed long comparison on specified struct offset
+     */
+    public static class LongKey extends OffHeapStructSortKey {
+        private static final long serialVersionUID = -4704362633057709836L;
+
+        /**
+         * Constructor
+         *
+         * @param offset key field offset in struct
+         */
+        public LongKey(int offset) {
+            super(offset);
+        }
+    }
+
+    /**
+     * Struct sort key implementation, uses unsigned long comparison on specified struct offset
+     */
+    public static class UnsignedLongKey extends OffHeapStructSortKey {
+        private static final long serialVersionUID = -4704362633057709836L;
+
+        /**
+         * Constructor
+         *
+         * @param offset key field offset in struct
+         */
+        public UnsignedLongKey(int offset) {
+            super(offset);
+        }
     }
 }

@@ -17,10 +17,8 @@
 package com.alexkasko.unsafe.offheapstruct;
 
 import com.alexkasko.unsafe.bytearray.ByteArrayTool;
-import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import static com.alexkasko.unsafe.offheap.OffHeapUtils.free;
@@ -41,10 +39,10 @@ public class OffHeapStructSorterTest {
         OffHeapStructArray arr = null;
         try {
             ByteArrayTool bt = ByteArrayTool.get();
-            OffHeapStructSortKey byteKey = new OffHeapStructSortKey(0, byte.class);
-            OffHeapStructSortKey shortKey = new OffHeapStructSortKey(1, short.class);
-            OffHeapStructSortKey intKey = new OffHeapStructSortKey(3, int.class);
-            OffHeapStructSortKey longKey = new OffHeapStructSortKey(7, long.class);
+            OffHeapStructSortKey byteKey = OffHeapStructSortKey.byteSortKey(0);
+            OffHeapStructSortKey shortKey = OffHeapStructSortKey.shortSortKey(1);
+            OffHeapStructSortKey intKey = OffHeapStructSortKey.intSortKey(3);
+            OffHeapStructSortKey longKey = OffHeapStructSortKey.longSortKey(7);
             // data
             byte[] buf0 = new byte[15];
             bt.putByte(buf0, byteKey.offset(), Byte.MAX_VALUE);
@@ -156,6 +154,24 @@ public class OffHeapStructSorterTest {
     }
 
     @Test
+    // proper test is not easy here
+    public void testUnsignedLongKey() {
+        OffHeapStructArray arr = null;
+        try {
+            arr = new OffHeapStructArray(3, 8);
+            arr.putLong(0, 0, 0);
+            arr.putLong(1, 0, -1);
+            arr.putLong(2, 0, 1);
+            OffHeapStructSorter.sortByUnsignedLongKey(arr, 0);
+            assertEquals(0, arr.getLong(0, 0));
+            assertEquals(1, arr.getLong(1, 0));
+            assertEquals(-1, arr.getLong(2, 0));
+        } finally {
+            free(arr);
+        }
+    }
+
+    @Test
     public void testIntKey() {
 //          for(int j=0; j< 100000; j++) {
           OffHeapStructArray arr = null;
@@ -206,6 +222,56 @@ public class OffHeapStructSorterTest {
       }
 
     @Test
+    public void testUnsignedIntKey() {
+//          for(int j=0; j< 100000; j++) {
+          OffHeapStructArray arr = null;
+          try {
+//              System.out.println(j);
+              ByteArrayTool bat = ByteArrayTool.get();
+//              Random random = new Random(j);
+              Random random = new Random(42);
+              long[] heapHeaders = new long[LENGTH];
+              Map<Long, List<Long>> heapPayloads = new HashMap<Long, List<Long>>();
+              arr = new OffHeapStructArray(LENGTH, 12);
+              byte[] buf = new byte[12];
+              long header = 0;
+              for (int i = 0; i < LENGTH; i++) {
+                  long payload = random.nextInt();
+                  if (0 == i % 5) {
+                      header = random.nextInt() & 0xffffffffL;
+                  }
+                  heapHeaders[i] = header;
+                  List<Long> existed = heapPayloads.get(header);
+                  if (null != existed) {
+                      existed.add(payload);
+                  } else {
+                      List<Long> li = new ArrayList<Long>();
+                      li.add(payload);
+                      heapPayloads.put(header, li);
+                  }
+                  bat.putLong(buf, 0, payload);
+                  bat.putUnsignedInt(buf, 8, header);
+                  arr.set(i, buf);
+              }
+              // standard sort for heap array
+              Arrays.sort(heapHeaders);
+              // off-heap sort
+              OffHeapStructSorter.sortByUnsignedIntKey(arr, 8);
+              // compare results
+              for (int i = 0; i < LENGTH; i++) {
+                  arr.get(i, buf);
+                  long head = bat.getUnsignedInt(buf, 8);
+                  assertEquals(head, heapHeaders[i]);
+                  long payl = bat.getLong(buf, 0);
+                  assertTrue(heapPayloads.get(head).remove(payl));
+              }
+          } finally {
+              free(arr);
+          }
+//          }
+      }
+
+    @Test
     public void testShortKey() {
 //          for(int j=0; j< 100000; j++) {
         OffHeapStructArray arr = null;
@@ -216,8 +282,8 @@ public class OffHeapStructSorterTest {
             Random random = new Random(42);
             short[] heapHeaders = new short[LENGTH];
             Map<Short, List<Long>> heapPayloads = new HashMap<Short, List<Long>>();
-            arr = new OffHeapStructArray(LENGTH, 12);
-            byte[] buf = new byte[12];
+            arr = new OffHeapStructArray(LENGTH, 10);
+            byte[] buf = new byte[10];
             short header = 0;
             for (int i = 0; i < LENGTH; i++) {
                 long payload = random.nextInt();
@@ -234,7 +300,7 @@ public class OffHeapStructSorterTest {
                     heapPayloads.put(header, li);
                 }
                 bat.putLong(buf, 0, payload);
-                bat.putInt(buf, 8, header);
+                bat.putShort(buf, 8, header);
                 arr.set(i, buf);
             }
             // standard sort for heap array
@@ -256,6 +322,56 @@ public class OffHeapStructSorterTest {
     }
 
     @Test
+    public void testUnsignedShortKey() {
+//          for(int j=0; j< 100000; j++) {
+        OffHeapStructArray arr = null;
+        try {
+//              System.out.println(j);
+            ByteArrayTool bat = ByteArrayTool.get();
+//              Random random = new Random(j);
+            Random random = new Random(42);
+            int[] heapHeaders = new int[LENGTH];
+            Map<Integer, List<Long>> heapPayloads = new HashMap<Integer, List<Long>>();
+            arr = new OffHeapStructArray(LENGTH, 10);
+            byte[] buf = new byte[10];
+            int header = 0;
+            for (int i = 0; i < LENGTH; i++) {
+                long payload = random.nextInt();
+                if (0 == i % 5) {
+                    header = ((short) random.nextInt()) & 0xffff;
+                }
+                heapHeaders[i] = header;
+                List<Long> existed = heapPayloads.get(header);
+                if (null != existed) {
+                    existed.add(payload);
+                } else {
+                    List<Long> li = new ArrayList<Long>();
+                    li.add(payload);
+                    heapPayloads.put(header, li);
+                }
+                bat.putLong(buf, 0, payload);
+                bat.putUnsignedShort(buf, 8, header);
+                arr.set(i, buf);
+            }
+            // standard sort for heap array
+            Arrays.sort(heapHeaders);
+            // off-heap sort
+            OffHeapStructSorter.sortByUnsignedShortKey(arr, 8);
+            // compare results
+            for (int i = 0; i < LENGTH; i++) {
+                arr.get(i, buf);
+                int head = bat.getUnsignedShort(buf, 8);
+                assertEquals(head, heapHeaders[i]);
+                long payl = bat.getLong(buf, 0);
+                assertTrue(heapPayloads.get(head).remove(payl));
+            }
+        } finally {
+            free(arr);
+        }
+//          }
+    }
+
+    @Test
     public void testByteKey() {
 //          for(int j=0; j< 100000; j++) {
         OffHeapStructArray arr = null;
@@ -266,8 +382,8 @@ public class OffHeapStructSorterTest {
             Random random = new Random(42);
             byte[] heapHeaders = new byte[LENGTH];
             Map<Byte, List<Long>> heapPayloads = new HashMap<Byte, List<Long>>();
-            arr = new OffHeapStructArray(LENGTH, 12);
-            byte[] buf = new byte[12];
+            arr = new OffHeapStructArray(LENGTH, 9);
+            byte[] buf = new byte[9];
             byte header = 0;
             for (int i = 0; i < LENGTH; i++) {
                 long payload = random.nextInt();
@@ -284,7 +400,7 @@ public class OffHeapStructSorterTest {
                     heapPayloads.put(header, li);
                 }
                 bat.putLong(buf, 0, payload);
-                bat.putInt(buf, 8, header);
+                bat.putByte(buf, 8, header);
                 arr.set(i, buf);
             }
             // standard sort for heap array
@@ -306,12 +422,70 @@ public class OffHeapStructSorterTest {
     }
 
     @Test
+    public void testUnsignedByteKey() {
+//          for(int j=0; j< 100000; j++) {
+        OffHeapStructArray arr = null;
+        try {
+//              System.out.println(j);
+            ByteArrayTool bat = ByteArrayTool.get();
+//              Random random = new Random(j);
+            Random random = new Random(42);
+            short[] heapHeaders = new short[LENGTH];
+            Map<Short, List<Long>> heapPayloads = new HashMap<Short, List<Long>>();
+            arr = new OffHeapStructArray(LENGTH, 9);
+            byte[] buf = new byte[9];
+            short header = 0;
+            for (int i = 0; i < LENGTH; i++) {
+                long payload = random.nextInt();
+                if (0 == i % 5) {
+                    header = (short) (((byte) random.nextInt()) & 0xff);
+                }
+                heapHeaders[i] = header;
+                List<Long> existed = heapPayloads.get(header);
+                if (null != existed) {
+                    existed.add(payload);
+                } else {
+                    List<Long> li = new ArrayList<Long>();
+                    li.add(payload);
+                    heapPayloads.put(header, li);
+                }
+                bat.putLong(buf, 0, payload);
+                bat.putUnsignedByte(buf, 8, header);
+                arr.set(i, buf);
+            }
+            // standard sort for heap array
+            Arrays.sort(heapHeaders);
+            // off-heap sort
+            OffHeapStructSorter.sortByUnsignedByteKey(arr, 8);
+            // compare results
+            for (int i = 0; i < LENGTH; i++) {
+                arr.get(i, buf);
+                short head = bat.getUnsignedByte(buf, 8);
+                assertEquals(head, heapHeaders[i]);
+                long payl = bat.getLong(buf, 0);
+                assertTrue(heapPayloads.get(head).remove(payl));
+            }
+        } finally {
+            free(arr);
+        }
+//          }
+    }
+
+//    private static List<String> toStringList(OffHeapStructArray arr) {
+//        List<String> res = new ArrayList<String>((int) arr.size());
+//        for (int i = 0; i < arr.size(); i++) {
+//            res.add(arr.getLong(i, 0) + ":" + arr.getUnsignedByte(i, 8));
+//        }
+//        return res;
+//    }
+
+    @Test
     public void testMultisortEmpty() {
         OffHeapStructArray arr = null;
         try {
             arr = new OffHeapStructArray(0, 42);
-            OffHeapStructSortKey key1 = new OffHeapStructSortKey(0, long.class);
-            OffHeapStructSortKey key2 = new OffHeapStructSortKey(8, long.class);
+            OffHeapStructSortKey key1 = OffHeapStructSortKey.longSortKey(0);
+            OffHeapStructSortKey key2 = OffHeapStructSortKey.longSortKey(8);
             OffHeapStructSorter.sort(arr, key1, key2);
         } finally {
             free(arr);

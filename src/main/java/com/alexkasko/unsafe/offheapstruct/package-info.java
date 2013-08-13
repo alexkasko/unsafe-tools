@@ -40,11 +40,11 @@
  *
  * <h2>Operations</h2>
  * <ul>
- *     <li>reading/writng primitives directly from/into off-heap memory without copying full structs into byte arrays</li>
+ *     <li>reading/writing primitives directly from/into off-heap memory without copying full structs into byte arrays</li>
  *     <li>sorting using {@link com.alexkasko.unsafe.offheapstruct.OffHeapStructSorter}: implementation of Dual-Pivot quicksort algorithm
- *      adapted to off-heap collections. May use arbitrary fields from struct as sort keys.</li>
+ *      adapted to off-heap collections. May use arbitrary fields from struct as sort keys with signed or unsigned comparison.</li>
  *     <li>binary search over sorted collections using {@link com.alexkasko.unsafe.offheapstruct.OffHeapStructBinarySearch}.
- *      May use arbitrary long or int field from struct as sort key.</li>
+ *      May use arbitrary field from struct to search on it.</li>
  *     <li>binary search returning ranges of equal values:
  *     {@link com.alexkasko.unsafe.offheapstruct.OffHeapStructBinarySearch#binarySearchRangeByLongKey(com.alexkasko.unsafe.offheapstruct.OffHeapStructCollection, long, int, com.alexkasko.unsafe.offheapstruct.OffHeapStructBinarySearch.IndexRange)}</li>
  * </ul>

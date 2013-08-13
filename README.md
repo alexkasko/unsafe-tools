@@ -13,7 +13,7 @@ Library has no third-party dependencies and is available in [Maven central](http
     <dependency>
         <groupId>com.alexkasko.unsafe</groupId>
         <artifactId>unsafe-tools</artifactId>
-        <version>1.3.1</version>
+        <version>1.3.3</version>
     </dependency>
 
 Off-heap memory, data structures, operations
@@ -40,7 +40,7 @@ for details.
 
 Equal-sized memory areas may be stored in off-heap memory contiguously as collections. Such memory areas also may be used
 like C structs (without compiler checks, though). Sorting and searching of these collections may be done using arbitrary
-(int or long) "fields" of such "structs".
+"fields" of such "structs".
 
 See `com.alexkasko.unsafe.offheapstruct` [package description](http://alexkasko.github.io/unsafe-tools/com/alexkasko/unsafe/offheapstruct/package-summary.html)
 for details.
@@ -77,6 +77,10 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 
 Changelog
 ---------
+
+**1.3.3** (2013-08-13)
+
+ * sorting struct collections using unsigned fields comparison
 
 **1.3.2** (2013-08-08)
 
