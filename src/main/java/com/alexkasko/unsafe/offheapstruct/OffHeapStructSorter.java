@@ -112,30 +112,32 @@ public class OffHeapStructSorter {
         if(childStart < end - 1) multisortInternal(collection, childStart, end, keys, childKeyIndex);
     }
 
-    private static void sortByKey(OffHeapStructCollection collection, long start, long end, OffHeapStructSortKey key) {
-        String keyname = key.getClass().getName();
-        if(LongKey.class.getName().equals(keyname)) sortByLongKey(collection, start, end, key.offset());
-        else if(UnsignedLongKey.class.getName().equals(keyname)) sortByUnsignedLongKey(collection, start, end, key.offset());
-        else if(IntKey.class.getName().equals(keyname)) sortByIntKey(collection, start, end, key.offset());
-        else if(UnsignedIntKey.class.getName().equals(keyname)) sortByUnsignedIntKey(collection, start, end, key.offset());
-        else if(ShortKey.class.getName().equals(keyname)) sortByShortKey(collection, start, end, key.offset());
-        else if(UnsignedShortKey.class.getName().equals(keyname)) sortByUnsignedShortKey(collection, start, end, key.offset());
-        else if(ByteKey.class.getName().equals(keyname)) sortByByteKey(collection, start, end, key.offset());
-        else if(UnsignedByteKey.class.getName().equals(keyname)) sortByUnsignedByteKey(collection, start, end, key.offset());
-        else throw new IllegalArgumentException(key.toString());
+    private static void sortByKey(OffHeapStructCollection col, long start, long end, OffHeapStructSortKey key) {
+        switch (key.typeId()) {
+            case LongKey.ID: sortByLongKey(col, start, end, key.offset()); break;
+            case UnsignedLongKey.ID: sortByUnsignedLongKey(col, start, end, key.offset()); break;
+            case IntKey.ID: sortByIntKey(col, start, end, key.offset()); break;
+            case UnsignedIntKey.ID: sortByUnsignedIntKey(col, start, end, key.offset()); break;
+            case ShortKey.ID: sortByShortKey(col, start, end, key.offset()); break;
+            case UnsignedShortKey.ID: sortByUnsignedShortKey(col, start, end, key.offset()); break;
+            case ByteKey.ID: sortByByteKey(col, start, end, key.offset()); break;
+            case UnsignedByteKey.ID: sortByUnsignedByteKey(col, start, end, key.offset()); break;
+            default: throw new IllegalArgumentException(key.toString());
+        }
     }
 
-    private static long getByKey(OffHeapStructCollection collection, long index, OffHeapStructSortKey key) {
-        String keyname = key.getClass().getName();
-        if(LongKey.class.getName().equals(keyname)) return collection.getLong(index, key.offset());
-        else if(UnsignedLongKey.class.getName().equals(keyname)) return collection.getLong(index, key.offset());
-        else if(IntKey.class.getName().equals(keyname)) return collection.getInt(index, key.offset());
-        else if(UnsignedIntKey.class.getName().equals(keyname)) return collection.getUnsignedInt(index, key.offset());
-        else if(ShortKey.class.getName().equals(keyname)) return collection.getShort(index, key.offset());
-        else if(UnsignedShortKey.class.getName().equals(keyname)) return collection.getUnsignedShort(index, key.offset());
-        else if(ByteKey.class.getName().equals(keyname)) return collection.getByte(index, key.offset());
-        else if(UnsignedByteKey.class.getName().equals(keyname)) return collection.getUnsignedByte(index, key.offset());
-        else throw new IllegalArgumentException(key.toString());
+    private static long getByKey(OffHeapStructCollection col, long index, OffHeapStructSortKey key) {
+        switch (key.typeId()) {
+            case LongKey.ID: return col.getLong(index, key.offset());
+            case UnsignedLongKey.ID: return col.getLong(index, key.offset());
+            case IntKey.ID: return col.getInt(index, key.offset());
+            case UnsignedIntKey.ID: return col.getUnsignedInt(index, key.offset());
+            case ShortKey.ID: return col.getShort(index, key.offset());
+            case UnsignedShortKey.ID: return col.getUnsignedShort(index, key.offset());
+            case ByteKey.ID: return col.getByte(index, key.offset());
+            case UnsignedByteKey.ID: return col.getUnsignedByte(index, key.offset());
+            default: throw new IllegalArgumentException(key.toString());
+        }
     }
 
     /**

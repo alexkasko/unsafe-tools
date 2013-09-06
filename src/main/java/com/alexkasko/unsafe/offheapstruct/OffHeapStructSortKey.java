@@ -40,6 +40,13 @@ public abstract class OffHeapStructSortKey implements Serializable {
     }
 
     /**
+     * Key type id for internal use
+     *
+     * @return key type id
+     */
+    abstract byte typeId();
+
+    /**
      * Factory method for struct sort key implementation
      * that uses signed byte comparison on specified struct offset
      *
@@ -173,6 +180,7 @@ public abstract class OffHeapStructSortKey implements Serializable {
      */
     public static class ByteKey extends OffHeapStructSortKey {
         private static final long serialVersionUID = -5201378839882085844L;
+        static final byte ID = 1;
 
         /**
          * Constructor
@@ -182,6 +190,13 @@ public abstract class OffHeapStructSortKey implements Serializable {
         public ByteKey(int offset) {
             super(offset);
         }
+
+        /**
+         * {@inheritDoc}
+         */
+        byte typeId() {
+            return ID;
+        }
     }
 
     /**
@@ -189,6 +204,7 @@ public abstract class OffHeapStructSortKey implements Serializable {
      */
     public static class UnsignedByteKey extends OffHeapStructSortKey {
         private static final long serialVersionUID = -4704362633057709836L;
+        static final byte ID = 11;
 
         /**
          * Constructor
@@ -198,6 +214,13 @@ public abstract class OffHeapStructSortKey implements Serializable {
         public UnsignedByteKey(int offset) {
             super(offset);
         }
+
+        /**
+         * {@inheritDoc}
+         */
+        byte typeId() {
+            return ID;
+        }
     }
 
     /**
@@ -205,6 +228,7 @@ public abstract class OffHeapStructSortKey implements Serializable {
      */
     public static class ShortKey extends OffHeapStructSortKey {
         private static final long serialVersionUID = -4704362633057709836L;
+        static final byte ID = 2;
 
         /**
          * Constructor
@@ -214,6 +238,13 @@ public abstract class OffHeapStructSortKey implements Serializable {
         public ShortKey(int offset) {
             super(offset);
         }
+
+        /**
+         * {@inheritDoc}
+         */
+        byte typeId() {
+            return ID;
+        }
     }
 
     /**
@@ -221,6 +252,7 @@ public abstract class OffHeapStructSortKey implements Serializable {
      */
     public static class UnsignedShortKey extends OffHeapStructSortKey {
         private static final long serialVersionUID = -4704362633057709836L;
+        static final byte ID = 12;
 
         /**
          * Constructor
@@ -230,6 +262,13 @@ public abstract class OffHeapStructSortKey implements Serializable {
         public UnsignedShortKey(int offset) {
             super(offset);
         }
+
+        /**
+         * {@inheritDoc}
+         */
+        byte typeId() {
+            return ID;
+        }
     }
 
     /**
@@ -237,6 +276,7 @@ public abstract class OffHeapStructSortKey implements Serializable {
      */
     public static class IntKey extends OffHeapStructSortKey {
         private static final long serialVersionUID = -4704362633057709836L;
+        static final byte ID = 4;
 
         /**
          * Constructor
@@ -246,6 +286,13 @@ public abstract class OffHeapStructSortKey implements Serializable {
         public IntKey(int offset) {
             super(offset);
         }
+
+        /**
+         * {@inheritDoc}
+         */
+        byte typeId() {
+            return ID;
+        }
     }
 
     /**
@@ -253,6 +300,7 @@ public abstract class OffHeapStructSortKey implements Serializable {
      */
     public static class UnsignedIntKey extends OffHeapStructSortKey {
         private static final long serialVersionUID = -4704362633057709836L;
+        static final byte ID = 14;
 
         /**
          * Constructor
@@ -262,6 +310,14 @@ public abstract class OffHeapStructSortKey implements Serializable {
         public UnsignedIntKey(int offset) {
             super(offset);
         }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        byte typeId() {
+            return ID;
+        }
     }
 
     /**
@@ -269,6 +325,7 @@ public abstract class OffHeapStructSortKey implements Serializable {
      */
     public static class LongKey extends OffHeapStructSortKey {
         private static final long serialVersionUID = -4704362633057709836L;
+        static final byte ID = 8;
 
         /**
          * Constructor
@@ -278,6 +335,13 @@ public abstract class OffHeapStructSortKey implements Serializable {
         public LongKey(int offset) {
             super(offset);
         }
+
+        /**
+         * {@inheritDoc}
+         */
+        byte typeId() {
+            return ID;
+        }
     }
 
     /**
@@ -285,6 +349,7 @@ public abstract class OffHeapStructSortKey implements Serializable {
      */
     public static class UnsignedLongKey extends OffHeapStructSortKey {
         private static final long serialVersionUID = -4704362633057709836L;
+        static final byte ID = 18;
 
         /**
          * Constructor
@@ -293,6 +358,13 @@ public abstract class OffHeapStructSortKey implements Serializable {
          */
         public UnsignedLongKey(int offset) {
             super(offset);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        byte typeId() {
+            return ID;
         }
     }
 }
