@@ -16,6 +16,8 @@
 
 package com.alexkasko.unsafe.offheap;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * <p>Allocates an area of off-heap memory that is not a subject to GC.
  * Default implementation uses {@code sun.misc.Unsafe}, with all operations guarded with {@code assert}
@@ -50,6 +52,12 @@ public abstract class OffHeapMemory {
         try {
             return allocateMemoryUnsafe(bytes);
         } catch (Exception e) {
+            // check OOM Error and rethrow it
+            if(e instanceof InvocationTargetException &&
+                    null != e.getCause() &&
+                    e.getCause() instanceof OutOfMemoryError) {
+                throw new RuntimeException(e);
+            }
             return allocateMemoryDirect(bytes);
         }
     }
@@ -69,7 +77,7 @@ public abstract class OffHeapMemory {
                     .asSubclass(OffHeapMemory.class);
             return unsafeMaClass.getDeclaredConstructor(long.class).newInstance(bytes);
         } catch (Throwable t) {
-            throw t instanceof RuntimeException ? (RuntimeException) t : new RuntimeException(t);
+            throw t instanceof Exception ? (Exception) t : new RuntimeException(t);
         }
     }
 

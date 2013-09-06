@@ -37,6 +37,8 @@ class DirectOffHeapMemory extends OffHeapMemory {
     private final AtomicBoolean disposed = new AtomicBoolean(false);
 
     DirectOffHeapMemory(long bytes) {
+        if(bytes > Integer.MAX_VALUE) throw new IllegalArgumentException(
+                "Long-sized allocations are not supported by [" + getClass().getName() + "]");
         this.length = bytes;
         this.bb = ByteBuffer.allocateDirect((int) bytes).order(LITTLE_ENDIAN);
         // http://stackoverflow.com/a/8191493/314015
