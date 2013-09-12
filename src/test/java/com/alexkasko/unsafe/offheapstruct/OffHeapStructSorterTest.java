@@ -471,14 +471,6 @@ public class OffHeapStructSorterTest {
 //          }
     }
 
-//    private static List<String> toStringList(OffHeapStructArray arr) {
-//        List<String> res = new ArrayList<String>((int) arr.size());
-//        for (int i = 0; i < arr.size(); i++) {
-//            res.add(arr.getLong(i, 0) + ":" + arr.getUnsignedByte(i, 8));
-//        }
-//        return res;
-//    }
-
     @Test
     public void testMultisortEmpty() {
         OffHeapStructArray arr = null;
@@ -489,6 +481,104 @@ public class OffHeapStructSorterTest {
             OffHeapStructSorter.sort(arr, key1, key2);
         } finally {
             free(arr);
+        }
+    }
+
+    @Test
+    public void testComparator() {
+//        for(int j=0; j< 100000; j++) {
+        OffHeapStructArray arr = null;
+        try {
+//            System.out.println(j);
+            ByteArrayTool bat = ByteArrayTool.get();
+//            Random random = new Random(j);
+            Random random = new Random(42);
+            long[] heapHeaders = new long[LENGTH];
+            Map<Long, List<Long>> heapPayloads = new HashMap<Long, List<Long>>();
+            arr = new OffHeapStructArray(LENGTH, 16);
+            byte[] buf = new byte[16];
+            long header = 0;
+            for (int i = 0; i < LENGTH; i++) {
+                long payload = random.nextInt();
+                if (0 == i % 5) {
+                    header = random.nextInt();
+                }
+                heapHeaders[i] = header;
+                List<Long> existed = heapPayloads.get(header);
+                if (null != existed) {
+                    existed.add(payload);
+                } else {
+                    List<Long> li = new ArrayList<Long>();
+                    li.add(payload);
+                    heapPayloads.put(header, li);
+                }
+                bat.putLong(buf, 0, payload);
+                bat.putLong(buf, 8, header);
+                arr.set(i, buf);
+            }
+            // standard sort for heap array
+//            System.out.println(Arrays.toString(heapHeaders));
+            Arrays.sort(heapHeaders);
+//            System.out.println(Arrays.toString(heapHeaders));
+            // off-heap sort
+//            System.out.println(toStringList(arr));
+            OffHeapStructSorter.sort(arr, new LongComp());
+//            System.out.println(toStringList(arr));
+            // compare results
+            for (int i = 0; i < LENGTH; i++) {
+                arr.get(i, buf);
+                long head = bat.getLong(buf, 8);
+                assertEquals(head, heapHeaders[i]);
+                long payl = bat.getLong(buf, 0);
+                assertTrue(heapPayloads.get(head).remove(payl));
+            }
+        } finally {
+            free(arr);
+        }
+//        }
+    }
+
+//    @Test
+//    public void testComparatorLong() {
+//        OffHeapStructArray arr = null;
+//        try {
+//            arr = new OffHeapStructArray(LENGTH, 8);
+//            int j = 0;
+//            for (int i = LENGTH - 1; i >= 0; i--) {
+//               arr.putLong(j++, 0, i);
+//            }
+//            OffHeapStructSorter.sort(arr, new LongComp());
+//            for(int i = 0; i < LENGTH; i++) {
+//                assertEquals(i, arr.getLong(i, 0));
+//            }
+//        } finally {
+//            free(arr);
+//        }
+//    }
+
+    private static List<String> toStringList(OffHeapStructArray arr) {
+        List<String> res = new ArrayList<String>((int) arr.size());
+        for (int i = 0; i < arr.size(); i++) {
+            res.add(arr.getLong(i, 0) + ":" + arr.getLong(i, 8));
+        }
+        return res;
+    }
+
+    private static List<Long> toLongList(OffHeapStructArray arr) {
+        List<Long> res = new ArrayList<Long>((int) arr.size());
+        for (int i = 0; i < arr.size(); i++) {
+            res.add(arr.getLong(i, 0));
+        }
+        return res;
+    }
+
+    private static class LongComp implements Comparator<OffHeapStructAccessor> {
+        @Override
+        public int compare(OffHeapStructAccessor o1, OffHeapStructAccessor o2) {
+            long diff = o1.getLong(8) - o2.getLong(8);
+            if(diff > 0) return 1;
+            if(diff < 0) return -1;
+            return 0;
         }
     }
 }

@@ -18,6 +18,7 @@ package com.alexkasko.unsafe.offheapstruct;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.alexkasko.unsafe.offheapstruct.OffHeapStructSortKey.*;
@@ -86,6 +87,29 @@ public class OffHeapStructSorter {
         }
         if(fromIndex == toIndex) return; // nothing to sort here
         multisortInternal(collection, fromIndex, toIndex, keys, 0);
+    }
+
+    /**
+     * Sorts collection using comparator.
+     *
+     * @param collection off-heap struct collection
+     * @param comparator structs comparator
+     */
+    public static void sort(OffHeapStructCollection collection, Comparator<OffHeapStructAccessor> comparator) {
+        OffHeapStructSorterWithComparator.sort(collection, comparator);
+    }
+
+    /**
+     * Sorts collection using comparator.
+     *
+     * @param collection off-heap struct collection
+     * @param comparator structs comparator
+     * @param fromIndex start sort collection index
+     * @param toIndex end sort collection index
+     */
+    public static void sort(OffHeapStructCollection collection, Comparator<OffHeapStructAccessor> comparator, long fromIndex, long toIndex) {
+        if(fromIndex == toIndex) return; // nothing to sort here
+        OffHeapStructSorterWithComparator.sort(collection, fromIndex, toIndex, comparator);
     }
 
     private static void multisortInternal(OffHeapStructCollection collection, long start, long end,
