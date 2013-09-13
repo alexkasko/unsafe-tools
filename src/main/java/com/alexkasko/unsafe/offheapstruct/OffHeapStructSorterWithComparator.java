@@ -16,8 +16,6 @@
 
 package com.alexkasko.unsafe.offheapstruct;
 
-import com.alexkasko.unsafe.bytearray.ByteArrayTool;
-
 import java.util.Comparator;
 
 import static com.alexkasko.unsafe.offheapstruct.OffHeapStructSorter.INSERTION_SORT_THRESHOLD;
@@ -68,7 +66,7 @@ class OffHeapStructSorterWithComparator {
             throw new IllegalArgumentException("Illegal input, collection size: [" + a.size() + "], " +
                     "fromIndex: [" + fromIndex + "], toIndex: [" + toIndex + "]");
         }
-        InternalComparator comp = new InternalComparator(a, comparator);
+        OffHeapStructComparator comp = new OffHeapStructComparator(a, comparator);
         int len = a.structLength();
         doSort(a, fromIndex, toIndex - 1, comp, new byte[len], new byte[len], new byte[len], new byte[len], new byte[len],
                 new byte[len], new byte[len]);
@@ -92,7 +90,7 @@ class OffHeapStructSorterWithComparator {
      * @param pe4 temporary buffer for structs
      * @param pe5 temporary buffer for structs
      */
-    private static void doSort(OffHeapStructCollection a, long left, long right, InternalComparator comp,
+    private static void doSort(OffHeapStructCollection a, long left, long right, OffHeapStructComparator comp,
                                byte[] pi, byte[] pj, byte[] pe1, byte[] pe2, byte[] pe3, byte[] pe4, byte[] pe5) {
         // Use insertion sort on tiny arrays
         if (right - left + 1 < INSERTION_SORT_THRESHOLD) {
@@ -126,7 +124,7 @@ class OffHeapStructSorterWithComparator {
      * @param pe4 temporary buffer for structs
      * @param pe5 temporary buffer for structs
      */
-    private static void dualPivotQuicksort(OffHeapStructCollection a, long left, long right, InternalComparator comp, byte[] pi, byte[] pj,
+    private static void dualPivotQuicksort(OffHeapStructCollection a, long left, long right, OffHeapStructComparator comp, byte[] pi, byte[] pj,
                                            byte[] pe1, byte[] pe2, byte[] pe3, byte[] pe4, byte[] pe5) {
         // Compute indices of five evenly spaced elements
         long sixth = (right - left + 1) / 6;
@@ -359,226 +357,5 @@ class OffHeapStructSorterWithComparator {
 
         // Sort center part recursively, excluding known pivot values
         doSort(a, less, great, comp, pi, pj, pe1, pe2, pe3, pe4, pe5);
-    }
-
-    /**
-     * Internal wrapper for user-provided comparator
-     */
-    private static class InternalComparator {
-        private final IndexAccessor acc1;
-        private final IndexAccessor acc2;
-        private final ByteArrayAccessor baa1;
-        private final ByteArrayAccessor baa2;
-        private final Comparator<OffHeapStructAccessor> comp;
-
-        private InternalComparator(OffHeapStructCollection col, Comparator<OffHeapStructAccessor> comp) {
-            ByteArrayTool bt = ByteArrayTool.get();
-            this.acc1 = new IndexAccessor(col);
-            this.acc2 = new IndexAccessor(col);
-            this.baa1 = new ByteArrayAccessor(bt);
-            this.baa2 = new ByteArrayAccessor(bt);
-            this.comp = comp;
-        }
-
-        private boolean gt(long l1, long l2) {
-            acc1.index = l1;
-            acc2.index = l2;
-            return comp.compare(acc1, acc2) > 0;
-        }
-
-        private boolean gt(long l1, byte[] struct) {
-            acc1.index = l1;
-            baa1.struct = struct;
-            return comp.compare(acc1, baa1) > 0;
-        }
-
-        private boolean lt(long l1, byte[] struct) {
-            acc1.index = l1;
-            baa1.struct = struct;
-            return comp.compare(acc1, baa1) < 0;
-        }
-
-        private boolean lt(byte[] struct, long l1) {
-            acc1.index = l1;
-            baa1.struct = struct;
-            return comp.compare(baa1, acc1) < 0;
-        }
-
-        private boolean eq(long l1, byte[] struct) {
-            acc1.index = l1;
-            baa1.struct = struct;
-            return 0 == comp.compare(acc1, baa1);
-        }
-
-        private boolean eq(byte[] struct1, byte[] struct2) {
-            baa1.struct = struct1;
-            baa2.struct = struct2;
-            return 0 == comp.compare(baa1, baa2);
-        }
-    }
-
-    /**
-     * Struct's accessor implementation for off-heap stored structs
-     */
-    private static class IndexAccessor implements OffHeapStructAccessor {
-        private final OffHeapStructCollection col;
-        private long index = -1;
-
-        private IndexAccessor(OffHeapStructCollection col) {
-            this.col = col;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int structLength() {
-            return col.structLength();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void get(byte[] buffer) {
-            col.get(index, buffer);
-        }
-
-        @Override
-        public byte getByte(int offset) {
-            return col.getByte(index, offset);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public short getUnsignedByte(int offset) {
-            return col.getUnsignedByte(index, offset);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public short getShort(int offset) {
-            return col.getShort(index, offset);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int getUnsignedShort(int offset) {
-            return col.getUnsignedShort(index, offset);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int getInt(int offset) {
-            return col.getInt(index, offset);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public long getUnsignedInt(int offset) {
-            return col.getUnsignedInt(index, offset);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public long getLong(int offset) {
-            return col.getLong(index, offset);
-        }
-    }
-
-    /**
-     * Struct's accessor implementation for byte array structs
-     */
-    private static class ByteArrayAccessor implements OffHeapStructAccessor {
-        private final ByteArrayTool bt;
-        private byte[] struct;
-
-        private ByteArrayAccessor(ByteArrayTool bt) {
-            this.bt = bt;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int structLength() {
-            return struct.length;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void get(byte[] buffer) {
-            bt.copy(struct, 0, buffer, 0, struct.length);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public byte getByte(int offset) {
-            return bt.getByte(struct, offset);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public short getUnsignedByte(int offset) {
-            return bt.getUnsignedByte(struct, offset);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public short getShort(int offset) {
-            return bt.getShort(struct, offset);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int getUnsignedShort(int offset) {
-            return bt.getUnsignedShort(struct, offset);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int getInt(int offset) {
-            return bt.getInt(struct, offset);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public long getUnsignedInt(int offset) {
-            return bt.getUnsignedInt(struct, offset);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public long getLong(int offset) {
-            return bt.getLong(struct, offset);
-        }
     }
 }

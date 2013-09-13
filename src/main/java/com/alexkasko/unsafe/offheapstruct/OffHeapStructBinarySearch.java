@@ -121,10 +121,14 @@ public class OffHeapStructBinarySearch {
             return;
         }
         long from = ind;
-        while (from >= startIndex && value == collection.getLong(from, keyOffset)) from -= 1;
+        while (from >= startIndex && value == collection.getLong(from, keyOffset)) {
+            from -= 1;
+        }
         from += 1;
         long to = ind;
-        while (to < endIndex && value == collection.getLong(to, keyOffset)) to += 1;
+        while (to < endIndex && value == collection.getLong(to, keyOffset)) {
+            to += 1;
+        }
         to -= 1;
         out.set(from, to);
     }
@@ -221,10 +225,14 @@ public class OffHeapStructBinarySearch {
             return;
         }
         long from = ind;
-        while (from >= startIndex && value == collection.getInt(from, keyOffset)) from -= 1;
+        while (from >= startIndex && value == collection.getInt(from, keyOffset)) {
+            from -= 1;
+        }
         from += 1;
         long to = ind;
-        while (to < endIndex && value == collection.getInt(to, keyOffset)) to += 1;
+        while (to < endIndex && value == collection.getInt(to, keyOffset)) {
+            to += 1;
+        }
         to -= 1;
         out.set(from, to);
     }
@@ -321,10 +329,14 @@ public class OffHeapStructBinarySearch {
             return;
         }
         long from = ind;
-        while (from >= startIndex && value == collection.getShort(from, keyOffset)) from -= 1;
+        while (from >= startIndex && value == collection.getShort(from, keyOffset)) {
+            from -= 1;
+        }
         from += 1;
         long to = ind;
-        while (to < endIndex && value == collection.getShort(to, keyOffset)) to += 1;
+        while (to < endIndex && value == collection.getShort(to, keyOffset)) {
+            to += 1;
+        }
         to -= 1;
         out.set(from, to);
     }
@@ -421,10 +433,14 @@ public class OffHeapStructBinarySearch {
             return;
         }
         long from = ind;
-        while (from >= startIndex && value == collection.getByte(from, keyOffset)) from -= 1;
+        while (from >= startIndex && value == collection.getByte(from, keyOffset)) {
+            from -= 1;
+        }
         from += 1;
         long to = ind;
-        while (to < endIndex && value == collection.getByte(to, keyOffset)) to += 1;
+        while (to < endIndex && value == collection.getByte(to, keyOffset)) {
+            to += 1;
+        }
         to -= 1;
         out.set(from, to);
     }
@@ -455,7 +471,7 @@ public class OffHeapStructBinarySearch {
          *
          * @param value negative value for empty range returned by search
          */
-        private void setEmpty(long value) {
+        void setEmpty(long value) {
             this.empty = true;
             this.fromIndex = value;
             this.toIndex = value;
@@ -467,7 +483,7 @@ public class OffHeapStructBinarySearch {
          * @param from start index
          * @param to end index
          */
-        private void set(long from, long to) {
+        void set(long from, long to) {
             this.empty = false;
             this.fromIndex = from;
             this.toIndex = to;
