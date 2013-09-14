@@ -170,6 +170,9 @@ class OffHeapStructSorterWithComparator {
         long less  = left  + 1; // The index of first element of center part
         long great = right - 1; // The index before first element of right part
 
+        // comparable results holders
+        int kpivot1, greatpivot1;
+
         boolean pivotsDiffer = !comp.eq(pe2, pe4);
 
         if (pivotsDiffer) {
@@ -244,10 +247,11 @@ class OffHeapStructSorterWithComparator {
              */
             for (long k = less; k <= great; k++) {
                 a.get(k, pe1);
-                if (comp.eq(k, pe2)) {
+                kpivot1 = comp.compare(k, pe2);
+                if (0 == kpivot1) {
                     continue;
                 }
-                if (comp.lt(k, pe2)) { // Move a[k] to left part
+                if (kpivot1 < 0) { // Move a[k] to left part
                     if (k != less) {
                         a.get(less, pe3);
                         a.set(k, pe3);
@@ -261,10 +265,10 @@ class OffHeapStructSorterWithComparator {
                      * terminates, even though we don't test for it explicitly.
                      * In other words, a[e3] acts as a sentinel for great.
                      */
-                    while (comp.gt(great, pe2)) {
+                    while ((greatpivot1 = comp.compare(great, pe2)) > 0) {
                         great--;
                     }
-                    if (comp.lt(great, pe2)) {
+                    if (greatpivot1 < 0) {
                         a.get(less, pe3);
                         a.set(k, pe3);
                         a.get(great, pe3);

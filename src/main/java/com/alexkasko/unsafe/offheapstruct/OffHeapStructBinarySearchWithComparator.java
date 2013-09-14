@@ -79,13 +79,15 @@ public class OffHeapStructBinarySearchWithComparator {
         }
         if(null == struct) throw new IllegalArgumentException("Provided struct is null");
 
+        int compres;
         long lo = startIndex;
         long hi = endIndex - 1;
         while (lo <= hi) {
             long mid = (lo + hi) >>> 1;
-            if (comp.lt(mid, struct)) {
+            compres = comp.compare(mid, struct);
+            if (compres < 0) {
                 lo = mid + 1;
-            } else if (comp.gt(mid, struct)) {
+            } else if (compres > 0) {
                 hi = mid - 1;
             } else {
                 return mid;  // value found

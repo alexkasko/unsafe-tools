@@ -127,6 +127,19 @@ class OffHeapStructComparator {
     }
 
     /**
+     * Calls {@code compare} on comparator and return it results
+     *
+     * @param index1 collection index
+     * @param struct2 structure
+     * @return compare result from comparator
+     */
+    int compare(long index1, byte[] struct2) {
+        ia1.setIndex(index1);
+        baa2.setStruct(struct2);
+        return comp.compare(ia1, baa2);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
