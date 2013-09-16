@@ -13,7 +13,7 @@ Library has no third-party dependencies and is available in [Maven central](http
     <dependency>
         <groupId>com.alexkasko.unsafe</groupId>
         <artifactId>unsafe-tools</artifactId>
-        <version>1.3.3</version>
+        <version>1.3.4</version>
     </dependency>
 
 Off-heap memory, data structures, operations
@@ -77,6 +77,13 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 
 Changelog
 ---------
+
+**1.3.4** (2013-09-16)
+
+ * comparator sort for struct collections
+ * struct binary search with comparator
+ * fail-fast on OOM during allocation
+ * faster multisort choosers
 
 **1.3.3** (2013-08-13)
 

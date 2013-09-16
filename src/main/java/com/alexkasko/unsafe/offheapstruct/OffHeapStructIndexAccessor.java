@@ -22,11 +22,16 @@ package com.alexkasko.unsafe.offheapstruct;
  * @author alexkasko
  * Date: 9/13/13
  */
-class OffHeapStructIndexAccessor implements OffHeapStructAccessor {
+public class OffHeapStructIndexAccessor implements OffHeapStructAccessor {
     private final OffHeapStructCollection col;
     private long index = -1;
 
-    OffHeapStructIndexAccessor(OffHeapStructCollection col) {
+    /**
+     * Constructor
+     *
+     * @param col collection to access structs from
+     */
+    public OffHeapStructIndexAccessor(OffHeapStructCollection col) {
         this.col = col;
     }
 
@@ -104,7 +109,20 @@ class OffHeapStructIndexAccessor implements OffHeapStructAccessor {
      *
      * @param index index value
      */
-    void setIndex(long index) {
+    public void setIndex(long index) {
         this.index = index;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("OffHeapStructIndexAccessor");
+        sb.append("{col=").append(col);
+        sb.append(", index=").append(index);
+        sb.append('}');
+        return sb.toString();
     }
 }

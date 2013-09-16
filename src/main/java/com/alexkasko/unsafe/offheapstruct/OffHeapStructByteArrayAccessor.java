@@ -24,11 +24,16 @@ import com.alexkasko.unsafe.bytearray.ByteArrayTool;
  * @author alexkasko
  * Date: 9/13/13
  */
-class OffHeapStructByteArrayAccessor implements OffHeapStructAccessor {
+public class OffHeapStructByteArrayAccessor implements OffHeapStructAccessor {
     private final ByteArrayTool bt;
     private byte[] struct;
 
-    OffHeapStructByteArrayAccessor(ByteArrayTool bt) {
+    /**
+     * Constructor
+     *
+     * @param bt byte array tool to operate over holdede byte array
+     */
+    public OffHeapStructByteArrayAccessor(ByteArrayTool bt) {
         this.bt = bt;
     }
 
@@ -111,5 +116,19 @@ class OffHeapStructByteArrayAccessor implements OffHeapStructAccessor {
      */
     public void setStruct(byte[] struct) {
         this.struct = struct;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return
+     */
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("OffHeapStructByteArrayAccessor");
+        sb.append("{bt=").append(bt);
+        sb.append('}');
+        return sb.toString();
     }
 }
