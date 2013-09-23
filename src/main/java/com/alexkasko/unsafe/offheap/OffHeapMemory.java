@@ -16,6 +16,8 @@
 
 package com.alexkasko.unsafe.offheap;
 
+import com.alexkasko.unsafe.bytearray.ByteArrayTool;
+
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -89,6 +91,17 @@ public abstract class OffHeapMemory {
      */
     public static OffHeapMemory allocateMemoryDirect(long bytes) {
         return new DirectOffHeapMemory(bytes);
+    }
+
+    /**
+     * Allocates memory using byte array
+     *
+     * @param bytes amount of memory to allocate
+     * @param bt byte array tool to use for on-heap memory management
+     * @return {@code OffHeapMemory} instance
+     */
+    public static OffHeapMemory allocateMemoryOnHeap(ByteArrayTool bt, long bytes) {
+        return new OnHeapMemory(bt, bytes);
     }
 
     /**

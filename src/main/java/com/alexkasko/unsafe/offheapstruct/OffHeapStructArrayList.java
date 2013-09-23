@@ -16,6 +16,7 @@
 
 package com.alexkasko.unsafe.offheapstruct;
 
+import com.alexkasko.unsafe.bytearray.ByteArrayTool;
 import com.alexkasko.unsafe.offheap.OffHeapDisposable;
 import com.alexkasko.unsafe.offheap.OffHeapMemory;
 
@@ -40,6 +41,7 @@ import java.util.Iterator;
 public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapDisposable, Iterable<byte[]> {
     private static final int MIN_CAPACITY_INCREMENT = 12;
 
+    private final ByteArrayTool bt; // not-null only for on-heap arrays
     private final int structLength;
     private OffHeapMemory ohm;
     private long size;
@@ -60,8 +62,23 @@ public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapD
      * @param structLength length of the single struct in bytes, must be >= {@code 8}
      */
     public OffHeapStructArrayList(long capacity, int structLength) {
+        this.bt = null;
         this.structLength = structLength;
         this.ohm = OffHeapMemory.allocateMemory(capacity * structLength);
+    }
+
+    /**
+     * Constructor, uses {@link com.alexkasko.unsafe.offheap.OnHeapMemory} underneath
+     * effectively making this instance an <b>OnHeap</b> collection
+     *
+     * @param bt byte array tool to manage on-heap memory of this collection
+     * @param capacity initial capacity for this list
+     * @param structLength length of struct in bytes, must be >= {@code 8}
+     */
+    public OffHeapStructArrayList(ByteArrayTool bt, int capacity, int structLength) {
+        this.bt = bt;
+        this.structLength = structLength;
+        this.ohm = OffHeapMemory.allocateMemoryOnHeap(bt, capacity * structLength);
     }
 
     /**
@@ -372,7 +389,8 @@ public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapD
         long s = size;
         if (s == capacity()) {
             long len = s + (s < (MIN_CAPACITY_INCREMENT / 2) ? MIN_CAPACITY_INCREMENT : s >> 1);
-            OffHeapMemory newOhm = OffHeapMemory.allocateMemory(len * structLength);
+            OffHeapMemory newOhm = null == bt ? OffHeapMemory.allocateMemory(len * structLength)
+                    : OffHeapMemory.allocateMemoryOnHeap(bt, len * structLength);
             // maybe it's better to use Unsafe#reallocateMemory here
             oh.copy(0, newOhm, 0, ohm.length());
             oh.free();
@@ -380,6 +398,14 @@ public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapD
         }
         size = s + 1;
         set(s, struct, structPos);
+    }
+
+    /**
+     * Resets the collection setting size to 0.
+     * Actual memory contents stays untouched.
+     */
+    public void reset() {
+        this.size = 0;
     }
 
     /**

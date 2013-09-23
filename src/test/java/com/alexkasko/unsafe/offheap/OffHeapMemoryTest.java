@@ -16,9 +16,11 @@
 
 package com.alexkasko.unsafe.offheap;
 
+import com.alexkasko.unsafe.bytearray.ByteArrayTool;
 import org.junit.Test;
 
 import static com.alexkasko.unsafe.offheap.OffHeapMemory.allocateMemoryDirect;
+import static com.alexkasko.unsafe.offheap.OffHeapMemory.allocateMemoryOnHeap;
 import static com.alexkasko.unsafe.offheap.OffHeapMemory.allocateMemoryUnsafe;
 import static junit.framework.Assert.assertEquals;
 
@@ -61,6 +63,23 @@ public class OffHeapMemoryTest {
         testReadLong(allocateMemoryDirect(128));
         testWriteLong(allocateMemoryDirect(128));
         testCopy(allocateMemoryDirect(128), allocateMemoryDirect(128));
+
+        ByteArrayTool bt = ByteArrayTool.get();
+        testReadByte(allocateMemoryOnHeap(bt, 128));
+        testWriteByte(allocateMemoryOnHeap(bt, 128));
+        testReadUnsignedByte(allocateMemoryOnHeap(bt, 128));
+        testWriteUnsignedByte(allocateMemoryOnHeap(bt, 128));
+        testReadShort(allocateMemoryOnHeap(bt, 128));
+        testWriteShort(allocateMemoryOnHeap(bt, 128));
+        testReadUnsignedShort(allocateMemoryOnHeap(bt, 128));
+        testWriteUnsignedShort(allocateMemoryOnHeap(bt, 128));
+        testReadInt(allocateMemoryOnHeap(bt, 128));
+        testWriteInt(allocateMemoryOnHeap(bt, 128));
+        testReadUnsignedInt(allocateMemoryOnHeap(bt, 128));
+        testWriteUnsignedInt(allocateMemoryOnHeap(bt, 128));
+        testReadLong(allocateMemoryOnHeap(bt, 128));
+        testWriteLong(allocateMemoryOnHeap(bt, 128));
+        testCopy(allocateMemoryOnHeap(bt, 128), allocateMemoryOnHeap(bt, 128));
     }
 
     private static void testReadByte(OffHeapMemory ma) {

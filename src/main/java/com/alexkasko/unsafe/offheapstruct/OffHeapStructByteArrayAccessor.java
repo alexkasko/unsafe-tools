@@ -110,6 +110,15 @@ public class OffHeapStructByteArrayAccessor implements OffHeapStructAccessor {
     }
 
     /**
+     * Returns previously setted struct
+     *
+     * @return struct
+     */
+    public byte[] getStruct() {
+        return struct;
+    }
+
+    /**
      * Sets struct to access it
      *
      * @param struct struct

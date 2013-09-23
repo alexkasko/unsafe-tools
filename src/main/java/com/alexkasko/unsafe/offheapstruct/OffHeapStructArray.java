@@ -16,6 +16,7 @@
 
 package com.alexkasko.unsafe.offheapstruct;
 
+import com.alexkasko.unsafe.bytearray.ByteArrayTool;
 import com.alexkasko.unsafe.offheap.OffHeapDisposable;
 import com.alexkasko.unsafe.offheap.OffHeapMemory;
 
@@ -52,6 +53,21 @@ public class OffHeapStructArray implements OffHeapStructCollection, OffHeapDispo
                 "structLength must be greater or equal to 8, but was: [" + structLength + "]");
         this.structLength = structLength;
         this.ohm = OffHeapMemory.allocateMemory(size * structLength);
+    }
+
+    /**
+     * Constructor, uses {@link com.alexkasko.unsafe.offheap.OnHeapMemory} underneath
+     * effectively making this instance an <b>OnHeap</b> collection
+     *
+     * @param bt byte array tool to manage on-heap memory of this collection
+     * @param size array size
+     * @param structLength length of struct in bytes, must be >= {@code 8}
+     */
+    public OffHeapStructArray(ByteArrayTool bt, int size, int structLength) {
+        if(structLength < 8) throw new IllegalArgumentException(
+                "structLength must be greater or equal to 8, but was: [" + structLength + "]");
+        this.structLength = structLength;
+        this.ohm = OffHeapMemory.allocateMemoryOnHeap(bt, size * structLength);
     }
 
     /**

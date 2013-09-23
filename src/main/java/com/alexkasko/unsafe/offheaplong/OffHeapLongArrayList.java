@@ -154,6 +154,14 @@ public class OffHeapLongArrayList implements OffHeapLongAddressable, OffHeapDisp
     }
 
     /**
+     * Resets the collection setting size to 0.
+     * Actual memory contents stays untouched.
+     */
+    public void reset() {
+        this.size = 0;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
