@@ -54,6 +54,15 @@ public class OffHeapStructByteArrayAccessor implements OffHeapStructAccessor {
     }
 
     /**
+     * Copies specified buffer data into internal buffer
+     *
+     * @param buffer data to copy
+     */
+    public void set(byte[] buffer) {
+        bt.copy(buffer, 0, struct, 0, struct.length);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
