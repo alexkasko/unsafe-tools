@@ -98,7 +98,7 @@
 <span class="sourceLineNo">090</span>     * @param pe4 temporary buffer for structs<a name="line.90"></a>
 <span class="sourceLineNo">091</span>     * @param pe5 temporary buffer for structs<a name="line.91"></a>
 <span class="sourceLineNo">092</span>     */<a name="line.92"></a>
-<span class="sourceLineNo">093</span>    private static void doSort(OffHeapStructCollection a, long left, long right, OffHeapStructComparator comp,<a name="line.93"></a>
+<span class="sourceLineNo">093</span>    static void doSort(OffHeapStructCollection a, long left, long right, OffHeapStructComparator comp,<a name="line.93"></a>
 <span class="sourceLineNo">094</span>                               byte[] pi, byte[] pj, byte[] pe1, byte[] pe2, byte[] pe3, byte[] pe4, byte[] pe5) {<a name="line.94"></a>
 <span class="sourceLineNo">095</span>        // Use insertion sort on tiny arrays<a name="line.95"></a>
 <span class="sourceLineNo">096</span>        if (right - left + 1 &lt; INSERTION_SORT_THRESHOLD) {<a name="line.96"></a>
