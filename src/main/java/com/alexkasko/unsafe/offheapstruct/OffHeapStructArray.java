@@ -37,7 +37,7 @@ import java.util.Iterator;
  * @author alexkasko
  * Date: 7/3/13
  */
-public class OffHeapStructArray implements OffHeapStructCollection, OffHeapDisposable, Iterable<byte[]> {
+public class OffHeapStructArray implements OffHeapStructCollection, OffHeapDisposable {
 
     private final OffHeapMemory ohm;
     private final int structLength;

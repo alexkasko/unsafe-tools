@@ -38,7 +38,7 @@ import java.util.Iterator;
  * @author alexkasko
  * Date: 7/3/13
  */
-public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapDisposable, Iterable<byte[]> {
+public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapDisposable {
     private static final int MIN_CAPACITY_INCREMENT = 12;
 
     private final ByteArrayTool bt; // not-null only for on-heap arrays

@@ -90,7 +90,7 @@ class OffHeapStructSorterWithComparator {
      * @param pe4 temporary buffer for structs
      * @param pe5 temporary buffer for structs
      */
-    private static void doSort(OffHeapStructCollection a, long left, long right, OffHeapStructComparator comp,
+    static void doSort(OffHeapStructCollection a, long left, long right, OffHeapStructComparator comp,
                                byte[] pi, byte[] pj, byte[] pe1, byte[] pe2, byte[] pe3, byte[] pe4, byte[] pe5) {
         // Use insertion sort on tiny arrays
         if (right - left + 1 < INSERTION_SORT_THRESHOLD) {

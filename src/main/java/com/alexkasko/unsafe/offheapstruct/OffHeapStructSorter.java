@@ -16,10 +16,8 @@
 
 package com.alexkasko.unsafe.offheapstruct;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
 
 import static com.alexkasko.unsafe.offheapstruct.OffHeapStructSortKey.*;
 
@@ -110,6 +108,41 @@ public class OffHeapStructSorter {
     public static void sort(OffHeapStructCollection collection, Comparator<OffHeapStructAccessor> comparator, long fromIndex, long toIndex) {
         if(fromIndex == toIndex) return; // nothing to sort here
         OffHeapStructSorterWithComparator.sort(collection, fromIndex, toIndex, comparator);
+    }
+
+    /**
+     * Partially sorts collection and returns fully sorted iterator over it
+     *
+     * @param executor executor service for parallel sorting
+     * @param threadsCount number of worker threads to use
+     * @param collection the off-heap struct collection to be sorted
+     * @param comparator structs comparator
+     * @return sorted iterator over the collection
+     * @throws IllegalArgumentException {@code if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size())}
+     * @throws RuntimeException on worker thread error
+     */
+    public static Iterator<byte[]> sortedIterator(ExecutorService executor, int threadsCount, OffHeapStructCollection collection,
+                                                  Comparator<OffHeapStructAccessor> comparator) {
+        return OffHeapStructParallelSorterWithComparator.sortedIterator(executor, threadsCount, collection, comparator);
+    }
+
+    /**
+     * Partially sorts part of the collection and returns fully sorted iterator over it
+     *
+     * @param executor executor service for parallel sorting
+     * @param threadsCount number of worker threads to use
+     * @param collection the off-heap struct collection to be sorted
+     * @param fromIndex the index of the first element, inclusive, to be sorted
+     * @param toIndex the index of the last element, exclusive, to be sorted
+     * @param comparator structs comparator
+     * @return sorted iterator over the collection part
+     * @throws IllegalArgumentException {@code if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size())}
+     * @throws RuntimeException on worker thread error
+     */
+    public static Iterator<byte[]> sortedIterator(ExecutorService executor, int threadsCount, OffHeapStructCollection collection,
+                                                  Comparator<OffHeapStructAccessor> comparator, long fromIndex, long toIndex) {
+        if(fromIndex == toIndex) return Collections.<byte[]>emptyList().iterator(); // nothing to sort here
+        return OffHeapStructParallelSorterWithComparator.sortedIterator(executor, threadsCount, collection, fromIndex, toIndex, comparator);
     }
 
     private static void multisortInternal(OffHeapStructCollection collection, long start, long end,

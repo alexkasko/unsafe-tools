@@ -22,7 +22,7 @@ package com.alexkasko.unsafe.offheapstruct;
  * @author alexkasko
  * Date: 7/3/13
  */
-public interface OffHeapStructCollection {
+public interface OffHeapStructCollection extends Iterable<byte[]> {
 
     /**
      * Returns length of the single struct in bytes
