@@ -21,7 +21,8 @@ import com.alexkasko.unsafe.bytearray.ByteArrayTool;
 import java.util.Comparator;
 
 /**
- * Internal wrapper for user-provided comparator
+ * Internal wrapper for user-provided comparator.
+ * NOT thread-safe.
  *
  * @author alexkasko
  *         Date: 9/13/13

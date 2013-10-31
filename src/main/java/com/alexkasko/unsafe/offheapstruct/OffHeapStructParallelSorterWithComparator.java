@@ -67,29 +67,30 @@ class OffHeapStructParallelSorterWithComparator {
             throw new IllegalArgumentException("Illegal input, collection size: [" + a.size() + "], " +
                     "fromIndex: [" + fromIndex + "], toIndex: [" + toIndex + "]");
         }
-        OffHeapStructComparator comp = new OffHeapStructComparator(a, comparator);
         int len = a.structLength();
         long step = (toIndex - 1 - fromIndex)/threads;
         if(0 == step) {
-            doSort(a, fromIndex, toIndex - 1, comp, new byte[len], new byte[len], new byte[len], new byte[len], new byte[len],
-                    new byte[len], new byte[len]);
+            doSort(a, fromIndex, toIndex - 1, new OffHeapStructComparator(a, comparator), new byte[len], new byte[len],
+                    new byte[len], new byte[len], new byte[len], new byte[len], new byte[len]);
             return a.iterator();
         } else {
             List<Worker> workers = new ArrayList<Worker>();
             for(int start = 0; start < toIndex; start += step) {
-                Worker worker = new Worker(a, start, Math.min(start + step - 1, toIndex - 1), comp, new byte[len], new byte[len], new byte[len],
-                        new byte[len], new byte[len], new byte[len], new byte[len]);
+                Worker worker = new Worker(a, start, Math.min(start + step - 1, toIndex - 1), new OffHeapStructComparator(a, comparator),
+                        new byte[len], new byte[len], new byte[len], new byte[len], new byte[len], new byte[len], new byte[len]);
                 workers.add(worker);
             }
             invokeAndWait(executor, workers);
-            return new MergeIter(a, comp, workers);
+            return new MergeIter(a, new OffHeapStructComparator(a, comparator), workers);
         }
     }
 
     private static void invokeAndWait(ExecutorService executor, List<Worker> workers) {
         try {
             List<Future<Void>> futures = executor.invokeAll(workers);
-            for(Future<Void> fu : futures) fu.get();
+            for(Future<Void> fu : futures) {
+                fu.get();
+            }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (ExecutionException e) {

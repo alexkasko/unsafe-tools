@@ -346,16 +346,29 @@ class OffHeapStructSorterUnsignedLong {
     }
 
     private static boolean gt(long l1, long l2) {
-        if(l1 >= 0 && l2 >=0) return l1 > l2;
-        else if(l1 >= 0 && l2 < 0) return false;
-        else if(l1 < 0 && l2 >= 0) return true;
-        else return l2 > l1;
+        return compareUnsigned(l1, l2) > 0;
     }
 
     private static boolean lt(long l1, long l2) {
-        if (l1 >= 0 && l2 >= 0) return l1 < l2;
-        else if (l1 >= 0 && l2 < 0) return true;
-        else if (l1 < 0 && l2 >= 0) return false;
-        else return l2 < l1;
+        return compareUnsigned(l1, l2) < 0;
+    }
+
+    private static int compareUnsigned(long l1, long l2) {
+        if (l1 == l2) return 0;
+        if (l1 >= 0 && l2 >= 0 || l1 < 0 && l2 < 0) {
+            if (l1 > l2) return 1;
+            if (l1 < l2) return -1;
+            throw new IllegalStateException();
+        } else {
+            long i11 = (l1 >>> 32) & 0xffFFffFFL;
+            long i21 = (l2 >>> 32) & 0xffFFffFFL;
+            if (i11 > i21) return 1;
+            if (i11 < i21) return -1;
+            long i12 = l1 & 0xFFFF;
+            long i22 = l2 & 0xFFFF;
+            if (i12 > i22) return 1;
+            if (i12 < i22) return -1;
+            throw new IllegalStateException();
+        }
     }
 }

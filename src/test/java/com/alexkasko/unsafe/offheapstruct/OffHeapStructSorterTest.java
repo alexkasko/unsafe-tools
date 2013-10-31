@@ -30,6 +30,7 @@ import static org.junit.Assert.*;
  * Date: 7/4/13
  */
 public class OffHeapStructSorterTest {
+    private static final ByteArrayTool bt = ByteArrayTool.get();
 //    private static final int LENGTH = 1000000;
     private static final int LENGTH = 10000;
 
@@ -37,7 +38,6 @@ public class OffHeapStructSorterTest {
     public void testMultisort() {
         OffHeapStructArray arr = null;
         try {
-            ByteArrayTool bt = ByteArrayTool.get();
             OffHeapStructSortKey byteKey = OffHeapStructSortKey.byteSortKey(0);
             OffHeapStructSortKey shortKey = OffHeapStructSortKey.shortSortKey(1);
             OffHeapStructSortKey intKey = OffHeapStructSortKey.intSortKey(3);
@@ -108,7 +108,6 @@ public class OffHeapStructSorterTest {
         OffHeapStructArray arr = null;
         try {
 //            System.out.println(j);
-            ByteArrayTool bat = ByteArrayTool.get();
 //            Random random = new Random(j);
             Random random = new Random(42);
             long[] heapHeaders = new long[LENGTH];
@@ -130,8 +129,8 @@ public class OffHeapStructSorterTest {
                     li.add(payload);
                     heapPayloads.put(header, li);
                 }
-                bat.putLong(buf, 0, payload);
-                bat.putLong(buf, 8, header);
+                bt.putLong(buf, 0, payload);
+                bt.putLong(buf, 8, header);
                 arr.set(i, buf);
             }
             // standard sort for heap array
@@ -141,9 +140,9 @@ public class OffHeapStructSorterTest {
             // compare results
             for (int i = 0; i < LENGTH; i++) {
                 arr.get(i, buf);
-                long head = bat.getLong(buf, 8);
+                long head = bt.getLong(buf, 8);
                 assertEquals(head, heapHeaders[i]);
-                long payl = bat.getLong(buf, 0);
+                long payl = bt.getLong(buf, 0);
                 assertTrue(heapPayloads.get(head).remove(payl));
             }
         } finally {
@@ -176,7 +175,6 @@ public class OffHeapStructSorterTest {
           OffHeapStructArray arr = null;
           try {
 //              System.out.println(j);
-              ByteArrayTool bat = ByteArrayTool.get();
 //              Random random = new Random(j);
               Random random = new Random(42);
               int[] heapHeaders = new int[LENGTH];
@@ -198,8 +196,8 @@ public class OffHeapStructSorterTest {
                       li.add(payload);
                       heapPayloads.put(header, li);
                   }
-                  bat.putLong(buf, 0, payload);
-                  bat.putInt(buf, 8, header);
+                  bt.putLong(buf, 0, payload);
+                  bt.putInt(buf, 8, header);
                   arr.set(i, buf);
               }
               // standard sort for heap array
@@ -209,9 +207,9 @@ public class OffHeapStructSorterTest {
               // compare results
               for (int i = 0; i < LENGTH; i++) {
                   arr.get(i, buf);
-                  int head = bat.getInt(buf, 8);
+                  int head = bt.getInt(buf, 8);
                   assertEquals(head, heapHeaders[i]);
-                  long payl = bat.getLong(buf, 0);
+                  long payl = bt.getLong(buf, 0);
                   assertTrue(heapPayloads.get(head).remove(payl));
               }
           } finally {
@@ -226,7 +224,6 @@ public class OffHeapStructSorterTest {
           OffHeapStructArray arr = null;
           try {
 //              System.out.println(j);
-              ByteArrayTool bat = ByteArrayTool.get();
 //              Random random = new Random(j);
               Random random = new Random(42);
               long[] heapHeaders = new long[LENGTH];
@@ -248,8 +245,8 @@ public class OffHeapStructSorterTest {
                       li.add(payload);
                       heapPayloads.put(header, li);
                   }
-                  bat.putLong(buf, 0, payload);
-                  bat.putUnsignedInt(buf, 8, header);
+                  bt.putLong(buf, 0, payload);
+                  bt.putUnsignedInt(buf, 8, header);
                   arr.set(i, buf);
               }
               // standard sort for heap array
@@ -259,9 +256,9 @@ public class OffHeapStructSorterTest {
               // compare results
               for (int i = 0; i < LENGTH; i++) {
                   arr.get(i, buf);
-                  long head = bat.getUnsignedInt(buf, 8);
+                  long head = bt.getUnsignedInt(buf, 8);
                   assertEquals(head, heapHeaders[i]);
-                  long payl = bat.getLong(buf, 0);
+                  long payl = bt.getLong(buf, 0);
                   assertTrue(heapPayloads.get(head).remove(payl));
               }
           } finally {
@@ -276,7 +273,6 @@ public class OffHeapStructSorterTest {
         OffHeapStructArray arr = null;
         try {
 //              System.out.println(j);
-            ByteArrayTool bat = ByteArrayTool.get();
 //              Random random = new Random(j);
             Random random = new Random(42);
             short[] heapHeaders = new short[LENGTH];
@@ -298,8 +294,8 @@ public class OffHeapStructSorterTest {
                     li.add(payload);
                     heapPayloads.put(header, li);
                 }
-                bat.putLong(buf, 0, payload);
-                bat.putShort(buf, 8, header);
+                bt.putLong(buf, 0, payload);
+                bt.putShort(buf, 8, header);
                 arr.set(i, buf);
             }
             // standard sort for heap array
@@ -309,9 +305,9 @@ public class OffHeapStructSorterTest {
             // compare results
             for (int i = 0; i < LENGTH; i++) {
                 arr.get(i, buf);
-                short head = bat.getShort(buf, 8);
+                short head = bt.getShort(buf, 8);
                 assertEquals(head, heapHeaders[i]);
-                long payl = bat.getLong(buf, 0);
+                long payl = bt.getLong(buf, 0);
                 assertTrue(heapPayloads.get(head).remove(payl));
             }
         } finally {
@@ -326,7 +322,6 @@ public class OffHeapStructSorterTest {
         OffHeapStructArray arr = null;
         try {
 //              System.out.println(j);
-            ByteArrayTool bat = ByteArrayTool.get();
 //              Random random = new Random(j);
             Random random = new Random(42);
             int[] heapHeaders = new int[LENGTH];
@@ -348,8 +343,8 @@ public class OffHeapStructSorterTest {
                     li.add(payload);
                     heapPayloads.put(header, li);
                 }
-                bat.putLong(buf, 0, payload);
-                bat.putUnsignedShort(buf, 8, header);
+                bt.putLong(buf, 0, payload);
+                bt.putUnsignedShort(buf, 8, header);
                 arr.set(i, buf);
             }
             // standard sort for heap array
@@ -359,9 +354,9 @@ public class OffHeapStructSorterTest {
             // compare results
             for (int i = 0; i < LENGTH; i++) {
                 arr.get(i, buf);
-                int head = bat.getUnsignedShort(buf, 8);
+                int head = bt.getUnsignedShort(buf, 8);
                 assertEquals(head, heapHeaders[i]);
-                long payl = bat.getLong(buf, 0);
+                long payl = bt.getLong(buf, 0);
                 assertTrue(heapPayloads.get(head).remove(payl));
             }
         } finally {
@@ -376,7 +371,6 @@ public class OffHeapStructSorterTest {
         OffHeapStructArray arr = null;
         try {
 //              System.out.println(j);
-            ByteArrayTool bat = ByteArrayTool.get();
 //              Random random = new Random(j);
             Random random = new Random(42);
             byte[] heapHeaders = new byte[LENGTH];
@@ -398,8 +392,8 @@ public class OffHeapStructSorterTest {
                     li.add(payload);
                     heapPayloads.put(header, li);
                 }
-                bat.putLong(buf, 0, payload);
-                bat.putByte(buf, 8, header);
+                bt.putLong(buf, 0, payload);
+                bt.putByte(buf, 8, header);
                 arr.set(i, buf);
             }
             // standard sort for heap array
@@ -409,9 +403,9 @@ public class OffHeapStructSorterTest {
             // compare results
             for (int i = 0; i < LENGTH; i++) {
                 arr.get(i, buf);
-                byte head = bat.getByte(buf, 8);
+                byte head = bt.getByte(buf, 8);
                 assertEquals(head, heapHeaders[i]);
-                long payl = bat.getLong(buf, 0);
+                long payl = bt.getLong(buf, 0);
                 assertTrue(heapPayloads.get(head).remove(payl));
             }
         } finally {
@@ -426,7 +420,6 @@ public class OffHeapStructSorterTest {
         OffHeapStructArray arr = null;
         try {
 //              System.out.println(j);
-            ByteArrayTool bat = ByteArrayTool.get();
 //              Random random = new Random(j);
             Random random = new Random(42);
             short[] heapHeaders = new short[LENGTH];
@@ -448,8 +441,8 @@ public class OffHeapStructSorterTest {
                     li.add(payload);
                     heapPayloads.put(header, li);
                 }
-                bat.putLong(buf, 0, payload);
-                bat.putUnsignedByte(buf, 8, header);
+                bt.putLong(buf, 0, payload);
+                bt.putUnsignedByte(buf, 8, header);
                 arr.set(i, buf);
             }
             // standard sort for heap array
@@ -459,9 +452,9 @@ public class OffHeapStructSorterTest {
             // compare results
             for (int i = 0; i < LENGTH; i++) {
                 arr.get(i, buf);
-                short head = bat.getUnsignedByte(buf, 8);
+                short head = bt.getUnsignedByte(buf, 8);
                 assertEquals(head, heapHeaders[i]);
-                long payl = bat.getLong(buf, 0);
+                long payl = bt.getLong(buf, 0);
                 assertTrue(heapPayloads.get(head).remove(payl));
             }
         } finally {
@@ -489,7 +482,6 @@ public class OffHeapStructSorterTest {
         OffHeapStructArray arr = null;
         try {
 //            System.out.println(j);
-            ByteArrayTool bat = ByteArrayTool.get();
 //            Random random = new Random(j);
             Random random = new Random(42);
             long[] heapHeaders = new long[LENGTH];
@@ -511,8 +503,8 @@ public class OffHeapStructSorterTest {
                     li.add(payload);
                     heapPayloads.put(header, li);
                 }
-                bat.putLong(buf, 0, payload);
-                bat.putLong(buf, 8, header);
+                bt.putLong(buf, 0, payload);
+                bt.putLong(buf, 8, header);
                 arr.set(i, buf);
             }
             // standard sort for heap array
@@ -526,9 +518,9 @@ public class OffHeapStructSorterTest {
             // compare results
             for (int i = 0; i < LENGTH; i++) {
                 arr.get(i, buf);
-                long head = bat.getLong(buf, 8);
+                long head = bt.getLong(buf, 8);
                 assertEquals(head, heapHeaders[i]);
-                long payl = bat.getLong(buf, 0);
+                long payl = bt.getLong(buf, 0);
                 assertTrue(heapPayloads.get(head).remove(payl));
             }
         } finally {
@@ -543,7 +535,6 @@ public class OffHeapStructSorterTest {
         OffHeapStructArray arr = null;
         try {
 //            System.out.println(j);
-            ByteArrayTool bat = ByteArrayTool.get();
 //            Random random = new Random(j);
             Random random = new Random(42);
             long[] heapHeaders = new long[LENGTH];
@@ -554,7 +545,7 @@ public class OffHeapStructSorterTest {
             for (int i = 0; i < LENGTH; i++) {
                 long payload = random.nextInt();
                 if (0 == i % 5) {
-                    header = random.nextInt();
+                    header = random.nextInt(99);
                 }
                 heapHeaders[i] = header;
                 List<Long> existed = heapPayloads.get(header);
@@ -565,8 +556,8 @@ public class OffHeapStructSorterTest {
                     li.add(payload);
                     heapPayloads.put(header, li);
                 }
-                bat.putLong(buf, 0, payload);
-                bat.putLong(buf, 8, header);
+                bt.putLong(buf, 0, payload);
+                bt.putLong(buf, 8, header);
                 arr.set(i, buf);
             }
             // standard sort for heap array
@@ -577,13 +568,21 @@ public class OffHeapStructSorterTest {
 //            System.out.println(toStringList(arr));
             Iterator<byte[]> iter = OffHeapStructSorter.sortedIterator(Executors.newSingleThreadExecutor(), 4, arr, new LongComp());
 //            System.out.println(toStringList(arr));
+
+//            ArrayList<byte[]> sorted = new ArrayList<byte[]>();
+//            while (iter.hasNext()) {
+//                sorted.add(iter.next().clone());
+//            }
+//            System.out.println(toStringList(sorted));
+//            iter = sorted.iterator();
+
             // compare results
             for (int i = 0; i < LENGTH; i++) {
                 assertTrue(iter.hasNext());
                 buf = iter.next();
-                long head = bat.getLong(buf, 8);
+                long head = bt.getLong(buf, 8);
                 assertEquals(head, heapHeaders[i]);
-                long payl = bat.getLong(buf, 0);
+                long payl = bt.getLong(buf, 0);
                 assertTrue(heapPayloads.get(head).remove(payl));
             }
             assertFalse(iter.hasNext());
@@ -614,7 +613,18 @@ public class OffHeapStructSorterTest {
     private static List<String> toStringList(OffHeapStructArray arr) {
         List<String> res = new ArrayList<String>((int) arr.size());
         for (int i = 0; i < arr.size(); i++) {
-            res.add(arr.getLong(i, 0) + ":" + arr.getLong(i, 8));
+//            res.add(arr.getLong(i, 0) + ":" + arr.getLong(i, 8));
+            res.add(Long.toString(arr.getLong(i, 8)));
+        }
+        return res;
+    }
+
+    private static List<String> toStringList(List<byte[]> arr) {
+        List<String> res = new ArrayList<String>((int) arr.size());
+        for (int i = 0; i < arr.size(); i++) {
+            byte[] buf = arr.get(i);
+//            res.add(arr.getLong(i, 0) + ":" + arr.getLong(i, 8));
+            res.add(Long.toString(bt.getLong(buf, 8)));
         }
         return res;
     }
@@ -630,9 +640,10 @@ public class OffHeapStructSorterTest {
     private static class LongComp implements Comparator<OffHeapStructAccessor> {
         @Override
         public int compare(OffHeapStructAccessor o1, OffHeapStructAccessor o2) {
-            long diff = o1.getLong(8) - o2.getLong(8);
-            if(diff > 0) return 1;
-            if(diff < 0) return -1;
+            long l1 = o1.getLong(8);
+            long l2 = o2.getLong(8);
+            if(l1 > l2) return 1;
+            if(l1 < l2) return -1;
             return 0;
         }
     }
