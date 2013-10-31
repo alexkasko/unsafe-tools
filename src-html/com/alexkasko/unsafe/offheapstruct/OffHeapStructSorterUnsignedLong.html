@@ -354,19 +354,32 @@
 <span class="sourceLineNo">346</span>    }<a name="line.346"></a>
 <span class="sourceLineNo">347</span><a name="line.347"></a>
 <span class="sourceLineNo">348</span>    private static boolean gt(long l1, long l2) {<a name="line.348"></a>
-<span class="sourceLineNo">349</span>        if(l1 &gt;= 0 &amp;&amp; l2 &gt;=0) return l1 &gt; l2;<a name="line.349"></a>
-<span class="sourceLineNo">350</span>        else if(l1 &gt;= 0 &amp;&amp; l2 &lt; 0) return false;<a name="line.350"></a>
-<span class="sourceLineNo">351</span>        else if(l1 &lt; 0 &amp;&amp; l2 &gt;= 0) return true;<a name="line.351"></a>
-<span class="sourceLineNo">352</span>        else return l2 &gt; l1;<a name="line.352"></a>
-<span class="sourceLineNo">353</span>    }<a name="line.353"></a>
-<span class="sourceLineNo">354</span><a name="line.354"></a>
-<span class="sourceLineNo">355</span>    private static boolean lt(long l1, long l2) {<a name="line.355"></a>
-<span class="sourceLineNo">356</span>        if (l1 &gt;= 0 &amp;&amp; l2 &gt;= 0) return l1 &lt; l2;<a name="line.356"></a>
-<span class="sourceLineNo">357</span>        else if (l1 &gt;= 0 &amp;&amp; l2 &lt; 0) return true;<a name="line.357"></a>
-<span class="sourceLineNo">358</span>        else if (l1 &lt; 0 &amp;&amp; l2 &gt;= 0) return false;<a name="line.358"></a>
-<span class="sourceLineNo">359</span>        else return l2 &lt; l1;<a name="line.359"></a>
-<span class="sourceLineNo">360</span>    }<a name="line.360"></a>
-<span class="sourceLineNo">361</span>}<a name="line.361"></a>
+<span class="sourceLineNo">349</span>        return compareUnsigned(l1, l2) &gt; 0;<a name="line.349"></a>
+<span class="sourceLineNo">350</span>    }<a name="line.350"></a>
+<span class="sourceLineNo">351</span><a name="line.351"></a>
+<span class="sourceLineNo">352</span>    private static boolean lt(long l1, long l2) {<a name="line.352"></a>
+<span class="sourceLineNo">353</span>        return compareUnsigned(l1, l2) &lt; 0;<a name="line.353"></a>
+<span class="sourceLineNo">354</span>    }<a name="line.354"></a>
+<span class="sourceLineNo">355</span><a name="line.355"></a>
+<span class="sourceLineNo">356</span>    private static int compareUnsigned(long l1, long l2) {<a name="line.356"></a>
+<span class="sourceLineNo">357</span>        if (l1 == l2) return 0;<a name="line.357"></a>
+<span class="sourceLineNo">358</span>        if (l1 &gt;= 0 &amp;&amp; l2 &gt;= 0 || l1 &lt; 0 &amp;&amp; l2 &lt; 0) {<a name="line.358"></a>
+<span class="sourceLineNo">359</span>            if (l1 &gt; l2) return 1;<a name="line.359"></a>
+<span class="sourceLineNo">360</span>            if (l1 &lt; l2) return -1;<a name="line.360"></a>
+<span class="sourceLineNo">361</span>            throw new IllegalStateException();<a name="line.361"></a>
+<span class="sourceLineNo">362</span>        } else {<a name="line.362"></a>
+<span class="sourceLineNo">363</span>            long i11 = (l1 &gt;&gt;&gt; 32) &amp; 0xffFFffFFL;<a name="line.363"></a>
+<span class="sourceLineNo">364</span>            long i21 = (l2 &gt;&gt;&gt; 32) &amp; 0xffFFffFFL;<a name="line.364"></a>
+<span class="sourceLineNo">365</span>            if (i11 &gt; i21) return 1;<a name="line.365"></a>
+<span class="sourceLineNo">366</span>            if (i11 &lt; i21) return -1;<a name="line.366"></a>
+<span class="sourceLineNo">367</span>            long i12 = l1 &amp; 0xFFFF;<a name="line.367"></a>
+<span class="sourceLineNo">368</span>            long i22 = l2 &amp; 0xFFFF;<a name="line.368"></a>
+<span class="sourceLineNo">369</span>            if (i12 &gt; i22) return 1;<a name="line.369"></a>
+<span class="sourceLineNo">370</span>            if (i12 &lt; i22) return -1;<a name="line.370"></a>
+<span class="sourceLineNo">371</span>            throw new IllegalStateException();<a name="line.371"></a>
+<span class="sourceLineNo">372</span>        }<a name="line.372"></a>
+<span class="sourceLineNo">373</span>    }<a name="line.373"></a>
+<span class="sourceLineNo">374</span>}<a name="line.374"></a>
 
 
 
