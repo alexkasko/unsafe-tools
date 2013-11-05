@@ -42,7 +42,20 @@
 <span class="sourceLineNo">034</span>        if(null == disposable) return;<a name="line.34"></a>
 <span class="sourceLineNo">035</span>        disposable.free();<a name="line.35"></a>
 <span class="sourceLineNo">036</span>    }<a name="line.36"></a>
-<span class="sourceLineNo">037</span>}<a name="line.37"></a>
+<span class="sourceLineNo">037</span><a name="line.37"></a>
+<span class="sourceLineNo">038</span>    /**<a name="line.38"></a>
+<span class="sourceLineNo">039</span>     * Utility method for usage in {@code finally} clauses.<a name="line.39"></a>
+<span class="sourceLineNo">040</span>     * Calls {@link com.alexkasko.unsafe.offheap.OffHeapDisposable#free()}<a name="line.40"></a>
+<span class="sourceLineNo">041</span>     * on all provided instances only if instance is not null.<a name="line.41"></a>
+<span class="sourceLineNo">042</span>     *<a name="line.42"></a>
+<span class="sourceLineNo">043</span>     * @param disposables one or more off-heap disposable<a name="line.43"></a>
+<span class="sourceLineNo">044</span>     */<a name="line.44"></a>
+<span class="sourceLineNo">045</span>    public static void freeAll(OffHeapDisposable... disposables) {<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        for(OffHeapDisposable di : disposables) {<a name="line.46"></a>
+<span class="sourceLineNo">047</span>            free(di);<a name="line.47"></a>
+<span class="sourceLineNo">048</span>        }<a name="line.48"></a>
+<span class="sourceLineNo">049</span>    }<a name="line.49"></a>
+<span class="sourceLineNo">050</span>}<a name="line.50"></a>
 
 
 
