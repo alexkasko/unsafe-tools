@@ -31,10 +31,21 @@ public class OffHeapStructByteArrayAccessor implements OffHeapStructAccessor {
     /**
      * Constructor
      *
-     * @param bt byte array tool to operate over holdede byte array
+     * @param bt byte array tool to operate over held byte array
      */
     public OffHeapStructByteArrayAccessor(ByteArrayTool bt) {
         this.bt = bt;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param bt byte array tool to operate over held byte array
+     * @param struct byte array to hold
+     */
+    public OffHeapStructByteArrayAccessor(ByteArrayTool bt, byte[] struct) {
+        this.bt = bt;
+        this.struct = struct;
     }
 
     /**

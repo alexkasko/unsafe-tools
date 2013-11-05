@@ -34,4 +34,17 @@ public class OffHeapUtils {
         if(null == disposable) return;
         disposable.free();
     }
+
+    /**
+     * Utility method for usage in {@code finally} clauses.
+     * Calls {@link com.alexkasko.unsafe.offheap.OffHeapDisposable#free()}
+     * on all provided instances only if instance is not null.
+     *
+     * @param disposables one or more off-heap disposable
+     */
+    public static void freeAll(OffHeapDisposable... disposables) {
+        for(OffHeapDisposable di : disposables) {
+            free(di);
+        }
+    }
 }

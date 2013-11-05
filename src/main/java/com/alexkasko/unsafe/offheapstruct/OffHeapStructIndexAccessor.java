@@ -51,6 +51,9 @@ public class OffHeapStructIndexAccessor implements OffHeapStructAccessor {
         col.get(index, buffer);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public byte getByte(int offset) {
         return col.getByte(index, offset);
