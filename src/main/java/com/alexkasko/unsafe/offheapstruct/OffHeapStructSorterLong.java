@@ -1,12 +1,10 @@
 package com.alexkasko.unsafe.offheapstruct;
 
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 import static com.alexkasko.unsafe.offheapstruct.OffHeapStructSorter.INSERTION_SORT_THRESHOLD;
+import static com.alexkasko.unsafe.offheapstruct.OffHeapStructSorter.sort;
 
 /**
  * <p>alexkasko: borrowed from {@code https://android.googlesource.com/platform/libcore/+/android-4.2.2_r1/luni/src/main/java/java/util/DualPivotQuicksort.java}
@@ -76,6 +74,36 @@ class OffHeapStructSorterLong {
             Worker.invokeAndWait(executor, workers);
             return new MergeIter(a, keyOffset, workers);
         }
+    }
+
+    /**
+     * Sorts collection by two long keys. Second key sorting is done in parallel.
+     *
+     * @param executor   executor for parallel sorting
+     * @param threads    number of worker threads to use
+     * @param a          the off-heap struct collection to be sorted
+     * @param key1Offset first key offset
+     * @param key2Offset second key offset
+     */
+    static void sortTwoKeysParallel(Executor executor, int threads, OffHeapStructCollection a, int key1Offset, int key2Offset) {
+        // parent
+        sort(a, 0, a.size(), key1Offset);
+        long childStart = 0;
+        long cur = a.getLong(childStart, key1Offset);
+        long size = a.size();
+        List<KeyWorker> workers = new ArrayList<KeyWorker>();
+        for (long i = 1; i < size; i++) {
+            long el = a.getLong(i, key1Offset);
+            if (el != cur) {
+                workers.add(new KeyWorker(a, childStart, i, key2Offset));
+                childStart = i;
+                cur = a.getLong(childStart, key1Offset);
+            }
+        }
+        // sort tail
+        if (childStart < size - 1) workers.add(new KeyWorker(a, childStart, size, key2Offset));
+        // invoke
+        new LimitedInvoker(executor, threads).invokeAll(workers);
     }
 
     /**
@@ -495,6 +523,25 @@ class OffHeapStructSorterLong {
         @Override
         public void remove() {
             throw new UnsupportedOperationException("remove");
+        }
+    }
+
+    private static class KeyWorker implements Runnable {
+        private final OffHeapStructCollection col;
+        private final long from;
+        private final long to;
+        private final int keyOffset;
+
+        private KeyWorker(OffHeapStructCollection col, long from, long to, int keyOffset) {
+            this.col = col;
+            this.from = from;
+            this.to = to;
+            this.keyOffset = keyOffset;
+        }
+
+        @Override
+        public void run() {
+            sort(col, from, to, keyOffset);
         }
     }
 }

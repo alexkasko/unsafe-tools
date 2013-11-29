@@ -692,6 +692,44 @@ public class OffHeapStructSorterTest {
         return res;
     }
 
+    @Test
+    public void twoLongKeysTest() {
+        Random random = new Random(42);
+        OffHeapStructArray arr1 = new OffHeapStructArray(LENGTH, 16);
+        OffHeapStructArray arr2 = new OffHeapStructArray(LENGTH, 16);
+        for (int i = 0; i < LENGTH; i++) {
+            long l1 = random.nextLong();
+            long l2 = random.nextLong();
+            arr1.putLong(i, 0, l1);
+            arr2.putLong(i, 0, l1);
+            arr1.putLong(i, 8, l2);
+            arr2.putLong(i, 8, l2);
+        }
+        OffHeapStructSorter.sort(arr1, new TwoLongComp());
+        OffHeapStructSorter.sortByLongKeysParallel(Executors.newCachedThreadPool(), 4, arr2, 0, 8);
+        for (int i = 0; i < LENGTH; i++) {
+            assertEquals(arr1.getLong(i, 0), arr2.getLong(i, 0));
+            assertEquals(arr1.getLong(i, 8), arr2.getLong(i, 8));
+        }
+    }
+
+    private static class TwoLongComp implements Comparator<OffHeapStructAccessor> {
+        @Override
+        public int compare(OffHeapStructAccessor o1, OffHeapStructAccessor o2) {
+            // first
+            long l1 = o1.getLong(0);
+            long l2 = o2.getLong(0);
+            if (l1 > l2) return 1;
+            if (l1 < l2) return -1;
+            // second
+            l1 = o1.getLong(8);
+            l2 = o2.getLong(8);
+            if (l1 > l2) return 1;
+            if (l1 < l2) return -1;
+            return 0;
+        }
+    }
+
     private static List<Long> toLongList(OffHeapStructArray arr) {
         List<Long> res = new ArrayList<Long>((int) arr.size());
         for (int i = 0; i < arr.size(); i++) {

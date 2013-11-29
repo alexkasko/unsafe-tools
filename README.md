@@ -80,7 +80,7 @@ Changelog
 
 **1.3.9** (2013-11-29)
 
- * parallel quicksort for long keys
+ * parallel sort for long keys
 
 **1.3.8** (2013-11-05)
 

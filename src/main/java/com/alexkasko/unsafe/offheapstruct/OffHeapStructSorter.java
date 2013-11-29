@@ -17,6 +17,7 @@
 package com.alexkasko.unsafe.offheapstruct;
 
 import java.util.*;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
 import static com.alexkasko.unsafe.offheapstruct.OffHeapStructSortKey.*;
@@ -256,6 +257,19 @@ public class OffHeapStructSorter {
      */
     public static void sortByLongKey(OffHeapStructCollection a, long fromIndex, long toIndex, int keyOffset) {
         OffHeapStructSorterLong.sort(a, fromIndex, toIndex, keyOffset);
+    }
+
+    /**
+     * Sorts collection by two long keys. Second key sorting is done in parallel.
+     *
+     * @param executor   executor for parallel sorting
+     * @param threads    number of worker threads to use
+     * @param a          the off-heap struct collection to be sorted
+     * @param key1Offset first key offset
+     * @param key2Offset second key offset
+     */
+    public static void sortByLongKeysParallel(Executor executor, int threads, OffHeapStructCollection a, int key1Offset, int key2Offset) {
+        OffHeapStructSorterLong.sortTwoKeysParallel(executor, threads, a, key1Offset, key2Offset);
     }
 
     /**
