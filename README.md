@@ -13,7 +13,7 @@ Library has no third-party dependencies and is available in [Maven central](http
     <dependency>
         <groupId>com.alexkasko.unsafe</groupId>
         <artifactId>unsafe-tools</artifactId>
-        <version>1.3.8</version>
+        <version>1.3.9</version>
     </dependency>
 
 Off-heap memory, data structures, operations
@@ -77,6 +77,10 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 
 Changelog
 ---------
+
+**1.3.9** (2013-11-29)
+
+ * parallel quicksort for long keys
 
 **1.3.8** (2013-11-05)
 

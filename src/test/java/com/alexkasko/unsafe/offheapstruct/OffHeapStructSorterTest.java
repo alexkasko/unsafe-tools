@@ -152,6 +152,69 @@ public class OffHeapStructSorterTest {
     }
 
     @Test
+    public void testParallelLongKey() {
+//        for(int j=0; j< 100000; j++) {
+        OffHeapStructArray arr = null;
+        try {
+//            System.out.println(j);
+//            Random random = new Random(j);
+            Random random = new Random(42);
+            long[] heapHeaders = new long[LENGTH];
+            Map<Long, List<Long>> heapPayloads = new HashMap<Long, List<Long>>();
+            arr = new OffHeapStructArray(LENGTH, 16);
+            byte[] buf = new byte[16];
+            long header = 0;
+            for (int i = 0; i < LENGTH; i++) {
+                long payload = random.nextInt();
+                if (0 == i % 5) {
+                    header = random.nextInt();
+                }
+                heapHeaders[i] = header;
+                List<Long> existed = heapPayloads.get(header);
+                if (null != existed) {
+                    existed.add(payload);
+                } else {
+                    List<Long> li = new ArrayList<Long>();
+                    li.add(payload);
+                    heapPayloads.put(header, li);
+                }
+                bt.putLong(buf, 0, payload);
+                bt.putLong(buf, 8, header);
+                arr.set(i, buf);
+            }
+            // standard sort for heap array
+//            System.out.println(Arrays.toString(heapHeaders));
+            Arrays.sort(heapHeaders);
+//            System.out.println(Arrays.toString(heapHeaders));
+            // off-heap sort
+//            System.out.println(toStringList(arr));
+            Iterator<byte[]> iter = OffHeapStructSorter.sortedIteratorByLongKey(Executors.newSingleThreadExecutor(), 4, arr, 8);
+//            System.out.println(toStringList(arr));
+
+//            ArrayList<byte[]> sorted = new ArrayList<byte[]>();
+//            while (iter.hasNext()) {
+//                sorted.add(iter.next().clone());
+//            }
+//            System.out.println(toStringList(sorted));
+//            iter = sorted.iterator();
+
+            // compare results
+            for (int i = 0; i < LENGTH; i++) {
+                assertTrue(iter.hasNext());
+                buf = iter.next();
+                long head = bt.getLong(buf, 8);
+                assertEquals(head, heapHeaders[i]);
+                long payl = bt.getLong(buf, 0);
+                assertTrue(heapPayloads.get(head).remove(payl));
+            }
+            assertFalse(iter.hasNext());
+        } finally {
+            free(arr);
+        }
+//        }
+    }
+
+    @Test
     // proper test is not easy here
     public void testUnsignedLongKey() {
         OffHeapStructArray arr = null;
