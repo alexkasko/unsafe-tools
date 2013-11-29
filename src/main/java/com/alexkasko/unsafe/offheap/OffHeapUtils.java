@@ -16,6 +16,8 @@
 
 package com.alexkasko.unsafe.offheap;
 
+import java.util.NoSuchElementException;
+
 /**
  * Static utility methods for off-heap classes
  *
@@ -45,6 +47,39 @@ public class OffHeapUtils {
     public static void freeAll(OffHeapDisposable... disposables) {
         for(OffHeapDisposable di : disposables) {
             free(di);
+        }
+    }
+
+    /**
+     * Returns empty disposable iterator
+     *
+     * @param <T> generic param
+     * @return empty disposable iterator
+     */
+    public static <T> OffHeapDisposableIterator<T> emptyDisposableIterator() {
+        return new EmptyDisposableIterator<T>();
+    }
+
+    private static class EmptyDisposableIterator<T> implements OffHeapDisposableIterator<T> {
+
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public T next() {
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("remove");
+        }
+
+        @Override
+        public void free() {
+            // NOOP
         }
     }
 }

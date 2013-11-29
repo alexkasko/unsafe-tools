@@ -18,6 +18,7 @@ package com.alexkasko.unsafe.offheapstruct;
 
 import com.alexkasko.unsafe.bytearray.ByteArrayTool;
 import com.alexkasko.unsafe.offheap.OffHeapDisposable;
+import com.alexkasko.unsafe.offheap.OffHeapDisposableIterator;
 import com.alexkasko.unsafe.offheap.OffHeapMemory;
 
 import java.util.Iterator;
@@ -122,7 +123,7 @@ public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapD
      * {@inheritDoc}
      */
     @Override
-    public Iterator<byte[]> iterator() {
+    public OffHeapDisposableIterator<byte[]> iterator() {
         return new OffHeapStructIterator(this);
     }
 

@@ -16,13 +16,15 @@
 
 package com.alexkasko.unsafe.offheapstruct;
 
+import com.alexkasko.unsafe.offheap.OffHeapDisposableIterable;
+
 /**
  * Base interface for off-heap struct (memory areas of equal sizes) collection.
  *
  * @author alexkasko
  * Date: 7/3/13
  */
-public interface OffHeapStructCollection extends Iterable<byte[]> {
+public interface OffHeapStructCollection extends OffHeapDisposableIterable<byte[]> {
 
     /**
      * Returns length of the single struct in bytes

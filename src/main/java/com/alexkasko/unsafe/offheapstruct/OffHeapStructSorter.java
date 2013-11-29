@@ -16,10 +16,14 @@
 
 package com.alexkasko.unsafe.offheapstruct;
 
+import com.alexkasko.unsafe.offheap.OffHeapDisposableIterator;
+import com.alexkasko.unsafe.offheap.OffHeapUtils;
+
 import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
+import static com.alexkasko.unsafe.offheap.OffHeapUtils.emptyDisposableIterator;
 import static com.alexkasko.unsafe.offheapstruct.OffHeapStructSortKey.*;
 
 /**
@@ -122,7 +126,7 @@ public class OffHeapStructSorter {
      * @throws IllegalArgumentException {@code if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size())}
      * @throws RuntimeException on worker thread error
      */
-    public static Iterator<byte[]> sortedIterator(ExecutorService executor, int threadsCount, OffHeapStructCollection collection,
+    public static OffHeapDisposableIterator<byte[]> sortedIterator(ExecutorService executor, int threadsCount, OffHeapStructCollection collection,
                                                   Comparator<OffHeapStructAccessor> comparator) {
         return OffHeapStructParallelSorterWithComparator.sortedIterator(executor, threadsCount, collection, comparator);
     }
@@ -140,9 +144,9 @@ public class OffHeapStructSorter {
      * @throws IllegalArgumentException {@code if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size())}
      * @throws RuntimeException on worker thread error
      */
-    public static Iterator<byte[]> sortedIterator(ExecutorService executor, int threadsCount, OffHeapStructCollection collection,
+    public static OffHeapDisposableIterator<byte[]> sortedIterator(ExecutorService executor, int threadsCount, OffHeapStructCollection collection,
                                                   Comparator<OffHeapStructAccessor> comparator, long fromIndex, long toIndex) {
-        if(fromIndex == toIndex) return Collections.<byte[]>emptyList().iterator(); // nothing to sort here
+        if(fromIndex == toIndex) return emptyDisposableIterator(); // nothing to sort here
         return OffHeapStructParallelSorterWithComparator.sortedIterator(executor, threadsCount, collection, fromIndex, toIndex, comparator);
     }
 
@@ -157,7 +161,7 @@ public class OffHeapStructSorter {
      * @throws IllegalArgumentException {@code if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size())}
      * @throws RuntimeException on worker thread error
      */
-    public static Iterator<byte[]> sortedIteratorByLongKey(ExecutorService executor, int threadsCount, OffHeapStructCollection collection,
+    public static OffHeapDisposableIterator<byte[]> sortedIteratorByLongKey(ExecutorService executor, int threadsCount, OffHeapStructCollection collection,
                                                   int keyOffset) {
         return OffHeapStructSorterLong.sortedIterator(executor, threadsCount, collection, keyOffset);
     }
@@ -175,9 +179,9 @@ public class OffHeapStructSorter {
      * @throws IllegalArgumentException {@code if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size())}
      * @throws RuntimeException on worker thread error
      */
-    public static Iterator<byte[]> sortedIteratorByLongKey(ExecutorService executor, int threadsCount, OffHeapStructCollection collection,
+    public static OffHeapDisposableIterator<byte[]> sortedIteratorByLongKey(ExecutorService executor, int threadsCount, OffHeapStructCollection collection,
                                                            int keyOffset, long fromIndex, long toIndex) {
-        if(fromIndex == toIndex) return Collections.<byte[]>emptyList().iterator(); // nothing to sort here
+        if(fromIndex == toIndex) return emptyDisposableIterator(); // nothing to sort here
         return OffHeapStructSorterLong.sortedIterator(executor, threadsCount, collection, fromIndex, toIndex, keyOffset);
     }
 

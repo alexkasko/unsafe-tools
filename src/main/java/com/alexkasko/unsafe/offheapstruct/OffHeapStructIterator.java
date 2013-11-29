@@ -16,7 +16,8 @@
 
 package com.alexkasko.unsafe.offheapstruct;
 
-import java.util.Iterator;
+import com.alexkasko.unsafe.offheap.OffHeapDisposableIterator;
+import com.alexkasko.unsafe.offheap.OffHeapUtils;
 
 /**
  * Iterator implementation for unsafe long collections.
@@ -25,7 +26,7 @@ import java.util.Iterator;
  * @author alexkasko
  * Date: 7/3/13
  */
-public class OffHeapStructIterator implements Iterator<byte[]> {
+public class OffHeapStructIterator implements OffHeapDisposableIterator<byte[]> {
     private final OffHeapStructCollection data;
     private final long size;
     private final byte[] buffer;
@@ -83,5 +84,13 @@ public class OffHeapStructIterator implements Iterator<byte[]> {
         sb.append(", index=").append(index);
         sb.append('}');
         return sb.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void free() {
+        OffHeapUtils.free(data);
     }
 }

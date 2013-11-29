@@ -1,10 +1,12 @@
 package com.alexkasko.unsafe.offheapstruct;
 
+import com.alexkasko.unsafe.offheap.OffHeapDisposableIterator;
+import com.alexkasko.unsafe.offheap.OffHeapUtils;
+
 import java.util.*;
 import java.util.concurrent.*;
 
 import static com.alexkasko.unsafe.offheapstruct.OffHeapStructSorter.INSERTION_SORT_THRESHOLD;
-import static com.alexkasko.unsafe.offheapstruct.OffHeapStructSorter.sort;
 
 /**
  * <p>alexkasko: borrowed from {@code https://android.googlesource.com/platform/libcore/+/android-4.2.2_r1/luni/src/main/java/java/util/DualPivotQuicksort.java}
@@ -35,7 +37,7 @@ class OffHeapStructSorterLong {
      * @throws IllegalArgumentException {@code if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size())}
      * @throws RuntimeException         on worker thread error
      */
-    static Iterator<byte[]> sortedIterator(ExecutorService executor, int threads, OffHeapStructCollection a, int keyOffset) {
+    static OffHeapDisposableIterator<byte[]> sortedIterator(ExecutorService executor, int threads, OffHeapStructCollection a, int keyOffset) {
         return sortedIterator(executor, threads, a, 0, a.size(), keyOffset);
     }
 
@@ -52,7 +54,7 @@ class OffHeapStructSorterLong {
      * @throws IllegalArgumentException {@code if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size())}
      * @throws RuntimeException         on worker thread error
      */
-    static Iterator<byte[]> sortedIterator(ExecutorService executor, int threads, OffHeapStructCollection a, long fromIndex,
+    static OffHeapDisposableIterator<byte[]> sortedIterator(ExecutorService executor, int threads, OffHeapStructCollection a, long fromIndex,
                                            long toIndex, int keyOffset) {
         if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size()) {
             throw new IllegalArgumentException("Illegal input, collection size: [" + a.size() + "], " +
@@ -479,7 +481,7 @@ class OffHeapStructSorterLong {
         }
     }
 
-    private static class MergeIter implements Iterator<byte[]> {
+    private static class MergeIter implements OffHeapDisposableIterator<byte[]> {
         private final OffHeapStructCollection col;
         private final int keyOffset;
         private final List<Worker> bounds;
@@ -523,6 +525,11 @@ class OffHeapStructSorterLong {
         @Override
         public void remove() {
             throw new UnsupportedOperationException("remove");
+        }
+
+        @Override
+        public void free() {
+            OffHeapUtils.free(col);
         }
     }
 

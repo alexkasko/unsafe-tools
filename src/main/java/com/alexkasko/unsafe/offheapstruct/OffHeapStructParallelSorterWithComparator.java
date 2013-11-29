@@ -16,6 +16,9 @@
 
 package com.alexkasko.unsafe.offheapstruct;
 
+import com.alexkasko.unsafe.offheap.OffHeapDisposableIterator;
+import com.alexkasko.unsafe.offheap.OffHeapUtils;
+
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -43,7 +46,7 @@ class OffHeapStructParallelSorterWithComparator {
      * @throws IllegalArgumentException {@code if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size())}
      * @throws RuntimeException on worker thread error
      */
-    static Iterator<byte[]> sortedIterator(ExecutorService executor, int threads, OffHeapStructCollection a, Comparator<OffHeapStructAccessor> comparator) {
+    static OffHeapDisposableIterator<byte[]> sortedIterator(ExecutorService executor, int threads, OffHeapStructCollection a, Comparator<OffHeapStructAccessor> comparator) {
         return sortedIterator(executor, threads, a, 0, a.size(), comparator);
     }
 
@@ -60,7 +63,7 @@ class OffHeapStructParallelSorterWithComparator {
      * @throws IllegalArgumentException {@code if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size())}
      * @throws RuntimeException on worker thread error
      */
-    static Iterator<byte[]> sortedIterator(ExecutorService executor, int threads, OffHeapStructCollection a, long fromIndex,
+    static OffHeapDisposableIterator<byte[]> sortedIterator(ExecutorService executor, int threads, OffHeapStructCollection a, long fromIndex,
                                            long toIndex, Comparator<OffHeapStructAccessor> comparator) {
         if(null == comparator) throw new IllegalArgumentException("Provided comparator is null");
         if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size()) {
@@ -133,7 +136,7 @@ class OffHeapStructParallelSorterWithComparator {
         }
     }
 
-    private static class MergeIter implements Iterator<byte[]> {
+    private static class MergeIter implements OffHeapDisposableIterator<byte[]> {
         private final OffHeapStructCollection col;
         private final OffHeapStructComparator comp;
         private final List<Worker> bounds;
@@ -178,6 +181,11 @@ class OffHeapStructParallelSorterWithComparator {
         @Override
         public void remove() {
             throw new UnsupportedOperationException("remove");
+        }
+
+        @Override
+        public void free() {
+            OffHeapUtils.free(col);
         }
     }
 }
