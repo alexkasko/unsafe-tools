@@ -81,5 +81,10 @@ public class OffHeapUtils {
         public void free() {
             // NOOP
         }
+
+        @Override
+        public long size() {
+            return 0;
+        }
     }
 }

@@ -531,6 +531,11 @@ class OffHeapStructSorterLong {
         public void free() {
             OffHeapUtils.free(col);
         }
+
+        @Override
+        public long size() {
+            return col.size();
+        }
     }
 
     private static class KeyWorker implements Runnable {

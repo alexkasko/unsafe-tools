@@ -23,4 +23,11 @@ import java.util.Iterator;
  * Date: 11/29/13
  */
 public interface OffHeapDisposableIterator<T> extends Iterator<T>, OffHeapDisposable {
+    /**
+     * Optional method, should return size of the underlying collections,
+     * if such size is known on iterator creation or {@code -1} otherwise
+     *
+     * @return number of elements in iterator
+     */
+    long size();
 }

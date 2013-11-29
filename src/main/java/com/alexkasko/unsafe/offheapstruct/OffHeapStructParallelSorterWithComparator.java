@@ -187,5 +187,10 @@ class OffHeapStructParallelSorterWithComparator {
         public void free() {
             OffHeapUtils.free(col);
         }
+
+        @Override
+        public long size() {
+            return col.size();
+        }
     }
 }

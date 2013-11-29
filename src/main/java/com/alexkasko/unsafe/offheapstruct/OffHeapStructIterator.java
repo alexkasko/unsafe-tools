@@ -93,4 +93,12 @@ public class OffHeapStructIterator implements OffHeapDisposableIterator<byte[]> 
     public void free() {
         OffHeapUtils.free(data);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long size() {
+        return data.size();
+    }
 }
