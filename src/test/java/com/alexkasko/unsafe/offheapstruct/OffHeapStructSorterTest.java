@@ -282,6 +282,56 @@ public class OffHeapStructSorterTest {
       }
 
     @Test
+    public void testIntKeyIterator() {
+//          for(int j=0; j< 100000; j++) {
+          OffHeapStructArray arr = null;
+          try {
+//              System.out.println(j);
+//              Random random = new Random(j);
+              Random random = new Random(42);
+              int[] heapHeaders = new int[LENGTH];
+              Map<Integer, List<Long>> heapPayloads = new HashMap<Integer, List<Long>>();
+              arr = new OffHeapStructArray(LENGTH, 12);
+              byte[] buf = new byte[12];
+              int header = 0;
+              for (int i = 0; i < LENGTH; i++) {
+                  long payload = random.nextInt();
+                  if (0 == i % 5) {
+                      header = random.nextInt();
+                  }
+                  heapHeaders[i] = header;
+                  List<Long> existed = heapPayloads.get(header);
+                  if (null != existed) {
+                      existed.add(payload);
+                  } else {
+                      List<Long> li = new ArrayList<Long>();
+                      li.add(payload);
+                      heapPayloads.put(header, li);
+                  }
+                  bt.putLong(buf, 0, payload);
+                  bt.putInt(buf, 8, header);
+                  arr.set(i, buf);
+              }
+              // standard sort for heap array
+              Arrays.sort(heapHeaders);
+              // off-heap sort
+              Iterator<byte[]> iter = OffHeapStructSorter.sortedIteratorByIntKey(Executors.newSingleThreadExecutor(), 2, arr, 8);
+              // compare results
+              for (int i = 0; i < LENGTH; i++) {
+                  assertTrue(iter.hasNext());
+                  buf = iter.next();
+                  int head = bt.getInt(buf, 8);
+                  assertEquals(head, heapHeaders[i]);
+                  long payl = bt.getLong(buf, 0);
+                  assertTrue(heapPayloads.get(head).remove(payl));
+              }
+          } finally {
+              free(arr);
+          }
+//          }
+      }
+
+    @Test
     public void testUnsignedIntKey() {
 //          for(int j=0; j< 100000; j++) {
           OffHeapStructArray arr = null;

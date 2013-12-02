@@ -185,6 +185,41 @@ public class OffHeapStructSorter {
         return OffHeapStructSorterLong.sortedIterator(executor, threadsCount, collection, fromIndex, toIndex, keyOffset);
     }
 
+    /**
+     * Partially sorts collection and returns fully sorted iterator over it
+     *
+     * @param executor executor service for parallel sorting
+     * @param threadsCount number of worker threads to use
+     * @param collection the off-heap struct collection to be sorted
+     * @param keyOffset key offset
+     * @return sorted iterator over the collection
+     * @throws IllegalArgumentException {@code if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size())}
+     * @throws RuntimeException on worker thread error
+     */
+    public static OffHeapDisposableIterator<byte[]> sortedIteratorByIntKey(ExecutorService executor, int threadsCount, OffHeapStructCollection collection,
+                                                  int keyOffset) {
+        return OffHeapStructSorterInt.sortedIterator(executor, threadsCount, collection, keyOffset);
+    }
+
+    /**
+     * Partially sorts part of the collection and returns fully sorted iterator over it
+     *
+     * @param executor executor service for parallel sorting
+     * @param threadsCount number of worker threads to use
+     * @param collection the off-heap struct collection to be sorted
+     * @param fromIndex the index of the first element, inclusive, to be sorted
+     * @param toIndex the index of the last element, exclusive, to be sorted
+     * @param keyOffset key offset
+     * @return sorted iterator over the collection part
+     * @throws IllegalArgumentException {@code if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size())}
+     * @throws RuntimeException on worker thread error
+     */
+    public static OffHeapDisposableIterator<byte[]> sortedIteratorByIntKey(ExecutorService executor, int threadsCount, OffHeapStructCollection collection,
+                                                           int keyOffset, long fromIndex, long toIndex) {
+        if(fromIndex == toIndex) return emptyDisposableIterator(); // nothing to sort here
+        return OffHeapStructSorterInt.sortedIterator(executor, threadsCount, collection, fromIndex, toIndex, keyOffset);
+    }
+
     private static void multisortInternal(OffHeapStructCollection collection, long start, long end,
                                      List<OffHeapStructSortKey> keys, int keyIndex) {
         if(keyIndex >= keys.size()) return;
