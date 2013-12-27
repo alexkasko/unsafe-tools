@@ -25,23 +25,24 @@
 <span class="sourceLineNo">017</span>package com.alexkasko.unsafe.offheaplong;<a name="line.17"></a>
 <span class="sourceLineNo">018</span><a name="line.18"></a>
 <span class="sourceLineNo">019</span>import com.alexkasko.unsafe.offheap.OffHeapAddressable;<a name="line.19"></a>
-<span class="sourceLineNo">020</span><a name="line.20"></a>
-<span class="sourceLineNo">021</span>/**<a name="line.21"></a>
-<span class="sourceLineNo">022</span> * Interface for off-heap collections with long elements.<a name="line.22"></a>
-<span class="sourceLineNo">023</span> *<a name="line.23"></a>
-<span class="sourceLineNo">024</span> * @author alexkasko<a name="line.24"></a>
-<span class="sourceLineNo">025</span> * Date: 3/3/13<a name="line.25"></a>
-<span class="sourceLineNo">026</span> */<a name="line.26"></a>
-<span class="sourceLineNo">027</span>public interface OffHeapLongAddressable extends OffHeapAddressable {<a name="line.27"></a>
-<span class="sourceLineNo">028</span><a name="line.28"></a>
-<span class="sourceLineNo">029</span>    /**<a name="line.29"></a>
-<span class="sourceLineNo">030</span>     * Sets the element at position {@code index} to the given value<a name="line.30"></a>
-<span class="sourceLineNo">031</span>     *<a name="line.31"></a>
-<span class="sourceLineNo">032</span>     * @param index collection index<a name="line.32"></a>
-<span class="sourceLineNo">033</span>     * @param value long value<a name="line.33"></a>
-<span class="sourceLineNo">034</span>     */<a name="line.34"></a>
-<span class="sourceLineNo">035</span>    void set(long index, long value);<a name="line.35"></a>
-<span class="sourceLineNo">036</span>}<a name="line.36"></a>
+<span class="sourceLineNo">020</span>import com.alexkasko.unsafe.offheap.OffHeapDisposableIterable;<a name="line.20"></a>
+<span class="sourceLineNo">021</span><a name="line.21"></a>
+<span class="sourceLineNo">022</span>/**<a name="line.22"></a>
+<span class="sourceLineNo">023</span> * Interface for off-heap collections with long elements.<a name="line.23"></a>
+<span class="sourceLineNo">024</span> *<a name="line.24"></a>
+<span class="sourceLineNo">025</span> * @author alexkasko<a name="line.25"></a>
+<span class="sourceLineNo">026</span> * Date: 3/3/13<a name="line.26"></a>
+<span class="sourceLineNo">027</span> */<a name="line.27"></a>
+<span class="sourceLineNo">028</span>public interface OffHeapLongAddressable extends OffHeapAddressable, OffHeapDisposableIterable&lt;Long&gt; {<a name="line.28"></a>
+<span class="sourceLineNo">029</span><a name="line.29"></a>
+<span class="sourceLineNo">030</span>    /**<a name="line.30"></a>
+<span class="sourceLineNo">031</span>     * Sets the element at position {@code index} to the given value<a name="line.31"></a>
+<span class="sourceLineNo">032</span>     *<a name="line.32"></a>
+<span class="sourceLineNo">033</span>     * @param index collection index<a name="line.33"></a>
+<span class="sourceLineNo">034</span>     * @param value long value<a name="line.34"></a>
+<span class="sourceLineNo">035</span>     */<a name="line.35"></a>
+<span class="sourceLineNo">036</span>    void set(long index, long value);<a name="line.36"></a>
+<span class="sourceLineNo">037</span>}<a name="line.37"></a>
 
 
 
