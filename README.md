@@ -13,7 +13,7 @@ Library has no third-party dependencies and is available in [Maven central](http
     <dependency>
         <groupId>com.alexkasko.unsafe</groupId>
         <artifactId>unsafe-tools</artifactId>
-        <version>1.3.9</version>
+        <version>1.4.0</version>
     </dependency>
 
 Off-heap memory, data structures, operations
@@ -39,20 +39,11 @@ for details.
 ###Off-heap collections of structs (memory areas)
 
 Equal-sized memory areas may be stored in off-heap memory contiguously as collections. Such memory areas also may be used
-like C structs (without compiler checks, though). Sorting and searching of these collections may be done using arbitrary
-"fields" of such "structs".
+like C structs (without compiler checks, though). Sorting and searching of these collections may be done using `long` or `int`
+"fields" of such "structs" or using `Comparator`.
 
 See `com.alexkasko.unsafe.offheapstruct` [package description](http://alexkasko.github.io/unsafe-tools/com/alexkasko/unsafe/offheapstruct/package-summary.html)
 for details.
-
-###Off-heap header-payload collections
-
-_Note: header-payload collections were deprecated in favor of struct collections._
-
-In [header-payload collections](http://alexkasko.github.io/unsafe-tools/com/alexkasko/unsafe/offheappayload/package-summary.html)
-each element contains long header (which is used for sorting and searching) and an additional payload.
-Payloads are stored in memory next to headers. Byte arrays of arbitrary size may be used as payloads for storing non-primitive values.
-Special collections for `long` and `int` payloads should be faster than `byte[]` ones.
 
 ###Operations
 
@@ -77,6 +68,13 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 
 Changelog
 ---------
+
+**1.4.0** (2013-12-27)
+
+ * header-payload package removed
+ * `short` and `byte` sort/search methods removed
+ * multisort methods removed
+ * javadocs cleanup
 
 **1.3.9** (2013-11-29)
 

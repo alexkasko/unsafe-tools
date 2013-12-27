@@ -151,4 +151,262 @@ class OffHeapStructComparator {
         sb.append('}');
         return sb.toString();
     }
+
+    /**
+     * Struct's accessor implementation for byte array structs
+     *
+     * @author alexkasko
+     * Date: 9/13/13
+     */
+    private static class OffHeapStructByteArrayAccessor implements OffHeapStructAccessor {
+        private final ByteArrayTool bt;
+        private byte[] struct;
+
+        /**
+         * Constructor
+         *
+         * @param bt byte array tool to operate over held byte array
+         */
+        private OffHeapStructByteArrayAccessor(ByteArrayTool bt) {
+            this.bt = bt;
+        }
+
+        /**
+         * Constructor
+         *
+         * @param bt byte array tool to operate over held byte array
+         * @param struct byte array to hold
+         */
+        private OffHeapStructByteArrayAccessor(ByteArrayTool bt, byte[] struct) {
+            this.bt = bt;
+            this.struct = struct;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int structLength() {
+            return struct.length;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void get(byte[] buffer) {
+            bt.copy(struct, 0, buffer, 0, struct.length);
+        }
+
+        /**
+         * Copies specified buffer data into internal buffer
+         *
+         * @param buffer data to copy
+         */
+        public void set(byte[] buffer) {
+            bt.copy(buffer, 0, struct, 0, struct.length);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public byte getByte(int offset) {
+            return bt.getByte(struct, offset);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public short getUnsignedByte(int offset) {
+            return bt.getUnsignedByte(struct, offset);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public short getShort(int offset) {
+            return bt.getShort(struct, offset);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getUnsignedShort(int offset) {
+            return bt.getUnsignedShort(struct, offset);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getInt(int offset) {
+            return bt.getInt(struct, offset);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public long getUnsignedInt(int offset) {
+            return bt.getUnsignedInt(struct, offset);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public long getLong(int offset) {
+            return bt.getLong(struct, offset);
+        }
+
+        /**
+         * Returns previously setted struct
+         *
+         * @return struct
+         */
+        private byte[] getStruct() {
+            return struct;
+        }
+
+        /**
+         * Sets struct to access it
+         *
+         * @param struct struct
+         */
+        private void setStruct(byte[] struct) {
+            this.struct = struct;
+        }
+
+        /**
+         * {@inheritDoc}
+         *
+         * @return
+         */
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("OffHeapStructByteArrayAccessor");
+            sb.append("{bt=").append(bt);
+            sb.append('}');
+            return sb.toString();
+        }
+    }
+
+    /**
+     * Struct's accessor implementation for off-heap stored structs
+     *
+     * @author alexkasko
+     * Date: 9/13/13
+     */
+    private static class OffHeapStructIndexAccessor implements OffHeapStructAccessor {
+        private final OffHeapStructCollection col;
+        private long index = -1;
+
+        /**
+         * Constructor
+         *
+         * @param col collection to access structs from
+         */
+        private OffHeapStructIndexAccessor(OffHeapStructCollection col) {
+            this.col = col;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int structLength() {
+            return col.structLength();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void get(byte[] buffer) {
+            col.get(index, buffer);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public byte getByte(int offset) {
+            return col.getByte(index, offset);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public short getUnsignedByte(int offset) {
+            return col.getUnsignedByte(index, offset);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public short getShort(int offset) {
+            return col.getShort(index, offset);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getUnsignedShort(int offset) {
+            return col.getUnsignedShort(index, offset);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getInt(int offset) {
+            return col.getInt(index, offset);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public long getUnsignedInt(int offset) {
+            return col.getUnsignedInt(index, offset);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public long getLong(int offset) {
+            return col.getLong(index, offset);
+        }
+
+        /**
+         * Sets index value
+         *
+         * @param index index value
+         */
+        private void setIndex(long index) {
+            this.index = index;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("OffHeapStructIndexAccessor");
+            sb.append("{col=").append(col);
+            sb.append(", index=").append(index);
+            sb.append('}');
+            return sb.toString();
+        }
+    }
 }

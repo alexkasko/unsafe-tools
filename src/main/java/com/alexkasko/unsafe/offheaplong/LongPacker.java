@@ -49,7 +49,7 @@ public class LongPacker {
         assert bits > 32 && bits < 64;
         assert big < (1L << bits);
         assert little < (1 << (64 - bits));
-        int ls = bits % 8;
+        int ls = bits & 7;
         int bm = (1 << ls) - 1;
         long res = (big & ~bm) << (64 - bits);
         res |= (little & ((1L << (64 - bits)) - 1)) << ls;
@@ -68,7 +68,7 @@ public class LongPacker {
      */
     public static long big(long pack, int bits) {
         assert bits > 32 && bits < 64;
-        int ls = bits % 8;
+        int ls = bits & 7;
         long res = (pack & (((1L << (bits - ls)) - 1) << (64 - bits + ls))) >>> (64 - bits);
         return res | pack & ((1 << ls) - 1);
     }
@@ -84,7 +84,7 @@ public class LongPacker {
      */
     public static int little(long pack, int bits) {
         assert bits > 32 && bits < 64;
-        int ls = bits % 8;
+        int ls = bits & 7;
         return (int) ((pack & (((1L << (64 - bits)) -1) << ls)) >> ls);
     }
 }

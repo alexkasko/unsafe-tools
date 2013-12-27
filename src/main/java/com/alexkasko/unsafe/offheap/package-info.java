@@ -23,7 +23,8 @@
  *
  * <h2>Implementations</h2>
  * <p>Main implementation ({@link com.alexkasko.unsafe.offheap.UnsafeOffHeapMemory}) uses {@link sun.misc.Unsafe},
- * fallback implementation ({@link com.alexkasko.unsafe.offheap.DirectOffHeapMemory}) uses {@link java.nio.DirectByteBuffer}s.
+ * fallback implementation ({@link com.alexkasko.unsafe.offheap.DirectOffHeapMemory}) uses {@link java.nio.DirectByteBuffer}s,
+ * additional on-heap implementation ({@link com.alexkasko.unsafe.offheap.OnHeapMemory}) uses byte arrays.
  *
  * <h2>Boundary checks</h2>
  * <p>With {@link sun.misc.Unsafe} backend all operations have boundary checks using
@@ -40,6 +41,10 @@
  *          is garbage collector; this library uses reflection hacks
  *          (different for OpenJDK and Android implementations) to free memory eagerly</li>
  * </ul>
+ *
+ * <h2>On-heap implementation</h2>
+ * <p>On-heap implementation added for rare cases when the same API is required for small on-heap collection.
+ * It may not allocate more than {@code Integer.MAX_VALUE} memory.</p>
  *
  * <h2>Data structures</h2>
  * <p>{@link com.alexkasko.unsafe.offheap.OffHeapMemory} is used as a base for off-heap data structures, see {@link com.alexkasko.unsafe.offheaplong}

@@ -17,6 +17,7 @@
 package com.alexkasko.unsafe.offheaplong;
 
 import com.alexkasko.unsafe.offheap.OffHeapDisposable;
+import com.alexkasko.unsafe.offheap.OffHeapDisposableIterator;
 import com.alexkasko.unsafe.offheap.OffHeapMemory;
 
 import java.util.Iterator;
@@ -47,6 +48,7 @@ public class OffHeapLongArrayList implements OffHeapLongAddressable, OffHeapDisp
 
     private OffHeapMemory ohm;
     private long size;
+    private long capacity;
 
     /**
      * Constructor, {@code 12} is used as initial capacity
@@ -61,6 +63,7 @@ public class OffHeapLongArrayList implements OffHeapLongAddressable, OffHeapDisp
      * @param capacity initial capacity
      */
     public OffHeapLongArrayList(long capacity) {
+        this.capacity = capacity;
         this.ohm = OffHeapMemory.allocateMemory(capacity * ELEMENT_LENGTH);
     }
 
@@ -73,13 +76,14 @@ public class OffHeapLongArrayList implements OffHeapLongAddressable, OffHeapDisp
     public void add(long value) {
         OffHeapMemory oh = ohm;
         long s = size;
-        if (s == capacity()) {
+        if (s == capacity) {
             long len = s + (s < (MIN_CAPACITY_INCREMENT / 2) ? MIN_CAPACITY_INCREMENT : s >> 1);
             OffHeapMemory newOhm = OffHeapMemory.allocateMemory(len * ELEMENT_LENGTH);
             // maybe it's better to use Unsafe#reallocateMemory here
             oh.copy(0, newOhm, 0, ohm.length());
             oh.free();
             ohm = newOhm;
+            capacity = len;
         }
         size = s + 1;
         set(s, value);
@@ -134,7 +138,7 @@ public class OffHeapLongArrayList implements OffHeapLongAddressable, OffHeapDisp
      * @return number of elements list may contain without additional memory allocation
      */
     public long capacity() {
-        return ohm.length() / ELEMENT_LENGTH;
+        return capacity;
     }
 
     /**
@@ -149,7 +153,7 @@ public class OffHeapLongArrayList implements OffHeapLongAddressable, OffHeapDisp
      * {@inheritDoc}
      */
     @Override
-    public Iterator<Long> iterator() {
+    public OffHeapDisposableIterator<Long> iterator() {
         return new OffHeapLongIterator(this);
     }
 
@@ -169,6 +173,7 @@ public class OffHeapLongArrayList implements OffHeapLongAddressable, OffHeapDisp
         final StringBuilder sb = new StringBuilder();
         sb.append("OffHeapLongArrayList");
         sb.append("{size=").append(size());
+        sb.append(", capacity=").append(capacity);
         sb.append(", unsafe=").append(isUnsafe());
         sb.append('}');
         return sb.toString();

@@ -42,10 +42,10 @@
  * <ul>
  *     <li>reading/writing primitives directly from/into off-heap memory without copying full structs into byte arrays</li>
  *     <li>sorting using {@link com.alexkasko.unsafe.offheapstruct.OffHeapStructSorter}: implementation of Dual-Pivot quicksort algorithm
- *      adapted to off-heap collections. May use arbitrary fields from struct as sort keys with signed or unsigned comparison.
+ *      adapted to off-heap collections. May use long or int fields from struct as sort keys with signed or unsigned comparison.
  *      May also use user-provided {@link java.util.Comparator}'s for structs.</li>
  *     <li>binary search over sorted collections using {@link com.alexkasko.unsafe.offheapstruct.OffHeapStructBinarySearch}.
- *      May use arbitrary field from struct to search on it. May also use user-provided {@link java.util.Comparator}'s for structs.</li>
+ *      May use long or int field from struct to search on it. May also use user-provided {@link java.util.Comparator}'s for structs.</li>
  *     <li>binary search returning ranges of equal values:
  *     {@link com.alexkasko.unsafe.offheapstruct.OffHeapStructBinarySearch#binarySearchRangeByLongKey(com.alexkasko.unsafe.offheapstruct.OffHeapStructCollection, long, int, com.alexkasko.unsafe.offheapstruct.OffHeapStructBinarySearch.IndexRange)}</li>
  * </ul>

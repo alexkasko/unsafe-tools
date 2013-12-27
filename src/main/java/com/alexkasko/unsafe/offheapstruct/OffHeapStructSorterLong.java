@@ -433,6 +433,9 @@ class OffHeapStructSorterLong {
         doSort(a, less, great, keyOffset, pi, pj, pe1, pe2, pe3, pe4, pe5);
     }
 
+    /**
+     * Worker, sorts part of the collection
+     */
     private static class Worker implements Callable<Void> {
         private final OffHeapStructCollection a;
         final long left;
@@ -446,6 +449,21 @@ class OffHeapStructSorterLong {
         private final byte[] pe4;
         private final byte[] pe5;
 
+        /**
+         * Private constructor
+         *
+         * @param a collection
+         * @param left start sort index
+         * @param right end sort index
+         * @param keyOffset sort key offset
+         * @param pi sort buffer
+         * @param pj sort buffer
+         * @param pe1 sort buffer
+         * @param pe2 sort buffer
+         * @param pe3 sort buffer
+         * @param pe4 sort buffer
+         * @param pe5 sort buffer
+         */
         private Worker(OffHeapStructCollection a, long left, long right, int keyOffset, byte[] pi,
                        byte[] pj, byte[] pe1, byte[] pe2, byte[] pe3, byte[] pe4, byte[] pe5) {
             this.a = a;
@@ -461,12 +479,21 @@ class OffHeapStructSorterLong {
             this.pe5 = pe5;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Void call() throws Exception {
             doSort(a, left, right, keyOffset, pi, pj, pe1, pe2, pe3, pe4, pe5);
             return null;
         }
 
+        /**
+         * Helper method to invoke and wait
+         *
+         * @param executor executor instance
+         * @param workers workers list
+         */
         private static void invokeAndWait(ExecutorService executor, List<Worker> workers) {
             try {
                 List<Future<Void>> futures = executor.invokeAll(workers);
@@ -481,6 +508,9 @@ class OffHeapStructSorterLong {
         }
     }
 
+    /**
+     * Merge-sort iterator over partly sorted collection
+     */
     private static class MergeIter implements OffHeapDisposableIterator<byte[]> {
         private final OffHeapStructCollection col;
         private final int keyOffset;
@@ -488,7 +518,13 @@ class OffHeapStructSorterLong {
         private final long[] indices;
         private final byte[] buf;
 
-
+        /**
+         * Private constructor
+         *
+         * @param col partly sorted collection
+         * @param keyOffset key offset used to partially sort collection
+         * @param bounds collection sorted parts bounds
+         */
         private MergeIter(OffHeapStructCollection col, int keyOffset, List<Worker> bounds) {
             this.col = col;
             this.keyOffset = keyOffset;
@@ -500,6 +536,9 @@ class OffHeapStructSorterLong {
             }
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public boolean hasNext() {
             for (int i = 0; i < indices.length; i++) {
@@ -508,6 +547,9 @@ class OffHeapStructSorterLong {
             return false;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public byte[] next() {
             int minind = -1;
@@ -522,28 +564,48 @@ class OffHeapStructSorterLong {
             return buf;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void remove() {
             throw new UnsupportedOperationException("remove");
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void free() {
             OffHeapUtils.free(col);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public long size() {
             return col.size();
         }
     }
 
+    /**
+     * Worker for two long keys sort
+     */
     private static class KeyWorker implements Runnable {
         private final OffHeapStructCollection col;
         private final long from;
         private final long to;
         private final int keyOffset;
 
+        /**
+         * Private constructor
+         *
+         * @param col collection
+         * @param from start sort index
+         * @param to end sort index
+         * @param keyOffset sort key offset
+         */
         private KeyWorker(OffHeapStructCollection col, long from, long to, int keyOffset) {
             this.col = col;
             this.from = from;
@@ -551,6 +613,9 @@ class OffHeapStructSorterLong {
             this.keyOffset = keyOffset;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void run() {
             sort(col, from, to, keyOffset);

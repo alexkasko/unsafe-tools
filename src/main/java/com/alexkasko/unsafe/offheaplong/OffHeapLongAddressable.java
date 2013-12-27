@@ -17,6 +17,7 @@
 package com.alexkasko.unsafe.offheaplong;
 
 import com.alexkasko.unsafe.offheap.OffHeapAddressable;
+import com.alexkasko.unsafe.offheap.OffHeapDisposableIterable;
 
 /**
  * Interface for off-heap collections with long elements.
@@ -24,7 +25,7 @@ import com.alexkasko.unsafe.offheap.OffHeapAddressable;
  * @author alexkasko
  * Date: 3/3/13
  */
-public interface OffHeapLongAddressable extends OffHeapAddressable {
+public interface OffHeapLongAddressable extends OffHeapAddressable, OffHeapDisposableIterable<Long> {
 
     /**
      * Sets the element at position {@code index} to the given value

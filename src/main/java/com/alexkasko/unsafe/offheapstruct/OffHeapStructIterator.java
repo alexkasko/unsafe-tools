@@ -26,7 +26,7 @@ import com.alexkasko.unsafe.offheap.OffHeapUtils;
  * @author alexkasko
  * Date: 7/3/13
  */
-public class OffHeapStructIterator implements OffHeapDisposableIterator<byte[]> {
+class OffHeapStructIterator implements OffHeapDisposableIterator<byte[]> {
     private final OffHeapStructCollection data;
     private final long size;
     private final byte[] buffer;

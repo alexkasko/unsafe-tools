@@ -46,6 +46,7 @@ public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapD
     private final int structLength;
     private OffHeapMemory ohm;
     private long size;
+    private long capacity;
 
     /**
      * Constructor with default capacity = {@code 12}
@@ -65,6 +66,7 @@ public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapD
     public OffHeapStructArrayList(long capacity, int structLength) {
         this.bt = null;
         this.structLength = structLength;
+        this.capacity = capacity;
         this.ohm = OffHeapMemory.allocateMemory(capacity * structLength);
     }
 
@@ -79,6 +81,7 @@ public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapD
     public OffHeapStructArrayList(ByteArrayTool bt, int capacity, int structLength) {
         this.bt = bt;
         this.structLength = structLength;
+        this.capacity = capacity;
         this.ohm = OffHeapMemory.allocateMemoryOnHeap(bt, capacity * structLength);
     }
 
@@ -108,7 +111,7 @@ public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapD
      * @return max number of possible elements in this list without memory reallocation
      */
     public long capacity() {
-        return ohm.length() / structLength;
+        return capacity;
     }
 
     /**
@@ -388,7 +391,7 @@ public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapD
     public void add(byte[] struct, int structPos) {
         OffHeapMemory oh = ohm;
         long s = size;
-        if (s == capacity()) {
+        if (s == capacity) {
             long len = s + (s < (MIN_CAPACITY_INCREMENT / 2) ? MIN_CAPACITY_INCREMENT : s >> 1);
             OffHeapMemory newOhm = null == bt ? OffHeapMemory.allocateMemory(len * structLength)
                     : OffHeapMemory.allocateMemoryOnHeap(bt, len * structLength);
@@ -396,6 +399,7 @@ public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapD
             oh.copy(0, newOhm, 0, ohm.length());
             oh.free();
             ohm = newOhm;
+            capacity = len;
         }
         size = s + 1;
         set(s, struct, structPos);
@@ -419,6 +423,7 @@ public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapD
         sb.append("{structLength=").append(structLength);
         sb.append(", ohm=").append(ohm);
         sb.append(", size=").append(size);
+        sb.append(", capacity=").append(capacity);
         sb.append('}');
         return sb.toString();
     }

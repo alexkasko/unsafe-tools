@@ -16,6 +16,9 @@
 
 package com.alexkasko.unsafe.offheaplong;
 
+import com.alexkasko.unsafe.offheap.OffHeapDisposableIterator;
+import com.alexkasko.unsafe.offheap.OffHeapUtils;
+
 import java.util.Iterator;
 
 /**
@@ -28,7 +31,7 @@ import java.util.Iterator;
  * @author alexkasko
  * Date: 7/3/13
  */
-class OffHeapLongIterator implements Iterator<Long> {
+class OffHeapLongIterator implements OffHeapDisposableIterator<Long> {
     private final OffHeapLongAddressable data;
     private final long size;
     private long index = 0;
@@ -82,5 +85,21 @@ class OffHeapLongIterator implements Iterator<Long> {
         sb.append(", index=").append(index);
         sb.append('}');
         return sb.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long size() {
+        return data.size();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void free() {
+        OffHeapUtils.free(data);
     }
 }

@@ -17,6 +17,7 @@
 package com.alexkasko.unsafe.offheaplong;
 
 import com.alexkasko.unsafe.offheap.OffHeapDisposable;
+import com.alexkasko.unsafe.offheap.OffHeapDisposableIterator;
 import com.alexkasko.unsafe.offheap.OffHeapMemory;
 
 import java.util.Iterator;
@@ -105,7 +106,7 @@ public class OffHeapLongArray implements OffHeapLongAddressable, OffHeapDisposab
      * {@inheritDoc}
      */
     @Override
-    public Iterator<Long> iterator() {
+    public OffHeapDisposableIterator<Long> iterator() {
         return new OffHeapLongIterator(this);
     }
 
