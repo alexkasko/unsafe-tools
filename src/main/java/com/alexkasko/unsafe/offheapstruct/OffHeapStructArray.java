@@ -137,6 +137,19 @@ public class OffHeapStructArray implements OffHeapStructCollection, OffHeapDispo
     }
 
     /**
+     * Copies part of struct on specified index into specified buffer
+     *
+     * @param index array index
+     * @param pos position in struct
+     * @param buffer buffer to copy struct into
+     * @param bufferPos start position in specified buffer
+     * @param length number of bytes to copy
+     */
+    public void get(long index, int pos, byte[] buffer, int bufferPos, int length) {
+        ohm.get(index * structLength + pos, buffer, bufferPos, length);
+    }
+
+    /**
      * Copies specified struct contents onto specified index
      *
      * @param index array index

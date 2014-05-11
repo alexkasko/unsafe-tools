@@ -21,8 +21,6 @@ import com.alexkasko.unsafe.offheap.OffHeapDisposable;
 import com.alexkasko.unsafe.offheap.OffHeapDisposableIterator;
 import com.alexkasko.unsafe.offheap.OffHeapMemory;
 
-import java.util.Iterator;
-
 /**
  * <p>Implementation of off-heap array list of structs (memory areas of equal sizes).
  *
@@ -159,6 +157,19 @@ public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapD
      */
     public void get(long index, byte[] buffer, int bufferPos) {
         ohm.get(index * structLength, buffer, bufferPos, structLength);
+    }
+
+    /**
+     * Copies part of struct on specified index into specified buffer
+     *
+     * @param index array index
+     * @param pos position in struct
+     * @param buffer buffer to copy struct into
+     * @param bufferPos start position in specified buffer
+     * @param length number of bytes to copy
+     */
+    public void get(long index, int pos, byte[] buffer, int bufferPos, int length) {
+        ohm.get(index * structLength + pos, buffer, bufferPos, length);
     }
 
     /**
