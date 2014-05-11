@@ -207,7 +207,6 @@ class UnsafeByteArrayTool extends ByteArrayTool {
      */
     @Override
     public void copy(byte[] src, int srcPos, byte[] dest, int destPos, int length) {
-        assert length > 0 : length;
         assert srcPos >= 0 : srcPos;
         assert srcPos <= src.length - length : srcPos;
         assert destPos >= 0 : destPos;
