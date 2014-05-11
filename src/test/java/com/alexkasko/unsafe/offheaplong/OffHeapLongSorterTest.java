@@ -19,6 +19,7 @@ package com.alexkasko.unsafe.offheaplong;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Random;
 
 import static com.alexkasko.unsafe.offheap.OffHeapUtils.free;
@@ -55,6 +56,37 @@ public class OffHeapLongSorterTest {
         }
     }
 
+    @Test
+    public void testComp() throws Exception {
+        OffHeapLongArray la = null;
+        try {
+            long[] heap = gendata();
+            Long[] heapBoxed = new Long[heap.length];
+            for (int i = 0; i < heap.length; i++) {
+                heapBoxed[i] = heap[i];
+            }
+            long[] unsafe = heap.clone();
+            Arrays.sort(heapBoxed, new HeapReverseComp());
+
+            la = new OffHeapLongArray(THRESHOLD);
+            for (int i = 0; i < THRESHOLD; i++) {
+                la.set(i, unsafe[i]);
+            }
+            OffHeapLongSorter.sort(la, 0, THRESHOLD, new OffHeapReverseComp());
+            for (int i = 0; i < THRESHOLD; i++) {
+                unsafe[i] = la.get(i);
+            }
+            long[] heapUnboxed = new long[heap.length];
+            for(int i = 0; i < heap.length; i++) {
+                heapUnboxed[i] = heapBoxed[i];
+            }
+            assertArrayEquals(heapUnboxed, unsafe);
+            la.free();
+        } finally {
+            free(la);
+        }
+    }
+
     private static long[] gendata() throws Exception {
         Random random = new Random(42);
         long[] res = new long[THRESHOLD];
@@ -62,5 +94,23 @@ public class OffHeapLongSorterTest {
             res[i] = random.nextLong();
         }
         return res;
+    }
+
+    private static class HeapReverseComp implements Comparator<Long> {
+        @Override
+        public int compare(Long o1, Long o2) {
+            if (o1 > o2) return -1;
+            if (o1 < o2) return 1;
+            return 0;
+        }
+    }
+
+    private static class OffHeapReverseComp implements OffHeapLongComparator {
+        @Override
+        public int compare(long l1, long l2) {
+            if (l1 > l2) return -1;
+            if (l1 < l2) return 1;
+            return 0;
+        }
     }
 }

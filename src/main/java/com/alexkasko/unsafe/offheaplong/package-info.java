@@ -38,6 +38,7 @@
  * <ul>
  *     <li>sorting using {@link com.alexkasko.unsafe.offheaplong.OffHeapLongSorter}: implementation of Dual-Pivot quicksort algorithm
  *      adapted to off-heap collections</li>
+ *     <li>sorting with order defined by {@code com.alexkasko.unsafe.offheaplong.OffHeapLongComparator}</li>
  *     <li>binary search over sorted collections using {@link com.alexkasko.unsafe.offheaplong.OffHeapLongBinarySearch}</li>
  *     <li>binary search returning ranges of equal values:
  *     {@link com.alexkasko.unsafe.offheaplong.OffHeapLongBinarySearch#binarySearchRange(com.alexkasko.unsafe.offheap.OffHeapAddressable, long, com.alexkasko.unsafe.offheaplong.OffHeapLongBinarySearch.IndexRange)}</li>
