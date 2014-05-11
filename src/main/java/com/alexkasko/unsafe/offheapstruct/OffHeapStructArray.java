@@ -70,6 +70,17 @@ public class OffHeapStructArray implements OffHeapStructCollection, OffHeapDispo
     }
 
     /**
+     * Private constructor for {@link #clone()} support
+     *
+     * @param ohm cloned memory
+     * @param structLength struct length
+     */
+    private OffHeapStructArray(OffHeapMemory ohm, int structLength) {
+        this.ohm = ohm;
+        this.structLength = structLength;
+    }
+
+    /**
      * Returns length of the single struct in bytes
      *
      * @return length of the single struct in bytes
@@ -357,6 +368,15 @@ public class OffHeapStructArray implements OffHeapStructCollection, OffHeapDispo
     public void putLong(long index, int offset, long value) {
         assert offset <= structLength - 8 : offset;
         ohm.putLong(index * structLength + offset, value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public OffHeapStructArray clone() {
+        OffHeapMemory cloned = ohm.clone();
+        return new OffHeapStructArray(cloned, structLength);
     }
 
     /**

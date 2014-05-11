@@ -222,6 +222,16 @@ class OnHeapMemory extends OffHeapMemory {
      * {@inheritDoc}
      */
     @Override
+    public OffHeapMemory clone() {
+        OnHeapMemory res = new OnHeapMemory(bt, mem.length);
+        this.copy(0, res, 0, mem.length);
+        return res;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
         sb.append("OnHeapMemory");

@@ -47,6 +47,7 @@ public class OffHeapMemoryTest {
         testReadLong(allocateMemoryUnsafe(128));
         testWriteLong(allocateMemoryUnsafe(128));
         testCopy(allocateMemoryUnsafe(128), allocateMemoryUnsafe(128));
+        testClone(allocateMemoryUnsafe(128));
 
         testReadByte(allocateMemoryDirect(128));
         testWriteByte(allocateMemoryDirect(128));
@@ -63,6 +64,7 @@ public class OffHeapMemoryTest {
         testReadLong(allocateMemoryDirect(128));
         testWriteLong(allocateMemoryDirect(128));
         testCopy(allocateMemoryDirect(128), allocateMemoryDirect(128));
+        testClone(allocateMemoryDirect(128));
 
         ByteArrayTool bt = ByteArrayTool.get();
         testReadByte(allocateMemoryOnHeap(bt, 128));
@@ -80,6 +82,7 @@ public class OffHeapMemoryTest {
         testReadLong(allocateMemoryOnHeap(bt, 128));
         testWriteLong(allocateMemoryOnHeap(bt, 128));
         testCopy(allocateMemoryOnHeap(bt, 128), allocateMemoryOnHeap(bt, 128));
+        testClone(allocateMemoryOnHeap(bt, 128));
     }
 
     private static void testReadByte(OffHeapMemory ma) {
@@ -314,6 +317,28 @@ public class OffHeapMemoryTest {
         assertEquals((byte) 0x0b, ma2.getByte(47));
         assertEquals((byte) 0x36, ma2.getByte(48));
         assertEquals((byte) 0x4d, ma2.getByte(49));
+        ma1.free();
+        ma2.free();
+    }
+
+    private static void testClone(OffHeapMemory ma1) {
+        ma1.putByte(43, (byte) 0x7f);
+        ma1.putByte(44, (byte) 0xf0);
+        ma1.putByte(45, (byte) 0xed);
+        ma1.putByte(46, (byte) 0x89);
+        ma1.putByte(47, (byte) 0xa2);
+        ma1.putByte(48, (byte) 0x0b);
+        ma1.putByte(49, (byte) 0x36);
+        ma1.putByte(50, (byte) 0x4d);
+        OffHeapMemory ma2 = ma1.clone();
+        assertEquals((byte) 0x7f, ma2.getByte(43));
+        assertEquals((byte) 0xf0, ma2.getByte(44));
+        assertEquals((byte) 0xed, ma2.getByte(45));
+        assertEquals((byte) 0x89, ma2.getByte(46));
+        assertEquals((byte) 0xa2, ma2.getByte(47));
+        assertEquals((byte) 0x0b, ma2.getByte(48));
+        assertEquals((byte) 0x36, ma2.getByte(49));
+        assertEquals((byte) 0x4d, ma2.getByte(50));
         ma1.free();
         ma2.free();
     }

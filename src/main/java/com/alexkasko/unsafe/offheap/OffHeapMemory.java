@@ -282,4 +282,13 @@ public abstract class OffHeapMemory {
      * @param bytes memory length in bytes to copy
      */
     public abstract void copy(long offset, OffHeapMemory destination, long destOffset, long bytes);
+
+    /**
+     * Creates new instance of {@link OffHeapMemory}
+     * and copies there current instance contents
+     *
+     * @return new instance of {@link OffHeapMemory}
+     */
+    @Override
+    public abstract OffHeapMemory clone();
 }

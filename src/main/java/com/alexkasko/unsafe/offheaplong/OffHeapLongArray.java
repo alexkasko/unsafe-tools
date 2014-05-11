@@ -20,8 +20,6 @@ import com.alexkasko.unsafe.offheap.OffHeapDisposable;
 import com.alexkasko.unsafe.offheap.OffHeapDisposableIterator;
 import com.alexkasko.unsafe.offheap.OffHeapMemory;
 
-import java.util.Iterator;
-
 /**
  * <p>Implementation of array of long using {@link com.alexkasko.unsafe.offheap.OffHeapMemory}.
  *
@@ -52,6 +50,15 @@ public class OffHeapLongArray implements OffHeapLongAddressable, OffHeapDisposab
      */
     public OffHeapLongArray(long size) {
         this.ohm = OffHeapMemory.allocateMemory(size * ELEMENT_LENGTH);
+    }
+
+    /**
+     * Private constructor for {@link #clone()} support
+     *
+     * @param ohm cloned memory instance
+     */
+    private OffHeapLongArray(OffHeapMemory ohm) {
+        this.ohm = ohm;
     }
 
     /**
@@ -108,6 +115,15 @@ public class OffHeapLongArray implements OffHeapLongAddressable, OffHeapDisposab
     @Override
     public OffHeapDisposableIterator<Long> iterator() {
         return new OffHeapLongIterator(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public OffHeapLongArray clone() {
+        OffHeapMemory cloned = ohm.clone();
+        return new OffHeapLongArray(cloned);
     }
 
     /**

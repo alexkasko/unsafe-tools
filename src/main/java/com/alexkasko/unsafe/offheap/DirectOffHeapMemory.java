@@ -261,6 +261,16 @@ class DirectOffHeapMemory extends OffHeapMemory {
      * {@inheritDoc}
      */
     @Override
+    public OffHeapMemory clone() {
+        DirectOffHeapMemory res = new DirectOffHeapMemory(length);
+        copy(0, res, 0, length);
+        return res;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
         sb.append("DirectOffHeapMemory");

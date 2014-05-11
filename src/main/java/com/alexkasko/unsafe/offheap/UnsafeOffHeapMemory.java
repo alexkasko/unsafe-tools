@@ -326,6 +326,17 @@ class UnsafeOffHeapMemory extends OffHeapMemory {
      * {@inheritDoc}
      */
     @Override
+    public OffHeapMemory clone() {
+        assert !disposed.get() : "disposed";
+        UnsafeOffHeapMemory res = new UnsafeOffHeapMemory(length);
+        UNSAFE.copyMemory(address, res.address, length);
+        return res;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
         sb.append("UnsafeOffHeapMemory");
