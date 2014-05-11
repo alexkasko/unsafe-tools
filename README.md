@@ -13,7 +13,7 @@ Library has no third-party dependencies and is available in [Maven central](http
     <dependency>
         <groupId>com.alexkasko.unsafe</groupId>
         <artifactId>unsafe-tools</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.1</version>
     </dependency>
 
 Off-heap memory, data structures, operations
@@ -68,6 +68,13 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 
 Changelog
 ---------
+
+**1.4.1** (2014-05-11)
+
+ * accessors for struct parts in struct collections
+ * clone support for arrays
+ * remove zero length assertion for byte array copy
+ * comparator sort for collections of longs
 
 **1.4.0** (2013-12-27)
 
