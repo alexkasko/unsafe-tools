@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Alex Kasko (alexkasko.com)
+ * Copyright 2014 Alex Kasko (alexkasko.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@ package com.alexkasko.unsafe.offheap;
 import java.util.Iterator;
 
 /**
- * User: alexkasko
+ * Interface for iterators over off-heap collections those can be disposed manually
+ *
+ * @author alexkasko
  * Date: 11/29/13
  */
 public interface OffHeapDisposableIterator<T> extends Iterator<T>, OffHeapDisposable {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Alex Kasko (alexkasko.com)
+ * Copyright 2014 Alex Kasko (alexkasko.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,9 @@
  *     <li>sorting using {@link com.alexkasko.unsafe.offheapstruct.OffHeapStructSorter}: implementation of Dual-Pivot quicksort algorithm
  *      adapted to off-heap collections. May use long or int fields from struct as sort keys with signed or unsigned comparison.
  *      May also use user-provided {@link java.util.Comparator}'s for structs.</li>
+ *     <li>sorting struct collection "by-reference" using additional {@link com.alexkasko.unsafe.offheaplong.OffHeapLongArray}
+ *     to hold collection indices. Indices are sorted using data from the collection, collection itself stays
+ *     unchanged. This sorter returns {@link com.alexkasko.unsafe.offheap.OffHeapDisposableIterable} over the data.</li>
  *     <li>binary search over sorted collections using {@link com.alexkasko.unsafe.offheapstruct.OffHeapStructBinarySearch}.
  *      May use long or int field from struct to search on it. May also use user-provided {@link java.util.Comparator}'s for structs.</li>
  *     <li>binary search returning ranges of equal values:

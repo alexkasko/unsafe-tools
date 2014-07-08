@@ -13,7 +13,7 @@ Library has no third-party dependencies and is available in [Maven central](http
     <dependency>
         <groupId>com.alexkasko.unsafe</groupId>
         <artifactId>unsafe-tools</artifactId>
-        <version>1.4.1</version>
+        <version>1.4.2</version>
     </dependency>
 
 Off-heap memory, data structures, operations
@@ -40,14 +40,15 @@ for details.
 
 Equal-sized memory areas may be stored in off-heap memory contiguously as collections. Such memory areas also may be used
 like C structs (without compiler checks, though). Sorting and searching of these collections may be done using `long` or `int`
-"fields" of such "structs" or using `Comparator`.
+"fields" of such "structs" or using `Comparator`. Sorting also can be performed "by-references" using additional array to
+ hold collections indices (without reordering elements in the collection itself).
 
 See `com.alexkasko.unsafe.offheapstruct` [package description](http://alexkasko.github.io/unsafe-tools/com/alexkasko/unsafe/offheapstruct/package-summary.html)
 for details.
 
 ###Operations
 
-Next operations are implemented for all off-heap data structures:
+The following operations are implemented for all off-heap data structures:
 
  - Dual-Pivot Quicksort implementation, adapted from [here](https://android.googlesource.com/platform/libcore/+/android-4.2.2_r1/luni/src/main/java/java/util/DualPivotQuicksort.java).
  - Binary Search implementation, adapted from [here](https://android.googlesource.com/platform/libcore/+/android-4.2.2_r1/luni/src/main/java/java/util/Arrays.java).
@@ -68,6 +69,11 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 
 Changelog
 ---------
+
+**1.4.2** (2014-07-08)
+
+ * reference sorting for struct collections
+ * missed javadoc fixes
 
 **1.4.1** (2014-05-11)
 

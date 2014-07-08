@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Alex Kasko (alexkasko.com)
+ * Copyright 2014 Alex Kasko (alexkasko.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,6 +60,11 @@ public class OffHeapUtils {
         return new EmptyDisposableIterator<T>();
     }
 
+    /**
+     * Returns empty instance of {@link com.alexkasko.unsafe.offheap.OffHeapDisposableIterator}
+     *
+     * @param <T>
+     */
     private static class EmptyDisposableIterator<T> implements OffHeapDisposableIterator<T> {
 
         @Override

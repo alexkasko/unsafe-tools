@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Alex Kasko (alexkasko.com)
+ * Copyright 2014 Alex Kasko (alexkasko.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -420,14 +420,14 @@ public class OffHeapLongSorter {
          * the pivots are swapped back into their final positions, and
          * excluded from subsequent sorting.
          */
-        long pivot1 = ae2; a.set(e2, a.get(left));
-        long pivot2 = ae4; a.set(e4, a.get(right));
+        a.set(e2, a.get(left));
+        a.set(e4, a.get(right));
 
         // Pointers
         long less  = left  + 1; // The index of first element of center part
         long great = right - 1; // The index before first element of right part
 
-        boolean pivotsDiffer = !comp.eq(pivot1, pivot2);
+        boolean pivotsDiffer = !comp.eq(ae2, ae4);
 
         if (pivotsDiffer) {
             /*
@@ -452,24 +452,25 @@ public class OffHeapLongSorter {
             outer:
             for (long k = less; k <= great; k++) {
                 long ak = a.get(k);
-                if (comp.lt(ak, pivot1)) { // Move a[k] to left part
+                if (comp.lt(ak, ae2)) { // Move a[k] to left part
                     if (k != less) {
                         a.set(k, a.get(less));
                         a.set(less, ak);
                     }
                     less++;
-                } else if (comp.gt(ak, pivot2)) { // Move a[k] to right part
-                    while (comp.gt(a.get(great), pivot2)) {
+                } else if (comp.gt(ak, ae4)) { // Move a[k] to right part
+                    long agreat;
+                    while (comp.gt((agreat = a.get(great)), ae4)) {
                         if (great-- == k) {
                             break outer;
                         }
                     }
-                    if (comp.lt(a.get(great), pivot1)) {
+                    if (comp.lt(agreat, ae2)) {
                         a.set(k, a.get(less));
-                        a.set(less++, a.get(great));
+                        a.set(less++, agreat);
                         a.set(great--, ak);
                     } else { // pivot1 <= a[great] <= pivot2
-                        a.set(k, a.get(great));
+                        a.set(k, agreat);
                         a.set(great--, ak);
                     }
                 }
@@ -497,10 +498,10 @@ public class OffHeapLongSorter {
              */
             for (long k = less; k <= great; k++) {
                 long ak = a.get(k);
-                if (comp.eq(ak, pivot1)) {
+                if (comp.eq(ak, ae2)) {
                     continue;
                 }
-                if (comp.lt(ak, pivot1)) { // Move a[k] to left part
+                if (comp.lt(ak, ae2)) { // Move a[k] to left part
                     if (k != less) {
                         a.set(k, a.get(less));
                         a.set(less, ak);
@@ -513,15 +514,16 @@ public class OffHeapLongSorter {
                      * terminates, even though we don't test for it explicitly.
                      * In other words, a[e3] acts as a sentinel for great.
                      */
-                    while (comp.gt(a.get(great), pivot1)) {
+                    long agreat;
+                    while (comp.gt((agreat = a.get(great)), ae2)) {
                         great--;
                     }
-                    if (comp.lt(a.get(great), pivot1)) {
+                    if (comp.lt(agreat, ae2)) {
                         a.set(k, a.get(less));
-                        a.set(less++, a.get(great));
+                        a.set(less++, agreat);
                         a.set(great--, ak);
                     } else { // a[great] == pivot1
-                        a.set(k, pivot1);
+                        a.set(k, agreat);
                         a.set(great--, ak);
                     }
                 }
@@ -529,8 +531,8 @@ public class OffHeapLongSorter {
         }
 
         // Swap pivots into their final positions
-        a.set(left, a.get(less - 1)); a.set(less - 1, pivot1);
-        a.set(right, a.get(great + 1)); a.set(great + 1, pivot2);
+        a.set(left, a.get(less - 1)); a.set(less - 1, ae2);
+        a.set(right, a.get(great + 1)); a.set(great + 1, ae4);
 
         // Sort left and right parts recursively, excluding known pivot values
         doSortWithComparator(a, left,   less - 2, comp);
@@ -549,10 +551,10 @@ public class OffHeapLongSorter {
          * swap internal pivot values to ends
          */
         if (less < e1 && great > e5) {
-            while (comp.eq(a.get(less), pivot1)) {
+            while (comp.eq(a.get(less), ae2)) {
                 less++;
             }
-            while (comp.eq(a.get(great), pivot2)) {
+            while (comp.eq(a.get(great), ae4)) {
                 great--;
             }
 
@@ -578,22 +580,23 @@ public class OffHeapLongSorter {
             outer:
             for (long k = less; k <= great; k++) {
                 long ak = a.get(k);
-                if (comp.eq(ak, pivot2)) { // Move a[k] to right part
-                    while (comp.eq(a.get(great), pivot2)) {
+                if (comp.eq(ak, ae4)) { // Move a[k] to right part
+                    long agreat;
+                    while (comp.eq((agreat = a.get(great)), ae4)) {
                         if (great-- == k) {
                             break outer;
                         }
                     }
-                    if (comp.eq(a.get(great), pivot1)) {
+                    if (comp.eq(agreat, ae2)) {
                         a.set(k, a.get(less));
-                        a.set(less++, pivot1);
+                        a.set(less++, agreat);
                     } else { // pivot1 < a[great] < pivot2
-                        a.set(k, a.get(great));
+                        a.set(k, agreat);
                     }
-                    a.set(great--, pivot2);
-                } else if (comp.eq(ak, pivot1)) { // Move a[k] to left part
+                    a.set(great--, ak);
+                } else if (comp.eq(ak, ae2)) { // Move a[k] to left part
                     a.set(k, a.get(less));
-                    a.set(less++, pivot1);
+                    a.set(less++, ak);
                 }
             }
         }

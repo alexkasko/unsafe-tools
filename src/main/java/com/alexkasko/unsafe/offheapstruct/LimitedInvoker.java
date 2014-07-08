@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Alex Kasko (alexkasko.com)
+ * Copyright 2014 Alex Kasko (alexkasko.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,22 @@ import java.util.Iterator;
 import java.util.concurrent.*;
 
 /**
- * User: alexkasko
+ * Auxiliary class that limits the number of {@link java.util.concurrent.Executor} threads
+ * those can be used simultaneously.
+ *
+ * @author alexkasko
  * Date: 11/14/13
  */
 class LimitedInvoker {
     private final Executor executor;
     private final int maxThreads;
 
+    /**
+     * Constructor
+     *
+     * @param executor executor
+     * @param maxThreads maximum number of simultaneously used threads
+     */
     LimitedInvoker(Executor executor, int maxThreads) {
         if (null == executor) throw new NullPointerException("executor");
         if (maxThreads <= 0) throw new IllegalArgumentException("maxThreads: [" + maxThreads + "] must be positive");
@@ -35,6 +44,11 @@ class LimitedInvoker {
         this.maxThreads = maxThreads;
     }
 
+    /**
+     * Executes all the tasks simultaneously using no more than {@link #maxThreads} threads from the executor
+     *
+     * @param tasks runnables to execute
+     */
     void invokeAll(Collection<? extends Runnable> tasks) {
         ExecutorCompletionService<Void> completer = new ExecutorCompletionService<Void>(executor);
         Iterator<? extends Runnable> iter = tasks.iterator();
@@ -52,6 +66,11 @@ class LimitedInvoker {
         }
     }
 
+    /**
+     * Waits for {@link java.util.concurrent.Future} to complete
+     *
+     * @param completer executor service
+     */
     private void await(ExecutorCompletionService<Void> completer) {
         try {
             Future<Void> fu = completer.take();
