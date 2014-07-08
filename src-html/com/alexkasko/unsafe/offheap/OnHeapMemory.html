@@ -230,16 +230,26 @@
 <span class="sourceLineNo">222</span>     * {@inheritDoc}<a name="line.222"></a>
 <span class="sourceLineNo">223</span>     */<a name="line.223"></a>
 <span class="sourceLineNo">224</span>    @Override<a name="line.224"></a>
-<span class="sourceLineNo">225</span>    public String toString() {<a name="line.225"></a>
-<span class="sourceLineNo">226</span>        final StringBuilder sb = new StringBuilder();<a name="line.226"></a>
-<span class="sourceLineNo">227</span>        sb.append("OnHeapMemory");<a name="line.227"></a>
-<span class="sourceLineNo">228</span>        sb.append("{bt=").append(bt);<a name="line.228"></a>
-<span class="sourceLineNo">229</span>        sb.append(", length=").append(!disposed.get() ? mem.length : -1);<a name="line.229"></a>
-<span class="sourceLineNo">230</span>        sb.append(", disposed=").append(disposed);<a name="line.230"></a>
-<span class="sourceLineNo">231</span>        sb.append('}');<a name="line.231"></a>
-<span class="sourceLineNo">232</span>        return sb.toString();<a name="line.232"></a>
-<span class="sourceLineNo">233</span>    }<a name="line.233"></a>
-<span class="sourceLineNo">234</span>}<a name="line.234"></a>
+<span class="sourceLineNo">225</span>    public OffHeapMemory clone() {<a name="line.225"></a>
+<span class="sourceLineNo">226</span>        OnHeapMemory res = new OnHeapMemory(bt, mem.length);<a name="line.226"></a>
+<span class="sourceLineNo">227</span>        this.copy(0, res, 0, mem.length);<a name="line.227"></a>
+<span class="sourceLineNo">228</span>        return res;<a name="line.228"></a>
+<span class="sourceLineNo">229</span>    }<a name="line.229"></a>
+<span class="sourceLineNo">230</span><a name="line.230"></a>
+<span class="sourceLineNo">231</span>    /**<a name="line.231"></a>
+<span class="sourceLineNo">232</span>     * {@inheritDoc}<a name="line.232"></a>
+<span class="sourceLineNo">233</span>     */<a name="line.233"></a>
+<span class="sourceLineNo">234</span>    @Override<a name="line.234"></a>
+<span class="sourceLineNo">235</span>    public String toString() {<a name="line.235"></a>
+<span class="sourceLineNo">236</span>        final StringBuilder sb = new StringBuilder();<a name="line.236"></a>
+<span class="sourceLineNo">237</span>        sb.append("OnHeapMemory");<a name="line.237"></a>
+<span class="sourceLineNo">238</span>        sb.append("{bt=").append(bt);<a name="line.238"></a>
+<span class="sourceLineNo">239</span>        sb.append(", length=").append(!disposed.get() ? mem.length : -1);<a name="line.239"></a>
+<span class="sourceLineNo">240</span>        sb.append(", disposed=").append(disposed);<a name="line.240"></a>
+<span class="sourceLineNo">241</span>        sb.append('}');<a name="line.241"></a>
+<span class="sourceLineNo">242</span>        return sb.toString();<a name="line.242"></a>
+<span class="sourceLineNo">243</span>    }<a name="line.243"></a>
+<span class="sourceLineNo">244</span>}<a name="line.244"></a>
 
 
 

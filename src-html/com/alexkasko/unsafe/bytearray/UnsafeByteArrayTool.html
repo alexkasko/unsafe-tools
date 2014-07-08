@@ -215,14 +215,13 @@
 <span class="sourceLineNo">207</span>     */<a name="line.207"></a>
 <span class="sourceLineNo">208</span>    @Override<a name="line.208"></a>
 <span class="sourceLineNo">209</span>    public void copy(byte[] src, int srcPos, byte[] dest, int destPos, int length) {<a name="line.209"></a>
-<span class="sourceLineNo">210</span>        assert length &gt; 0 : length;<a name="line.210"></a>
-<span class="sourceLineNo">211</span>        assert srcPos &gt;= 0 : srcPos;<a name="line.211"></a>
-<span class="sourceLineNo">212</span>        assert srcPos &lt;= src.length - length : srcPos;<a name="line.212"></a>
-<span class="sourceLineNo">213</span>        assert destPos &gt;= 0 : destPos;<a name="line.213"></a>
-<span class="sourceLineNo">214</span>        assert destPos &lt;= dest.length - length : destPos;<a name="line.214"></a>
-<span class="sourceLineNo">215</span>        UNSAFE.copyMemory(src, BYTE_ARRAY_OFFSET + srcPos, dest, BYTE_ARRAY_OFFSET + destPos, length);<a name="line.215"></a>
-<span class="sourceLineNo">216</span>    }<a name="line.216"></a>
-<span class="sourceLineNo">217</span>}<a name="line.217"></a>
+<span class="sourceLineNo">210</span>        assert srcPos &gt;= 0 : srcPos;<a name="line.210"></a>
+<span class="sourceLineNo">211</span>        assert srcPos &lt;= src.length - length : srcPos;<a name="line.211"></a>
+<span class="sourceLineNo">212</span>        assert destPos &gt;= 0 : destPos;<a name="line.212"></a>
+<span class="sourceLineNo">213</span>        assert destPos &lt;= dest.length - length : destPos;<a name="line.213"></a>
+<span class="sourceLineNo">214</span>        UNSAFE.copyMemory(src, BYTE_ARRAY_OFFSET + srcPos, dest, BYTE_ARRAY_OFFSET + destPos, length);<a name="line.214"></a>
+<span class="sourceLineNo">215</span>    }<a name="line.215"></a>
+<span class="sourceLineNo">216</span>}<a name="line.216"></a>
 
 
 
