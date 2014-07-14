@@ -199,6 +199,14 @@ class OffHeapStructComparator {
         }
 
         /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void get(int srcPos, byte[] dest, int destPos, int length) {
+            bt.copy(struct, srcPos, dest, destPos, length);
+        }
+
+        /**
          * Copies specified buffer data into internal buffer
          *
          * @param buffer data to copy
@@ -329,6 +337,14 @@ class OffHeapStructComparator {
         @Override
         public void get(byte[] buffer) {
             col.get(index, buffer);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void get(int srcPos, byte[] dest, int destPos, int length) {
+            col.get(index, srcPos, dest, destPos, length);
         }
 
         /**

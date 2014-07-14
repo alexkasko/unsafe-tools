@@ -16,6 +16,7 @@
 
 package com.alexkasko.unsafe.offheapstruct;
 
+import com.alexkasko.unsafe.offheap.OffHeapDisposableIterable;
 import com.alexkasko.unsafe.offheap.OffHeapDisposableIterator;
 
 import java.util.*;
@@ -291,5 +292,35 @@ public class OffHeapStructSorter {
      */
     public static void sortByUnsignedIntKey(OffHeapStructCollection a, long fromIndex, long toIndex, int keyOffset) {
         OffHeapStructSorterUnsignedInt.sort(a, fromIndex, toIndex, keyOffset);
+    }
+
+    /**
+     * Sorts collection using additional {@link com.alexkasko.unsafe.offheaplong.OffHeapLongArray} with the same size
+     * as collection itself as an array of references (indices) of the collection
+     *
+     * @param a the off-heap struct collection to be sorted
+     * @param comparator structs comparator
+     * @return sorted iterable over the collection
+     * @throws IllegalArgumentException {@code if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size())}
+     */
+    public static OffHeapDisposableIterable<byte[]> sortedByRefIterable(OffHeapStructCollection a,
+                                                                        Comparator<OffHeapStructAccessor> comparator) {
+        return OffHeapStructSorterByReference.sortedIterable(a, comparator);
+    }
+
+    /**
+     * Sorts collection using additional {@link com.alexkasko.unsafe.offheaplong.OffHeapLongArray} with the same size
+     * as collection itself as an array of references (indices) of the collection
+     *
+     * @param a the off-heap struct collection to be sorted
+     * @param fromIndex the index of the first element, inclusive, to be sorted
+     * @param toIndex the index of the last element, exclusive, to be sorted
+     * @param comparator structs comparator
+     * @return sorted iterable over the collection
+     * @throws IllegalArgumentException {@code if (fromIndex < 0 || fromIndex > toIndex || toIndex > a.size())}
+     */
+    public static OffHeapDisposableIterable<byte[]> sortedByRefIterable(OffHeapStructCollection a, long fromIndex,
+                                                                        long toIndex, Comparator<OffHeapStructAccessor> comparator) {
+        return OffHeapStructSorterByReference.sortedIterable(a, fromIndex, toIndex, comparator);
     }
 }

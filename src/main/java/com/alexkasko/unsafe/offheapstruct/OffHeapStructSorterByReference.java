@@ -158,6 +158,14 @@ public class OffHeapStructSorterByReference {
          * {@inheritDoc}
          */
         @Override
+        public void get(int srcPos, byte[] dest, int destPos, int length) {
+            col.get(index, srcPos, dest, destPos, length);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public byte getByte(int offset) {
             return col.getByte(index, offset);
         }

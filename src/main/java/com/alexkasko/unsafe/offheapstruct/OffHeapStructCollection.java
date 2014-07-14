@@ -49,6 +49,17 @@ public interface OffHeapStructCollection extends OffHeapDisposableIterable<byte[
     void get(long index, byte[] buffer);
 
     /**
+     * Copies struct part on specified index into specified buffer
+     *
+     * @param index array index
+     * @param srcPos struct position in collection
+     * @param dest buffer to copy struct into
+     * @param destPos position in buffer
+     * @param length number of bytes to copy
+     */
+    void get(long index, int srcPos, byte[] dest, int destPos, int length);
+
+    /**
      * Copies specified struct contents onto specified index
      *
      * @param index array index

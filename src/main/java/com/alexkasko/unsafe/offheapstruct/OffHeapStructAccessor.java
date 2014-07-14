@@ -32,14 +32,24 @@ public interface OffHeapStructAccessor {
     int structLength();
 
     /**
-     * Copies struct on specified index into specified buffer
+     * Copies struct into specified buffer
      *
      * @param buffer buffer to copy struct into
      */
     void get(byte[] buffer);
 
     /**
-     * Gets byte from struct on specified index with specified offset
+     * Copies part of struct into specified buffer
+     *
+     * @param srcPos
+     * @param dest
+     * @param destPos
+     * @param length
+     */
+    void get(int srcPos, byte[] dest, int destPos, int length);
+
+    /**
+     * Gets byte from struct with specified offset
      *
      * @param offset byte array index
      * @return byte
@@ -56,7 +66,7 @@ public interface OffHeapStructAccessor {
     short getUnsignedByte(int offset);
 
     /**
-     * Gets two bytes as short from struct on specified index with specified offset
+     * Gets two bytes as short from struct with specified offset
      *
      * @param offset byte array offset
      * @return short value
@@ -73,7 +83,7 @@ public interface OffHeapStructAccessor {
     int getUnsignedShort(int offset);
 
     /**
-     * Gets four bytes as int from struct on specified index with specified offset
+     * Gets four bytes as int from struct with specified offset
      *
      * @param offset byte array offset
      * @return int value
@@ -82,7 +92,7 @@ public interface OffHeapStructAccessor {
 
     /**
      * Gets unsigned int (stored as 4 bytes) and returns it as long
-     * from struct on specified index with specified offset
+     * from struct with specified offset
      *
      * @param offset byte array offset
      * @return unsigned int as long
@@ -90,7 +100,7 @@ public interface OffHeapStructAccessor {
     long getUnsignedInt(int offset);
 
     /**
-     * Gets long from struct on specified index with specified offset
+     * Gets long from struct with specified offset
      *
      * @param offset byte array offset
      * @return long value
