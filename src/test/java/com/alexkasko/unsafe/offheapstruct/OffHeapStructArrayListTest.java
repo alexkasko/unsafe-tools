@@ -29,6 +29,8 @@ import static junit.framework.Assert.assertTrue;
  * Date: 7/4/13
  */
 public class OffHeapStructArrayListTest {
+    private static final ByteArrayTool BT = ByteArrayTool.get();
+
     @Test
     public void test() {
         OffHeapStructArrayList list = null;
@@ -334,6 +336,30 @@ public class OffHeapStructArrayListTest {
             assertEquals((byte) 0x12, s[15]);
             assertEquals((byte) 0x0f, s[16]);
             assertEquals((byte) 0x80, s[17]);
+        } finally {
+            OffHeapUtils.free(arr);
+        }
+    }
+
+    @Test
+    public void testShrinkToFit() {
+        OffHeapStructArrayList arr = null;
+        try {
+            arr = new OffHeapStructArrayList(8);
+            byte[] buf = new byte[8];
+            BT.putLong(buf, 0, 42);
+            arr.add(buf);
+            BT.putLong(buf, 0, 43);
+            arr.add(buf);
+            assertEquals(2, arr.size());
+            assertTrue(arr.capacity() > 2);
+            arr.shrinkToFit();
+            assertEquals(2, arr.size());
+            assertEquals(2, arr.capacity());
+            arr.get(0, buf);
+            assertEquals(42, BT.getLong(buf, 0));
+            arr.get(1, buf);
+            assertEquals(43, BT.getLong(buf, 0));
         } finally {
             OffHeapUtils.free(arr);
         }

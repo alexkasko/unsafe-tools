@@ -408,7 +408,7 @@ public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapD
             OffHeapMemory newOhm = null == bt ? OffHeapMemory.allocateMemory(len * structLength)
                     : OffHeapMemory.allocateMemoryOnHeap(bt, len * structLength);
             // maybe it's better to use Unsafe#reallocateMemory here
-            oh.copy(0, newOhm, 0, ohm.length());
+            oh.copy(0, newOhm, 0, oh.length());
             oh.free();
             ohm = newOhm;
             capacity = len;
@@ -423,6 +423,20 @@ public class OffHeapStructArrayList implements OffHeapStructCollection, OffHeapD
      */
     public void reset() {
         this.size = 0;
+    }
+
+    /**
+     * Shrinks array list capacity to current size
+     */
+    public void shrinkToFit() {
+        long byteslen = size * structLength;
+        OffHeapMemory oh = ohm;
+        OffHeapMemory newOhm = null == bt ? OffHeapMemory.allocateMemory(byteslen)
+                : OffHeapMemory.allocateMemoryOnHeap(bt, byteslen);
+        oh.copy(0, newOhm, 0, byteslen);
+        oh.free();
+        ohm = newOhm;
+        capacity = size;
     }
 
     /**

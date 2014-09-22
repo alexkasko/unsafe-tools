@@ -13,7 +13,7 @@ Library has no third-party dependencies and is available in [Maven central](http
     <dependency>
         <groupId>com.alexkasko.unsafe</groupId>
         <artifactId>unsafe-tools</artifactId>
-        <version>1.4.3</version>
+        <version>1.4.4</version>
     </dependency>
 
 Off-heap memory, data structures, operations
@@ -70,7 +70,11 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 Changelog
 ---------
 
-**1.4.3** (2014-14-08)
+**1.4.4** (2014-09-22)
+
+ * `shrinkToFit` for struct array lists
+
+**1.4.3** (2014-08-14)
 
  * additional get method for accessors
  * struct reference sort added to facade

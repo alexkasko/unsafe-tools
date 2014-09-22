@@ -80,7 +80,7 @@ public class OffHeapLongArrayList implements OffHeapLongAddressable, OffHeapDisp
             long len = s + (s < (MIN_CAPACITY_INCREMENT / 2) ? MIN_CAPACITY_INCREMENT : s >> 1);
             OffHeapMemory newOhm = OffHeapMemory.allocateMemory(len * ELEMENT_LENGTH);
             // maybe it's better to use Unsafe#reallocateMemory here
-            oh.copy(0, newOhm, 0, ohm.length());
+            oh.copy(0, newOhm, 0, oh.length());
             oh.free();
             ohm = newOhm;
             capacity = len;
