@@ -88,7 +88,7 @@
 <span class="sourceLineNo">080</span>            long len = s + (s &lt; (MIN_CAPACITY_INCREMENT / 2) ? MIN_CAPACITY_INCREMENT : s &gt;&gt; 1);<a name="line.80"></a>
 <span class="sourceLineNo">081</span>            OffHeapMemory newOhm = OffHeapMemory.allocateMemory(len * ELEMENT_LENGTH);<a name="line.81"></a>
 <span class="sourceLineNo">082</span>            // maybe it's better to use Unsafe#reallocateMemory here<a name="line.82"></a>
-<span class="sourceLineNo">083</span>            oh.copy(0, newOhm, 0, ohm.length());<a name="line.83"></a>
+<span class="sourceLineNo">083</span>            oh.copy(0, newOhm, 0, oh.length());<a name="line.83"></a>
 <span class="sourceLineNo">084</span>            oh.free();<a name="line.84"></a>
 <span class="sourceLineNo">085</span>            ohm = newOhm;<a name="line.85"></a>
 <span class="sourceLineNo">086</span>            capacity = len;<a name="line.86"></a>

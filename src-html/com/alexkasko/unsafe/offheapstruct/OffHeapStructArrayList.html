@@ -416,7 +416,7 @@
 <span class="sourceLineNo">408</span>            OffHeapMemory newOhm = null == bt ? OffHeapMemory.allocateMemory(len * structLength)<a name="line.408"></a>
 <span class="sourceLineNo">409</span>                    : OffHeapMemory.allocateMemoryOnHeap(bt, len * structLength);<a name="line.409"></a>
 <span class="sourceLineNo">410</span>            // maybe it's better to use Unsafe#reallocateMemory here<a name="line.410"></a>
-<span class="sourceLineNo">411</span>            oh.copy(0, newOhm, 0, ohm.length());<a name="line.411"></a>
+<span class="sourceLineNo">411</span>            oh.copy(0, newOhm, 0, oh.length());<a name="line.411"></a>
 <span class="sourceLineNo">412</span>            oh.free();<a name="line.412"></a>
 <span class="sourceLineNo">413</span>            ohm = newOhm;<a name="line.413"></a>
 <span class="sourceLineNo">414</span>            capacity = len;<a name="line.414"></a>
@@ -434,20 +434,34 @@
 <span class="sourceLineNo">426</span>    }<a name="line.426"></a>
 <span class="sourceLineNo">427</span><a name="line.427"></a>
 <span class="sourceLineNo">428</span>    /**<a name="line.428"></a>
-<span class="sourceLineNo">429</span>     * {@inheritDoc}<a name="line.429"></a>
+<span class="sourceLineNo">429</span>     * Shrinks array list capacity to current size<a name="line.429"></a>
 <span class="sourceLineNo">430</span>     */<a name="line.430"></a>
-<span class="sourceLineNo">431</span>    @Override<a name="line.431"></a>
-<span class="sourceLineNo">432</span>    public String toString() {<a name="line.432"></a>
-<span class="sourceLineNo">433</span>        final StringBuilder sb = new StringBuilder();<a name="line.433"></a>
-<span class="sourceLineNo">434</span>        sb.append("OffHeapStructArrayList");<a name="line.434"></a>
-<span class="sourceLineNo">435</span>        sb.append("{structLength=").append(structLength);<a name="line.435"></a>
-<span class="sourceLineNo">436</span>        sb.append(", ohm=").append(ohm);<a name="line.436"></a>
-<span class="sourceLineNo">437</span>        sb.append(", size=").append(size);<a name="line.437"></a>
-<span class="sourceLineNo">438</span>        sb.append(", capacity=").append(capacity);<a name="line.438"></a>
-<span class="sourceLineNo">439</span>        sb.append('}');<a name="line.439"></a>
-<span class="sourceLineNo">440</span>        return sb.toString();<a name="line.440"></a>
-<span class="sourceLineNo">441</span>    }<a name="line.441"></a>
-<span class="sourceLineNo">442</span>}<a name="line.442"></a>
+<span class="sourceLineNo">431</span>    public void shrinkToFit() {<a name="line.431"></a>
+<span class="sourceLineNo">432</span>        long byteslen = size * structLength;<a name="line.432"></a>
+<span class="sourceLineNo">433</span>        OffHeapMemory oh = ohm;<a name="line.433"></a>
+<span class="sourceLineNo">434</span>        OffHeapMemory newOhm = null == bt ? OffHeapMemory.allocateMemory(byteslen)<a name="line.434"></a>
+<span class="sourceLineNo">435</span>                : OffHeapMemory.allocateMemoryOnHeap(bt, byteslen);<a name="line.435"></a>
+<span class="sourceLineNo">436</span>        oh.copy(0, newOhm, 0, byteslen);<a name="line.436"></a>
+<span class="sourceLineNo">437</span>        oh.free();<a name="line.437"></a>
+<span class="sourceLineNo">438</span>        ohm = newOhm;<a name="line.438"></a>
+<span class="sourceLineNo">439</span>        capacity = size;<a name="line.439"></a>
+<span class="sourceLineNo">440</span>    }<a name="line.440"></a>
+<span class="sourceLineNo">441</span><a name="line.441"></a>
+<span class="sourceLineNo">442</span>    /**<a name="line.442"></a>
+<span class="sourceLineNo">443</span>     * {@inheritDoc}<a name="line.443"></a>
+<span class="sourceLineNo">444</span>     */<a name="line.444"></a>
+<span class="sourceLineNo">445</span>    @Override<a name="line.445"></a>
+<span class="sourceLineNo">446</span>    public String toString() {<a name="line.446"></a>
+<span class="sourceLineNo">447</span>        final StringBuilder sb = new StringBuilder();<a name="line.447"></a>
+<span class="sourceLineNo">448</span>        sb.append("OffHeapStructArrayList");<a name="line.448"></a>
+<span class="sourceLineNo">449</span>        sb.append("{structLength=").append(structLength);<a name="line.449"></a>
+<span class="sourceLineNo">450</span>        sb.append(", ohm=").append(ohm);<a name="line.450"></a>
+<span class="sourceLineNo">451</span>        sb.append(", size=").append(size);<a name="line.451"></a>
+<span class="sourceLineNo">452</span>        sb.append(", capacity=").append(capacity);<a name="line.452"></a>
+<span class="sourceLineNo">453</span>        sb.append('}');<a name="line.453"></a>
+<span class="sourceLineNo">454</span>        return sb.toString();<a name="line.454"></a>
+<span class="sourceLineNo">455</span>    }<a name="line.455"></a>
+<span class="sourceLineNo">456</span>}<a name="line.456"></a>
 
 
 
